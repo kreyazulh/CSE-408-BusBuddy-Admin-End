@@ -1,0 +1,1909 @@
+{  "openapi": "3.0.0",
+  "info": {
+    "title": "BusBuddy Admin End",
+    "version": "1.0.0",
+    "contact": {
+      "name": "BusBuddy Team",
+      "email": "kazireyazulhasan@gmail.com"
+    },
+    "description": "# BusBuddy Admin API Documentation \n\n
+
+
+The BusBuddy Admin API serves as the backend for the BusBuddy administration panel, facilitating the management and analysis of data related to bus routes, schedules, and various administrative tasks. This documentation is a reference for developers involved in the BusBuddy project. It provides insights into API endpoints, data structures, and usage patterns.\n\n
+**Note:** The API's structure may evolve based on future project requirements.
+
+## System Architecture\n\n
+
+#### Monolithic Architecture for BusBuddy Admin
+
+In the context of the BusBuddy Admin, opting for a monolithic architecture is our current choice due to several reasons:\n\n
+
+**Simplicity and Manageability:**
+A monolithic architecture keeps the entire application within a single codebase and deployment unit.\n\n
+
+**Ease of Development:**
+For a project of BusBuddy Admin's scale, a monolithic approach simplifies the development process. Developers can work on different features within the same codebase, promoting collaboration and reducing the complexities associated with microservices.\n\n
+
+**Faster Development Cycles:**
+With a monolithic architecture, the development and testing cycles are streamlined. Changes or updates can be made more quickly and deployed seamlessly, reducing the time between development and deployment.\n\n
+
+**Cost-Effectiveness:**
+Operating and maintaining a monolithic application is often more cost-effective, especially during the early stages of development. The centralized nature of the architecture simplifies infrastructure requirements. \n\n
+
+**Easier Debugging and Maintenance:**
+In a monolithic structure, debugging and maintenance become more straightforward.\n\n
+
+While a monolithic architecture may not be the ultimate solution for every scenario, for BusBuddy Admin's initial stages, its advantages in simplicity, development speed, and cost-effectiveness make it what we are looking for. As the project evolves, considerations for potential microservices or modularization (like tracking) can be explored based on specific requirements and scalability needs.
+
+
+<p align='center'><img src='https://i.postimg.cc/d0gbYnWm/architecture.png' alt='gmap Logo' width='600'></p>\n\n\n
+
+
+## Technology Stack
+
+- **Frontend:** Will be built with [Svelte](https://svelte.dev/), a simple and popular approach to building user interfaces.\n\n
+<p align='center'><img src='https://static-00.iconduck.com/assets.00/svelte-icon-2048x2048-bw95wjyb.png' alt='Svelte Logo' width='100'></p>\n\n
+- **Backend:** Will be powered by [Express.js](https://expressjs.com/), a framework of [Node.js](https://nodejs.org/), which a JavaScript runtime for scalable server applications.\n\n
+<p align='center'><img src='https://cdn.iconscout.com/icon/free/png-256/free-nodejs-2-226035.png' alt='Nodejs Logo' width='100'></p>\n\n
+- **Database:** Will utilize [PostgreSQL](https://www.postgresql.org/), an open-source relational database system known for reliability and advanced features.\n\n
+<p align='center'><img src='https://upload.wikimedia.org/wikipedia/commons/b/ba/Database-postgres.svg' alt='Postgresql Logo' width='100'></p>\n\n
+
+## Payment Service Integration
+
+BusBuddy will integrate the secure payment services of [SSLCommerz](#), ensuring a reliable and encrypted transaction environment for payment processing.\n\n
+<p align='center'><img src='https://sslcommerz.com/wp-content/uploads/2019/11/footer_logo.png' alt='sslcommerz Logo' width='180'></p>\n\n\n
+
+## Map API\n\n
+
+BusBuddy hopes to implement [Google Maps API](https://developers.google.com/maps) for their tracking service, **though a less costly one will be preferred in future for mass use.**
+<p align='center'><img src='https://cdn.iconscout.com/icon/free/png-256/free-google-maps-2863735-2378123.png' alt='gmap Logo' width='100'></p>\n\n\n
+
+## API Overview
+
+This section provides a brief overview of the key aspects we need to know to get started.
+
+#### Demo JSON
+
+To help understand the structure of API requests and responses, we have provided demo JSON examples throughout the documentation. These examples showcase typical data formats for various endpoints, which will be replaced by original data from database in future.\n\n
+
+
+#### HTTP Response Codes
+
+The API uses standard HTTP response codes to indicate the success or failure of a request. Here are the common response codes we encounter:
+
+- **200 OK:** The request was successful.\n\n
+- **201 Created:** The resource was successfully created. \n\n
+- **204 No Content:** The request was successful, but there is no additional content to send in the response. \n\n
+- **400 Bad Request:** The request could not be understood or was missing required parameters. \n\n
+- **401 Unauthorized:** Authentication failed or user lacks necessary permissions. \n\n
+- **404 Not Found:** The requested resource could not be found. \n\n
+- **500 Internal Server Error:** An unexpected error occurred on the server. \n\n
+
+#### HTTP Methods Overview
+
+- **GET Request:**\n\n
+  - Retrieves information or resources from the server.\n\n
+  - Used for reading or fetching data.\n\n
+
+- **POST Request:**\n\n
+  - Submits data to create a new resource on the server.\n\n
+  - Used for creating new records or submitting form data.\n\n
+
+- **PUT Request:**\n\n
+  - Updates or replaces a resource identified by its URI.\n\n
+  - Used for updating existing resources or creating new ones.\n\n
+
+- **DELETE Request:**\n\n
+  - Requests the removal of a resource or data from the server.\n\n
+  - Used for deleting specified resources.\n\n
+
+
+For more information, refer to [BusBuddy Github Repo](https://github.com/kreyazulh/CSE-408-BusBuddy-Admin-End).\n\n
+**Team**:\n\n
+1905082 - Kazi Reyazul Hasan\n\n
+1905069 - Mashroor Hasan Bhuiyan\n\n
+1905088 - Mubasshira Musarrat
+"
+  },
+
+
+  "servers": [
+    {
+      "description": "BusBuddy Admin Site",
+      "url": "https://Busbuddy.com/admin"
+    }
+  ],
+
+
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints related to user authentication"
+    },
+    {
+      "name": "Route Time Management",
+      "description": "Endpoints related to route-time calander"
+    },
+    {
+      "name": "Feedbacks and Requisitions",
+      "description": "Endpoints related to feedbacks and Requisitions"
+    },
+    {
+      "name": "Location Based Tracking",
+      "description": "Endpoints related to tracking details"
+    },
+    {
+      "name": "User and Bus Database",
+      "description": "Endpoints related to data storage"
+    },
+    {
+      "name": "Staff Management",
+      "description": "Endpoints related to bus staffs"
+    },
+    {
+      "name": "Billing and Forms",
+      "description": "Endpoints related to billing of different types of users"
+    },
+    {
+      "name": "Store Inventory",
+      "description": "Endpoints related to inventory operations"
+    }
+  ],
+
+
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Authenticate user credentials",
+        "requestBody": {
+          "description": "User credentials",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "username": "admin",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "token": "authentication_token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+      },
+      "/logout": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Logout and invalidate the user session",
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          }
+        }
+      }
+      },
+    "/feedback": {
+      "get": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Retrieve user feedback",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Mubasshira Musarrat",
+                    "topic": "Excess Delay",
+                    "type": "Logistics",
+                    "route": "Mirpur",
+                    "date": "2024-01-4",
+                    "status": "Currently Pending"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Mashroor Hasan Bhuiyan",
+                    "topic": "Rude Behavior",
+                    "type": "Staff Issue",
+                    "route": "Uttara",
+                    "date": "2024-01-3",
+                    "status": "Currently Pending"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback/{id}": {
+      "get": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Get details of a specified feedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feedback requested",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example":
+                  {
+                    "id": 1,
+                    "name": "Mubasshira Musarrat",
+                    "topic": "Excess Delay",
+                    "type": "Logistics",
+                    "route": "Mirpur",
+                    "date": "2024-01-4",
+                    "status": "Currently Pending"
+                  }
+              }
+            }
+          }
+        }
+      },
+    "put": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Update user feedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feedback entry to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "New status for the feedback entry",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feedback updated successfully"
+          },
+          "404": {
+            "description": "Feedback not found"
+          }
+        }
+      },
+            "delete": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Delete user feedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feedback entry to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feedback deleted successfully"
+          },
+          "404": {
+            "description": "Feedback not found"
+          }
+        }
+      }
+    },
+    "/feedback/{id}/respond": {
+      "post": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Respond to user feedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feedback to respond",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Feedback response details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "id": 1,
+                "response": "We appreciate your input and will work to address the issue."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feedback response submitted successfully"
+          },
+          "404": {
+            "description": "Feedback not found"
+          }
+        }
+      }
+    },
+
+    "/requisition": {
+      "get": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Retrieve user requisition",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Md Toufiquzzaman",
+                    "bus count": "2",
+                    "requested for": "Picnic",
+                    "start": "9:00:00 AM",
+                    "end": "5:00:00 PM",
+                    "destination": "Gazipur",
+                    "date": "2024-01-4",
+                    "status": "Currently Pending",
+                  },
+                  {
+                    "id": 2,
+                    "name": "Ashikur Rahman",
+                    "bus count": "1",
+                    "requested for": "Personal Use",
+                    "start": "9:00:00 AM",
+                    "end": "8:00:00 PM",
+                    "destination": "Uttara",
+                    "date": "2024-01-3",
+                    "status": "Granted",
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/requisition/{id}": {
+      "get": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Get details of a specified feedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feedback requested",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example":
+                  {
+                    "id": 2,
+                    "name": "Ashikur Rahman",
+                    "bus count": "1",
+                    "requested for": "Personal Use",
+                    "start": "9:00:00 AM",
+                    "end": "8:00:00 PM",
+                    "destination": "Uttara",
+                    "date": "2024-01-3",
+                    "status": "Granted",
+                  }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Update details of a specified requisition",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the requisition to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Requisition details to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "status": "On Hold"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requisition updated successfully"
+          },
+          "404": {
+            "description": "Requisition not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Delete a specified requisition",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the requisition to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requisition deleted successfully"
+          },
+          "404": {
+            "description": "Requisition not found"
+          }
+        }
+      }
+    },
+    "/requisition/{id}/respond": {
+      "post": {
+        "tags": ["Feedbacks and Requisitions"],
+        "summary": "Respond to a user requisition",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the requisition to respond",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Requisition response details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "id": 2,
+                "response": "Your requisition for personal use of the bus has been granted."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Requisition response submitted successfully"
+          },
+          "404": {
+            "description": "Requisition not found"
+          }
+        }
+      }
+    },
+    "/tracking": {
+      "get": {
+        "tags": ["Location Based Tracking"],
+        "summary": "Get the current location and status of a all active buses",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {"bus_id": 123,
+                  "location": {
+                    "latitude": 37.7749,
+                    "longitude": -122.4194
+                  },
+                  "status": "On Schedule",
+                  "last_updated": "2024-01-07 8:30:00 AM"},
+
+                  {"bus_id": 456,
+                  "location": {
+                    "latitude": 27.7749,
+                    "longitude": -102.4194
+                  },
+                  "status": "Off Track",
+                  "last_updated": "2024-01-09 9:30:00 AM"}
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Bus not found"
+          }
+        }
+      }
+    },
+    "/tracking/{busId}": {
+      "get": {
+        "tags": ["Location Based Tracking"],
+        "summary": "Get the current location and status of a specific bus",
+        "parameters": [
+          {
+            "name": "busId",
+            "in": "path",
+            "description": "ID of the bus to track",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "bus_id": 123,
+                  "location": {
+                    "latitude": 37.7749,
+                    "longitude": -122.4194
+                  },
+                  "status": "On Schedule",
+                  "last_updated": "2024-01-15 8:30:00 AM"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bus not found"
+          }
+        }
+      }
+    },
+    "/allocation": {
+      "get": {
+        "tags": ["Route Time Management"],
+        "summary": "Get all allocations",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "vehicle_type": "Bus",
+                    "vehicle_id": 123,
+                    "allocation_type": "Regular Duty",
+                    "allocated_to": "Farmgate",
+                    "trip-staffs": [12, 19],
+                    "date": "2024-01-09",
+                    "status": "Active"
+                  },
+                  {
+                    "id": 2,
+                    "vehicle_type": "Bus",
+                    "vehicle_id": 124,
+                    "allocation_type": "Requisition Task",
+                    "allocated_to": "Gazipur",
+                    "trip-staffs": [16, 11],
+                    "date": "2024-01-01",
+                    "status": "Completed"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Route Time Management"],
+        "summary": "Create a new allocation",
+        "requestBody": {
+          "description": "Allocation details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "vehicle_type": "Bus",
+                "vehicle_id": 124,
+                "allocation_type": "Regular Duty",
+                "allocated_to": "Mirpur",
+                "trip-staffs": [14, 15],
+                "date": "2024-02-05"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Allocation created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 2,
+                  "vehicle_type": "Bus",
+                  "vehicle_id": 124,
+                  "allocation_type": "Regular Duty",
+                  "allocated_to": "Mirpur",
+                  "trip-staffs": [14, 15],
+                  "date": "2024-02-05",
+                  "status": "Active"
+                }
+              }
+            }
+          }
+        }
+      }
+      },
+      "/allocation/{id}": {
+      "get": {
+        "tags": ["Route Time Management"],
+        "summary": "Get details of a specific allocation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the allocation to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "vehicle_type": "Bus",
+                  "vehicle_id": 123,
+                  "allocation_type": "Regular Duty",
+                  "allocated_to": "Mohammadpur",
+                  "trip-staffs": [14, 15],
+                  "date": "2024-01-10",
+                  "status": "Active"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Allocation not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Route Time Management"],
+        "summary": "Update details of a specific allocation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the allocation to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated allocation details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "resource_type": "Microbus",
+                "resource_id": 423,
+                "allocation_type": "Requisition Task",
+                "allocated_to": "Badda",
+                "date": "2024-02-10"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Allocation updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "resource_type": "Microbus",
+                  "resource_id": 423,
+                  "allocation_type": "Requisition Task",
+                  "allocated_to": "Badda",
+                  "date": "2024-02-10",
+                  "status": "Active"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Allocation not found"
+          }
+        }
+      },
+    "delete": {
+        "tags": ["Route Time Management"],
+        "summary": "Delete a specific allocation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the allocation to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Allocation deleted successfully"
+          },
+          "404": {
+            "description": "Allocation not found"
+          }
+        }
+      }
+
+
+    },
+    "/users": {
+      "get": {
+        "tags": ["User and Bus Database"],
+        "summary": "Get user information based on parameters",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "query",
+            "description": "User ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-type",
+            "in": "query",
+            "description": "User Type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "User Name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "buet-id",
+            "in": "query",
+            "description": "BUET ID",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dept",
+            "in": "query",
+            "description": "Department",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "description": "Academic Level",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "term",
+            "in": "query",
+            "description": "Academic Term",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "session",
+            "in": "query",
+            "description": "Academic Session",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hall",
+            "in": "query",
+            "description": "Residential Hall",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "route",
+            "in": "query",
+            "description": "Bus Route",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "description": "Phone Number",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email Address",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "user-id": 408,
+                    "user-type": "Student",
+                    "name": "Wasif Jalal",
+                    "buet-id": "1905088",
+                    "dept": "CSE",
+                    "level": 4,
+                    "term": 1,
+                    "session": "2019-20",
+                    "hall": "Suhrawardi Hall",
+                    "route": "Mohammadpur",
+                    "phone": "01912345678",
+                    "email": "wasifjalal@gmail.com",
+                    "photo": "https://glob.com/glob.jpg",
+                    "billing": "tickets",
+                    "recent-trip": [],
+                    "recent-purchase": [],
+                    "recent-usage": []
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["User and Bus Database"],
+        "summary": "Create a new user",
+        "requestBody": {
+          "description": "User details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                    "user-id": 1708,
+                    "user-type": "Faculty",
+                    "name": "Fahim Hakim",
+                    "buet-id": "",
+                    "dept": "CSE",
+                    "level": ,
+                    "term": ,
+                    "session": "2019-20",
+                    "hall": "",
+                    "route": "Badda",
+                    "phone": "01712345678",
+                    "email": "fahimhakim@gmail.com",
+                    "photo": "https://firebase.com/fahim_hakim.jpg",
+                    "billing": "monthly"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                    "user-id": 1708,
+                    "user-type": "Faculty",
+                    "name": "Fahim Hakim",
+                    "buet-id": "",
+                    "dept": "CSE",
+                    "level": ,
+                    "term": ,
+                    "session": "2019-20",
+                    "hall": "",
+                    "route": "Badda",
+                    "phone": "01712345678",
+                    "email": "fahimhakim@gmail.com",
+                    "photo": "https://firebase.com/fahim_hakim.jpg",
+                    "billing": "monthly",
+                    "recent-trip": [],
+                    "recent-purchase": [],
+                    "recent-usage": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+      "/users/{user-id}": {
+      "delete": {
+        "tags": ["User and Bus Database"],
+        "summary": "Delete a specific user",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "path",
+            "description": "ID of the user to be deleted",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted successfully"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+      "/staff": {
+      "get": {
+        "tags": ["Staff Management"],
+        "summary": "Get a list of staff members",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 12,
+                    "name": "Rahim Mia",
+                    "position": "Helper",
+                    "department": "Bus Operations",
+                    "salary": 15000,
+                    "recent-trips": [],
+                    "upcoming-trips":[],
+                    "monthly-payments":[],
+                    "email": "",
+                    "phone": "01521117111"
+                  },
+                  {
+                    "id": 102,
+                    "name": "Kamal Alam",
+                    "position": "Supervisor",
+                    "department": "Logistics",
+                    "salary": 30000,
+                    "recent-trips": ,
+                    "upcoming-trips":,
+                    "monthly-payments":[],
+                    "email": "kamal.alam@gmail.com",
+                    "phone": "01721113453"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Staff Management"],
+        "summary": "Add a new staff member",
+        "requestBody": {
+          "description": "Staff details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Munshi Bakhsh",
+                "position": "Driver",
+                "department": "Bus Operations",
+                "salary": 20000,
+                "email": "",
+                "phone": "01523456789"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Staff member added successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 13,
+                  "name": "Munshi Bakhsh",
+                  "position": "Driver",
+                  "department": "Bus Operations",
+                  "salary": 20000,
+                  "recent-trips": [],
+                  "upcoming-trips": [],
+                  "monthly-payments": [],
+                  "email": "",
+                  "phone": "01523456789"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid data provided"
+          }
+        }
+      }
+    },
+    "/staff/{id}": {
+      "get": {
+        "tags": ["Staff Management"],
+        "summary": "Get details of a specific staff member",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the staff member",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 12,
+                  "name": "Rahim Mia",
+                  "position": "Helper",
+                  "department": "Bus Operations",
+                  "salary": 20000,
+                  "recent-trips": [],
+                  "upcoming-trips": [],
+                  "email": "",
+                  "phone": "01521117111"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Staff member not found"
+          }
+        }
+      },
+            "put": {
+        "tags": ["Staff Management"],
+        "summary": "Update details of a specific staff member",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the staff member",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated staff details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Munshi Bakhsh",
+                "position": "Senior Driver",
+                "salary": 25000,
+                "email": "",
+                "phone": "01523456789"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Staff member details updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 13,
+                  "name": "Munshi Bakhsh",
+                  "position": "Senior Driver",
+                  "department": "Bus Operations",
+                  "salary": 25000,
+                  "recent-trips": [],
+                  "upcoming-trips": [],
+                  "monthly-payments": [],
+                  "email": "",
+                  "phone": "01523456789"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid data provided"
+          },
+          "404": {
+            "description": "Staff member not found"
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Staff Management"],
+        "summary": "Delete a specific staff member",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the staff member to be deleted",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Staff member deleted successfully"
+          },
+          "404": {
+            "description": "Staff member not found"
+          }
+        }
+      }
+    },
+      "/staff/payments": {
+      "get": {
+        "tags": ["Staff Management"],
+        "summary": "Get a list of pending payments for staff members",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 12,
+                    "name": "Rahim Mia",
+                    "pending-amount": 15000,
+                    "due-date": "2024-01-15",
+                    "status": "Pending"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Kamal Alam",
+                    "pending-amount": 30000,
+                    "due-date": "2024-01-15",
+                    "status": "Paid"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+      "/staff/payments/{id}": {
+      "put": {
+        "tags": ["Staff Management"],
+        "summary": "Update the payment status of a specific staff member",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the staff member",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Payment status update details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "status": "Paid"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment status updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 12,
+                  "name": "Rahim Mia",
+                  "pending-amount": 15000,
+                  "due-date": "2024-01-15",
+                  "status": "Paid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid data provided"
+          },
+          "404": {
+            "description": "Staff member not found"
+          }
+        }
+      }
+    },
+
+
+
+    "/billing": {
+      "get": {
+        "tags": ["Billing and Forms"],
+        "summary": "Get billing information",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "invoice-id": 1,
+                    "customer-id": 12,
+                    "Name": "Abdul Alim",
+                    "issue-date": "2024-01-01",
+                    "due-date": "2024-01-15",
+                    "total-amount": 300.0,
+                    "status": "Paid"
+                  },
+                  {
+                    "invoice-id": 2,
+                    "customer-id": 64,
+                    "Name": "Sabiha Khatun",
+                    "issue-date": "2024-02-01",
+                    "due-date": "2024-02-15",
+                    "total-amount": 200.0,
+                    "status": "Pending"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+    "post": {
+        "tags": ["Billing and Forms"],
+        "summary": "Create a new billing invoice",
+        "requestBody": {
+          "description": "Billing invoice details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "invoice-id": 14,
+                "customer-id": 122,
+                "Name": "Abdur Jobbar",
+                "issue-date": "2024-01-01",
+                "due-date": "2024-01-15",
+                "total-amount": 300.0,
+                "status": "Pending"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Billing invoice created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "invoice-id": 14,
+                  "customer-id": 122,
+                  "Name": "Abdur Jobbar",
+                  "issue-date": "2024-01-01",
+                  "due-date": "2024-01-15",
+                  "total-amount": 300.0,
+                  "status": "Pending"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/{invoice-id}": {
+      "get": {
+        "tags": ["Billing and Forms"],
+        "summary": "Get details of a specific billing invoice",
+        "parameters": [
+          {
+            "name": "invoice-id",
+            "in": "path",
+            "description": "Invoice ID of the billing invoice",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                    "invoice-id": 1,
+                    "customer-id": 12,
+                    "Name": "Abdul Alim",
+                    "issue-date": "2024-01-01",
+                    "due-date": "2024-01-15",
+                    "total-amount": 300.0,
+                    "status": "Paid"
+                  }
+              }
+            }
+          },
+          "404": {
+            "description": "Billing invoice not found"
+          }
+        }
+      }
+    },
+    "/inventory" : {
+      "get": {
+        "tags": ["Store Inventory"],
+        "summary": "Get all inventory items",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "stock-code": 4031,
+                    "name": "Tire",
+                    "recent-purchase": "2024-01-01",
+                    "purchase-from": "Sadif Motors",
+                    "purchase-count": 5,
+                    "unit-price": 5000,
+                    "in-stock-count": 15,
+                    "request-count": 3,
+                    "repair-request": 2
+                  },
+                  {
+                    "stock-code": 2031,
+                    "name": "Engine",
+                    "recent-purchase": "2023-11-01",
+                    "purchase-from": "Sadif Motors",
+                    "purchase-count": 1,
+                    "unit-price": 120000,
+                    "in-stock-count": 0,
+                    "request-count": 1,
+                    "repair-request": 0
+                  },
+                ]
+              }
+            }
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Store Inventory"],
+        "summary": "Add a new inventory item",
+        "requestBody": {
+          "description": "Inventory details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "stock-code": 1234,
+                "name": "Gear",
+                "recent-purchase": "2024-01-01",
+                "purchase-from": "Sojib Manufacturers",
+                "purchase-count": 3,
+                "unit-price": 10000,
+                "in-stock-count": 10,
+                "request-count": 0,
+                "repair-request": 0
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Inventory item added successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "stock-code": 1234,
+                  "name": "Gear",
+                  "recent-purchase": "2024-01-01",
+                  "purchase-from": "Sojib Manufacturers",
+                  "purchase-count": 3,
+                  "unit-price": 10000,
+                  "in-stock-count": 10,
+                  "request-count": 0,
+                  "repair-request": 0
+                }
+              }
+            }
+          }
+        }
+      }
+
+    },
+    "/inventory/{stock_code}": {
+      "get": {
+        "tags": ["Store Inventory"],
+        "summary": "Get details of a specific inventory item",
+        "parameters": [
+          {
+            "name": "stock_code",
+            "in": "path",
+            "description": "Stock Code of the inventory item",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                    "stock-code": 4031,
+                    "name": "Tire",
+                    "recent-purchase": "2024-01-01",
+                    "purchase-from": "Sadif Motors",
+                    "purchase-count": 5,
+                    "unit-price": 5000,
+                    "in-stock-count": 15,
+                    "request-count": 3,
+                    "repair-request": 2
+                  }
+              }
+            }
+          },
+          "404": {
+            "description": "Inventory item not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Store Inventory"],
+        "summary": "Update specific fields of an inventory item",
+        "parameters": [
+          {
+            "name": "stock_code",
+            "in": "path",
+            "description": "Stock Code of the inventory item",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated inventory details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "recent-purchase": "2024-02-05",
+                "purchase-from": "Nafiu Motors",
+                "purchase-count": 5,
+                "unit-price": 12000
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Inventory item updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "stock-code": 1225,
+                  "name": "Seats",
+                  "recent-purchase": "2024-02-05",
+                  "purchase-from": "Nafiu Motors",
+                  "purchase-count": 5,
+                  "unit-price": 2000,
+                  "in-stock-count": 8,
+                  "request-count": 0,
+                  "repair-request": 0
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Inventory item not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Store Inventory"],
+        "summary": "Delete a specific inventory item by stock code",
+        "parameters": [
+          {
+            "name": "stock_code",
+            "in": "path",
+            "description": "Stock code of the inventory item to be deleted",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Inventory item deleted successfully"
+          },
+          "404": {
+            "description": "Inventory item not found"
+          }
+        }
+      }
+    },
+    "/billing/notify": {
+      "post": {
+        "tags": ["Billing and Forms"],
+        "summary": "Notify users about pending payments",
+        "responses": {
+          "200": {
+            "description": "Notification sent successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Notification sent successfully"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/forms": {
+      "get": {
+        "tags": ["Billing and Forms"],
+        "summary": "Get PDF form URL",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "pdf_url": "https://busbuddy/admin/forms/form1.pdf"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Billing and Forms"],
+        "summary": "Create a form by uploading a PDF file",
+        "requestBody": {
+          "description": "Form data",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "pdf_file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["name", "email", "pdf_file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Form created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Form created successfully",
+                  "form_id": 123
+                }
+              }
+            }
+          }
+        }
+      }
+
+      },
+    "/forms/{form_id}": {
+      "delete": {
+        "tags": ["Billing and Forms"],
+        "summary": "Delete a form",
+        "parameters": [
+          {
+            "name": "form_id",
+            "in": "path",
+            "description": "ID of the form to be deleted",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Form deleted successfully"
+          },
+          "404": {
+            "description": "Form not found"
+          }
+        }
+      }
+    },
+    "/bus": {
+      "post": {
+        "tags": ["User and Bus Database"],
+        "summary": "Create a new bus",
+        "requestBody": {
+          "description": "Bus details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "bus-reg-number": "Ba-24-8518",
+                "bus-type": "Microbus",
+                "Assigned Work": "Requisition"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bus created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 26,
+                  "bus-reg-number": "Da-27-8518",
+                  "bus-type": "Microbus",
+                  "Assigned Work": "Requisition",
+                  "trip-history": [],
+                  "fuel-records": [],
+                  "fitness-records": [],
+                  "requisition-records": [],
+                  "maintenance-records": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/bus/{id}": {
+      "get": {
+        "tags": ["User and Bus Database"],
+        "summary": "Get details of a specific bus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the bus",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 15,
+                  "bus-reg-number": "Ba-24-8518",
+                  "bus-type": "Double Decker",
+                  "Assigned Work": "Requisition",
+                  "trip-history": [],
+                  "fuel-records": [],
+                  "fitness-records": [],
+                  "requisition-records": [],
+                  "maintenance-records": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bus not found"
+          }
+        }
+      },
+        "put": {
+        "tags": ["User and Bus Database"],
+        "summary": "Update details of a specific bus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the bus",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated bus details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "bus-reg-number": "Ba-24-8519",
+                "bus-type": "Single Decker",
+                "Assigned Work": "Regular Duty",
+                "fuel-records":[{
+                  "liter": 15,
+                  "cost":2000,
+                  "date": "2024-01-02",
+                }
+                  ]
+
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bus details updated successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 16,
+                  "bus-reg-number": "Ba-24-8519",
+                  "bus-type": "Single Decker",
+                  "Assigned Work": "Regular Duty",
+                  "trip-history": [{
+                    "trip-id": 523,
+                    "Trip Date": "2024-01-01",
+                    "route": "Mohammadpur"
+                  },
+                  {
+                    "trip-id": 513,
+                    "Trip Date": "2023-12-29",
+                    "route": "Mohammadpur"
+                  }],
+                  "fuel-records":[{
+                  "liter": 15,
+                  "cost":2000,
+                  "date": "2024-01-02",
+                }
+                  ],
+                  "fitness-records": [],
+                  "requisition-records": [],
+                  "maintenance-records": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bus not found"
+          }
+        }
+      },
+            "delete": {
+        "tags": ["User and Bus Database"],
+        "summary": "Delete a specific bus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the bus",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Bus deleted successfully"
+          },
+          "404": {
+            "description": "Bus not found"
+          }
+        }
+      }
+
+
+    }
+  }
+}
