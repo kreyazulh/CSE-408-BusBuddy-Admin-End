@@ -20,22 +20,9 @@
     <h1>Admin Table</h1>
     
     {#if admins.length > 0}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Password</th>
-          </tr>
-        </thead>
-        <tbody>
           {#each admins as { id, password }}
-            <tr>
-              <td>{id}</td>
-              <td>{password}</td>
-            </tr>
+            <p>{id},{password}</p>
           {/each}
-        </tbody>
-      </table>
     {:else}
       <p>Loading...</p>
     {/if}
