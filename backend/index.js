@@ -75,7 +75,7 @@ app.get('/api/admins', (req, res) => {
   });
 });
 
-// Route to get bus staff data
+// Route to get bus data
 app.get('/api/bus', (req, res) => {
   const query = 'SELECT * FROM bus';
   
@@ -87,6 +87,22 @@ app.get('/api/bus', (req, res) => {
       res.json(results.rows);
     }
   });
+});
+
+// Route to add bus data
+app.post('/api/bus/add', (req, res) => {
+      console.log(req.body);
+      client.query (
+          "INSERT INTO bus(reg_id, type, capacity) values($1, $2, $3)",
+          [req.body.reg_id, req.body.type, req.body.capacity]
+      ).then(qres => {
+          console.log(qres);
+          if (qres.rowCount === 1) res.send(true);
+          else if (qres.rowCount === 0) res.send(false);
+      }).catch(e => {
+          console.error(e.stack);
+          res.send(false);
+      });
 });
 
 

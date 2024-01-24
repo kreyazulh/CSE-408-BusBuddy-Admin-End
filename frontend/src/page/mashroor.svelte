@@ -4,6 +4,7 @@
 
   let admins = [];
   let buses = [];
+  let addbus = [];
 
   // Fetch admin data from the server
   async function getAdmins() {
@@ -17,20 +18,53 @@
     buses = await response.json();
   }
 
-  // Call the function when the component is mounted
+  async function addBus(reg_id, type, capacity) {
+    // Create a JSON object with the data
+    const busData = {
+      reg_id: reg_id,
+      type: type,
+      capacity: capacity
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/api/bus/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(busData)
+      });
+      addbus = await response.json();
+
+
+
+      if (response.ok) {
+        // Request was successful
+        console.log('Bus added successfully');
+      } else {
+        // Request failed
+        console.error('Failed to add bus');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+  }
+
   onMount(() => {
-    getAdmins();
-    getBus();
+    // getAdmins();
+    // getBus();
+    addBus("Ba-69-8288","double_decker",60);
   });
 </script>
 
 <main>
   <h1>Admin Table</h1>
   
-  {#if buses.length > 0}
-        {#each buses as { reg_id, type, capacity }}
-          <p>{reg_id},{type},{capacity}</p>
-        {/each}
+  {#if addbus.length > 0}
+        <!-- {#each buses as { reg_id, type, capacity }} -->
+          <p>{addbus}</p>
+        <!-- {/each} -->
   {:else}
     <p>Loading...</p>
   {/if}
