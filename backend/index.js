@@ -105,4 +105,18 @@ app.post('/api/bus/add', (req, res) => {
       });
 });
 
+// Route to get bus staff data
+app.get('/api/bus_staff', (req, res) => {
+  const query = 'SELECT * FROM bus_staff';
+  
+  client.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results.rows);
+    }
+  });
+});
+
 

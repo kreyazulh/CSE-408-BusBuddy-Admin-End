@@ -3,6 +3,7 @@
   import Login from './page/adminLogin.svelte';
   import Start from './page/start.svelte';
   import Mashroor from './page/mashroor.svelte';
+  import BusStaffList from './page/busStaffList.svelte';
   import { onMount } from 'svelte';
 
   onMount(() => {
@@ -15,6 +16,7 @@
     <Route path="/login" component={Login} />
     <Route path="/start" component={Start} />
     <Route path="/mashroor" component={Mashroor} />
+    <Route path="/busStaffList" component={BusStaffList} />
   </Router>
 </main>
 
