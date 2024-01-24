@@ -1,7 +1,7 @@
 <script>
   import { Router, Route, navigate } from 'svelte-routing';
   import Login from './page/adminLogin.svelte';
-  import Start from './page/start.svelte';
+  import Start from './page/navbar.svelte';
   import CreateRoute from './page/createRoute.svelte';
   import { onMount } from 'svelte';
 
