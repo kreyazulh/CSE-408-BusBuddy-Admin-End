@@ -21,6 +21,7 @@
   
       if (result.status === 'success') {
         loginStatus = 'Login successful!';
+        navigate('/createRoute');
       } else {
         loginStatus = 'Login failed. Please check your ID and password.';
       }

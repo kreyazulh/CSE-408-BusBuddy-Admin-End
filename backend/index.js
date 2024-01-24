@@ -75,4 +75,40 @@ app.get('/api/admins', (req, res) => {
   });
 });
 
+app.post('/api/createroute', async (req, res) => {
+  try {
+    const { id, terminal_point, names } = req.body;
+
+    // Example query to find station IDs for each station name
+    const stationIdsQuery = 'SELECT id FROM station WHERE name = ANY($1::text[])';
+    const stationIdsResult = await client.query(stationIdsQuery, [names]);
+
+    // Extract station IDs from the result
+    const stationIds = stationIdsResult.rows.map(row => row.id);
+    console.log(stationIds);
+
+    // Example query to insert a new route into the database with station IDs
+    const insertQuery = 'INSERT INTO route (id, terminal_point, points) VALUES ($1, $2, $3) RETURNING *';
+    const result = await client.query(insertQuery, [id, terminal_point, stationIds]);
+
+    res.json({ status: 'success', route: result.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Route to get station names
+app.get('/api/stations', async (req, res) => {
+  try {
+      // Example query to fetch names from the station table
+      const query = 'SELECT name FROM station';
+      const result = await client.query(query);
+
+      res.json(result.rows);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
