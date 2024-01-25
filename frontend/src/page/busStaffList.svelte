@@ -1,6 +1,10 @@
 <!-- App.svelte -->
 <script>
   import { onMount } from 'svelte';
+  import Navbar from './navbar.svelte';
+  import { checkSession, isAuthenticated } from '../auth';
+  import { navigate } from 'svelte-routing';
+
 
   let bus_staffs = [];
 
@@ -8,13 +12,20 @@
     const response = await fetch('http://localhost:3000/api/bus_staff');
     bus_staffs = await response.json();
   }
-
-  onMount(() => {
+  
+  onMount(async() => {
+    const initialIsAuthenticated = await checkSession();
+    isAuthenticated.set(initialIsAuthenticated);
     getBusStaffList();
   });
 </script>
 
-<main>
+{#if $isAuthenticated}
+<main class="flex">
+  <div class="w-1/4">
+    <Navbar />
+</div>
+<div class="mx-auto max-w-md">
   <h1>Bus Staff List</h1>
   
   {#if bus_staffs.length > 0}
@@ -22,7 +33,8 @@
           <p>{id},{name},{department},{designation},{residence},{phone}</p>
         {/each}
   {:else}
-    <p>Loading...</p>
+    <p>You need to login first</p>
+    <a href="/login">Log In</a>
   {/if}
 </main>
 
@@ -44,3 +56,4 @@
     text-align: left;
   }
 </style>
+{/if}

@@ -2,6 +2,7 @@
     import '.././app.css';
     import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
+    import { isAuthenticated } from '.././auth';
   
     let id = '';
     let password = '';
@@ -13,6 +14,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ id, password })
       });
   
@@ -21,6 +23,7 @@
   
       if (result.status === 'success') {
         loginStatus = 'Login successful!';
+        isAuthenticated.set(true);
         navigate('/createRoute');
       } else {
         loginStatus = 'Login failed. Please check your ID and password.';

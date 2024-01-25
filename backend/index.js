@@ -3,13 +3,19 @@ var BodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 var app = Express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 dotenv.config();
 
-const {Client} = require('pg');
+const {Pool, Client} = require('pg');
 
 
 const client = new Client({
@@ -37,6 +43,8 @@ app.listen(3000, ()=>{
 
 // Express middleware to parse JSON
 app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 
 app.use(session({
@@ -45,12 +53,17 @@ app.use(session({
   saveUninitialized: true,
   sameSite: 'none',
   cookie: {
-      maxAge: 60*30*1000,
-      httpOnly: false
+      maxAge: 30*60*1000,
+      httpOnly: true
   }
 }));
 
 
+app.get('/api/check-session', (req, res) => {
+  console.log(req.session);
+  console.log(req.session.userId);
+  res.json({ isAuthenticated: !!req.session.userId });
+});
 
 // Route to handle login
 app.post('/api/login', (req, res) => {
@@ -63,7 +76,7 @@ app.post('/api/login', (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
         if (results.rowCount === 1) {
-          req.session.user = id;
+          req.session.userId = id;
           res.json({ status: 'success' });
         } else {
           res.json({ status: 'fail' });
@@ -72,12 +85,6 @@ app.post('/api/login', (req, res) => {
     });
   });
 
-  const checkLoggedIn = (req, res, next) => {
-    if (!req.session) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    next();
-  };
   
 
 // Route to get admin data
@@ -138,21 +145,23 @@ app.get('/api/bus_staff', (req, res) => {
   });
 });
 
-app.post('/api/createroute', checkLoggedIn, async (req, res) => {
+app.post('/api/createroute', async (req, res) => {
   try {
-    const { id, terminal_point, names } = req.body;
+    const { terminal_point, names } = req.body;
 
-    // Example query to find station IDs for each station name
+    const countQuery = 'SELECT COUNT(*) FROM route';
+    const countResult = await client.query(countQuery);
+
+    const countValue = parseInt(countResult.rows[0].count, 10);
+    const nextId = (countValue + 1).toString();
+
     const stationIdsQuery = 'SELECT id FROM station WHERE name = ANY($1::text[])';
     const stationIdsResult = await client.query(stationIdsQuery, [names]);
 
-    // Extract station IDs from the result
     const stationIds = stationIdsResult.rows.map(row => row.id);
-    console.log(stationIds);
 
-    // Example query to insert a new route into the database with station IDs
     const insertQuery = 'INSERT INTO route (id, terminal_point, points) VALUES ($1, $2, $3) RETURNING *';
-    const result = await client.query(insertQuery, [id, terminal_point, stationIds]);
+    const result = await client.query(insertQuery, [nextId, terminal_point, stationIds]);
 
     res.json({ status: 'success', route: result.rows[0] });
   } catch (error) {
@@ -164,7 +173,6 @@ app.post('/api/createroute', checkLoggedIn, async (req, res) => {
 // Route to get station names
 app.get('/api/stations', async (req, res) => {
   try {
-      // Example query to fetch names from the station table
       const query = 'SELECT name FROM station';
       const result = await client.query(query);
 
@@ -175,10 +183,18 @@ app.get('/api/stations', async (req, res) => {
   }
 });
 
-app.post('/api/logout',(req,res) => {
-  req.session.destroy();
-  res.send({
-      success: true
+app.post('/api/logout', (req, res) => {
+  req.session.userId = null;
+  console.log("logout");
+  req.session.destroy((error) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.clearCookie('connect.sid');
+
+      res.json({ status: 'success' });
+    }
   });
 });
 
