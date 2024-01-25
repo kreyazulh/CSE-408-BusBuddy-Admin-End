@@ -1,0 +1,5 @@
+-- totally random stuff
+-- oiiii
+-- reply de
+-- random kichu kaj korlam
+-- ok?
