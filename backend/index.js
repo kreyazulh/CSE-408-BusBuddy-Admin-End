@@ -147,19 +147,21 @@ app.get('/api/bus_staff', (req, res) => {
 
 app.post('/api/createroute', async (req, res) => {
   try {
-    const { id, terminal_point, names } = req.body;
+    const { terminal_point, names } = req.body;
 
-    // Example query to find station IDs for each station name
+    const countQuery = 'SELECT COUNT(*) FROM route';
+    const countResult = await client.query(countQuery);
+
+    const countValue = parseInt(countResult.rows[0].count, 10);
+    const nextId = (countValue + 1).toString();
+
     const stationIdsQuery = 'SELECT id FROM station WHERE name = ANY($1::text[])';
     const stationIdsResult = await client.query(stationIdsQuery, [names]);
 
-    // Extract station IDs from the result
     const stationIds = stationIdsResult.rows.map(row => row.id);
-    console.log(stationIds);
 
-    // Example query to insert a new route into the database with station IDs
     const insertQuery = 'INSERT INTO route (id, terminal_point, points) VALUES ($1, $2, $3) RETURNING *';
-    const result = await client.query(insertQuery, [id, terminal_point, stationIds]);
+    const result = await client.query(insertQuery, [nextId, terminal_point, stationIds]);
 
     res.json({ status: 'success', route: result.rows[0] });
   } catch (error) {
@@ -171,7 +173,6 @@ app.post('/api/createroute', async (req, res) => {
 // Route to get station names
 app.get('/api/stations', async (req, res) => {
   try {
-      // Example query to fetch names from the station table
       const query = 'SELECT name FROM station';
       const result = await client.query(query);
 
@@ -183,13 +184,17 @@ app.get('/api/stations', async (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
+  req.session.userId = null;
+  console.log("logout");
   req.session.destroy((error) => {
-      if (error) {
-          console.error(error);
-          res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-          res.json({ status: 'success' });
-      }
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.clearCookie('connect.sid');
+
+      res.json({ status: 'success' });
+    }
   });
 });
 
