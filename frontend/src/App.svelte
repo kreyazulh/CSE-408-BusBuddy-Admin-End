@@ -5,6 +5,7 @@
   import Mashroor from './page/mashroor.svelte';
   import BusStaffList from './page/busStaffList.svelte';
   import CreateRoute from './page/createRoute.svelte';
+  import StaffProfile from './page/staffProfile.svelte';
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
 
@@ -34,6 +35,7 @@
     <Route path="/navbar" component={Navbar} />
     <Route path="/busStaffList" component={BusStaffList} />
     <Route path="/createRoute" component={CreateRoute} />
+    <Route path="/staffProfile" component={StaffProfile} />
   </Router>
 </main>
 
