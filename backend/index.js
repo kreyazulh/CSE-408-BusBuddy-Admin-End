@@ -2,6 +2,7 @@ var Express = require('express');
 var BodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const session = require('express-session');
 
 var app = Express();
 
@@ -38,6 +39,18 @@ app.listen(3000, ()=>{
 app.use(BodyParser.json());
 
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  sameSite: 'none',
+  cookie: {
+      maxAge: 60*30*1000,
+      httpOnly: false
+  }
+}));
+
+
 
 // Route to handle login
 app.post('/api/login', (req, res) => {
@@ -49,10 +62,8 @@ app.post('/api/login', (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
-        console.log(results);
         if (results.rowCount === 1) {
-            console.log(results.rows);
-            console.log(res);
+          req.session.user = id;
           res.json({ status: 'success' });
         } else {
           res.json({ status: 'fail' });
@@ -60,6 +71,14 @@ app.post('/api/login', (req, res) => {
       }
     });
   });
+
+  const checkLoggedIn = (req, res, next) => {
+    if (!req.session) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    next();
+  };
+  
 
 // Route to get admin data
 app.get('/api/admins', (req, res) => {
@@ -75,7 +94,7 @@ app.get('/api/admins', (req, res) => {
   });
 });
 
-app.post('/api/createroute', async (req, res) => {
+app.post('/api/createroute', checkLoggedIn, async (req, res) => {
   try {
     const { id, terminal_point, names } = req.body;
 
@@ -110,5 +129,12 @@ app.get('/api/stations', async (req, res) => {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+app.post('/api/logout',(req,res) => {
+  req.session.destroy();
+  res.send({
+      success: true
+  });
 });
 
