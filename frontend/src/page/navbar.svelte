@@ -1,5 +1,33 @@
 <script>
   import "../tailwind.css";
+  import { navigate } from 'svelte-routing';
+  import { isAuthenticated } from '../auth';
+
+
+// Logout function
+const logout = async () => {
+ // Make API request to your backend for logout
+        const response = await fetch('http://localhost:3000/api/logout', {
+            method: 'POST',
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            isAuthenticated.set(false);
+            // Redirect or perform any other action on successful logout
+        } else {
+            // Handle logout failure
+        }
+    };
+
+let bus_staffs = [];
+
+async function getBusStaffList() {
+  navigate('/busStaffList');
+}
+
+
 </script>
 
 <!-- component -->
@@ -51,7 +79,7 @@
         </a>
       </li>
       <li>
-        <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
+        <a href="#" on:click={getBusStaffList} class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-spreadsheet"></i></span>
           <span class="text-xs font-medium">Bus Staff List</span>
         </a>
@@ -76,9 +104,10 @@
         </a>
       </li>
     </ul>
-    <a href="#" class="mt-auto mb-8  flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
-      <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-log-out"></i></span>
-      <span class="text-xs font-medium">Logout</span>
+    <!-- Logout link -->
+    <a href="#" on:click={logout} class="mt-auto mb-8 flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
+        <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-log-out"></i></span>
+        <span class="text-xs font-medium">Logout</span>
     </a>
   </div>
 </div>

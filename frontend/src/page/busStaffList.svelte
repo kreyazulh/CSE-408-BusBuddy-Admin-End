@@ -1,6 +1,10 @@
 <!-- App.svelte -->
 <script>
   import { onMount } from 'svelte';
+  import Navbar from './navbar.svelte';
+  import { checkSession, isAuthenticated } from '../auth';
+  import {navigate} from 'svelte-routing';
+
 
   let bus_staffs = [];
 
@@ -9,11 +13,17 @@
     bus_staffs = await response.json();
   }
 
+  $: if (!$isAuthenticated) {
+        navigate('/login', { replace: true });
+    }
+
   onMount(() => {
+    checkSession();
     getBusStaffList();
   });
 </script>
 
+{#if $isAuthenticated}
 <main>
   <h1>Bus Staff List</h1>
   
@@ -44,3 +54,4 @@
     text-align: left;
   }
 </style>
+{/if}

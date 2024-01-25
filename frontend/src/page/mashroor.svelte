@@ -1,6 +1,8 @@
 <!-- App.svelte -->
 <script>
   import { onMount } from 'svelte';
+  import Navbar from './navbar.svelte';
+  import { checkSession, isAuthenticated } from '../auth';
 
   let admins = [];
   let buses = [];
@@ -54,10 +56,12 @@
   onMount(() => {
     // getAdmins();
     // getBus();
+    checkSession();
     addBus("Ba-69-8288","double_decker",60);
   });
 </script>
 
+{#if $isAuthenticated}
 <main>
   <h1>Admin Table</h1>
   
@@ -69,6 +73,9 @@
     <p>Loading...</p>
   {/if}
 </main>
+{:else}
+  <p>Not authenticated</p>
+{/if}
 
 <style>
   main {

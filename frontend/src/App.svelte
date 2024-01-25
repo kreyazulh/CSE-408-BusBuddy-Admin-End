@@ -6,10 +6,19 @@
   import BusStaffList from './page/busStaffList.svelte';
   import CreateRoute from './page/createRoute.svelte';
   import { onMount } from 'svelte';
+  import { isAuthenticated } from './auth';
 
-  onMount(() => {
-    navigate('/login');
-  });
+  onMount(async () => {
+    const isAuthenticatedValue = $isAuthenticated;
+    console.log('isAuthenticatedValue:', isAuthenticatedValue);
+
+    if (isAuthenticatedValue) {
+      navigate('/createRoute');
+    } else {
+      navigate('/login');
+    }
+        }
+    );
 </script>
 
 <main>

@@ -2,6 +2,8 @@
     import { onMount, afterUpdate } from 'svelte';
     import Navbar from './navbar.svelte';
     import "../tailwind.css";
+    import { navigate} from 'svelte-routing';
+    import { checkSession, isAuthenticated } from '../auth';
   
     let id = '';
     let terminalPoint = '';
@@ -13,7 +15,12 @@
   
     const fetchStationNames = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/stations');
+            const response = await fetch('http://localhost:3000/api/stations', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             const data = await response.json();
   
             if (data && Array.isArray(data)) {
@@ -63,12 +70,19 @@
         selectedNames = Array.from(new Set([...selectedNames, ...tempSelectedNames]));
         console.log('Selected Names:', selectedNames);
     });
+
+    $: if (!$isAuthenticated) {
+        navigate('/login', { replace: true });
+    }
   
     onMount(() => {
+        checkSession();
         fetchStationNames();
     });
+    
   </script>
   
+  {#if $isAuthenticated}
   <main class="flex">
     <div class="w-1/4">
         <Navbar />
@@ -120,3 +134,6 @@
     {/if}
     </div>
   </main>
+    {:else}
+        <p>Not authenticated</p>
+    {/if}

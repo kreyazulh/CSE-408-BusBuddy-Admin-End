@@ -3,13 +3,19 @@ var BodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 var app = Express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 dotenv.config();
 
-const {Client} = require('pg');
+const {Pool, Client} = require('pg');
 
 
 const client = new Client({
@@ -37,6 +43,8 @@ app.listen(3000, ()=>{
 
 // Express middleware to parse JSON
 app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 
 app.use(session({
@@ -45,12 +53,17 @@ app.use(session({
   saveUninitialized: true,
   sameSite: 'none',
   cookie: {
-      maxAge: 60*30*1000,
-      httpOnly: false
+      maxAge: 30*60*1000,
+      httpOnly: true
   }
 }));
 
 
+app.get('/api/check-session', (req, res) => {
+  console.log(req.session);
+  console.log(req.session.userId);
+  res.json({ isAuthenticated: !!req.session.userId });
+});
 
 // Route to handle login
 app.post('/api/login', (req, res) => {
@@ -63,7 +76,7 @@ app.post('/api/login', (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
         if (results.rowCount === 1) {
-          req.session.user = id;
+          req.session.userId = id;
           res.json({ status: 'success' });
         } else {
           res.json({ status: 'fail' });
@@ -72,12 +85,6 @@ app.post('/api/login', (req, res) => {
     });
   });
 
-  const checkLoggedIn = (req, res, next) => {
-    if (!req.session) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    next();
-  };
   
 
 // Route to get admin data
@@ -138,7 +145,7 @@ app.get('/api/bus_staff', (req, res) => {
   });
 });
 
-app.post('/api/createroute', checkLoggedIn, async (req, res) => {
+app.post('/api/createroute', async (req, res) => {
   try {
     const { id, terminal_point, names } = req.body;
 
@@ -175,10 +182,14 @@ app.get('/api/stations', async (req, res) => {
   }
 });
 
-app.post('/api/logout',(req,res) => {
-  req.session.destroy();
-  res.send({
-      success: true
+app.post('/api/logout', (req, res) => {
+  req.session.destroy((error) => {
+      if (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+          res.json({ status: 'success' });
+      }
   });
 });
 
