@@ -1,5 +1,7 @@
 <script>
     import { onMount, afterUpdate } from 'svelte';
+    import Navbar from './navbar.svelte';
+    import "../tailwind.css";
   
     let id = '';
     let terminalPoint = '';
@@ -67,7 +69,11 @@
     });
   </script>
   
-  <main class="mx-auto max-w-max">
+  <main class="flex">
+    <div class="w-1/4">
+        <Navbar />
+    </div>
+    <div class="mx-auto max-w-md">
     <h1 class="text-3xl font-bold mb-4 text-gray-800">Create Route</h1>
   
     <!-- Input for id -->
@@ -112,4 +118,5 @@
             <p>Terminal Point: {createdRoute.terminal_point}</p>
         </div>
     {/if}
+    </div>
   </main>
