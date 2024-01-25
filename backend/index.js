@@ -2,6 +2,7 @@ var Express = require('express');
 var BodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const session = require('express-session');
 
 var app = Express();
 
@@ -38,6 +39,18 @@ app.listen(3000, ()=>{
 app.use(BodyParser.json());
 
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  sameSite: 'none',
+  cookie: {
+      maxAge: 60*30*1000,
+      httpOnly: false
+  }
+}));
+
+
 
 // Route to handle login
 app.post('/api/login', (req, res) => {
@@ -49,10 +62,8 @@ app.post('/api/login', (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
-        console.log(results);
         if (results.rowCount === 1) {
-            console.log(results.rows);
-            console.log(res);
+          req.session.user = id;
           res.json({ status: 'success' });
         } else {
           res.json({ status: 'fail' });
@@ -60,6 +71,14 @@ app.post('/api/login', (req, res) => {
       }
     });
   });
+
+  const checkLoggedIn = (req, res, next) => {
+    if (!req.session) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    next();
+  };
+  
 
 // Route to get admin data
 app.get('/api/admins', (req, res) => {
@@ -119,4 +138,47 @@ app.get('/api/bus_staff', (req, res) => {
   });
 });
 
+app.post('/api/createroute', checkLoggedIn, async (req, res) => {
+  try {
+    const { id, terminal_point, names } = req.body;
+
+    // Example query to find station IDs for each station name
+    const stationIdsQuery = 'SELECT id FROM station WHERE name = ANY($1::text[])';
+    const stationIdsResult = await client.query(stationIdsQuery, [names]);
+
+    // Extract station IDs from the result
+    const stationIds = stationIdsResult.rows.map(row => row.id);
+    console.log(stationIds);
+
+    // Example query to insert a new route into the database with station IDs
+    const insertQuery = 'INSERT INTO route (id, terminal_point, points) VALUES ($1, $2, $3) RETURNING *';
+    const result = await client.query(insertQuery, [id, terminal_point, stationIds]);
+
+    res.json({ status: 'success', route: result.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Route to get station names
+app.get('/api/stations', async (req, res) => {
+  try {
+      // Example query to fetch names from the station table
+      const query = 'SELECT name FROM station';
+      const result = await client.query(query);
+
+      res.json(result.rows);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/logout',(req,res) => {
+  req.session.destroy();
+  res.send({
+      success: true
+  });
+});
 
