@@ -20,6 +20,10 @@
     buses = await response.json();
   }
 
+  let reg_id = '';
+  let type = '';
+  let capacity = 0;
+
   async function addBus(reg_id, type, capacity) {
     // Create a JSON object with the data
     const busData = {
@@ -53,17 +57,35 @@
 
   }
 
+  async function handleAddBus(event) {
+    event.preventDefault(); // Prevent the form from refreshing the page
+    await addBus(reg_id, type, capacity);
+  }
+
+
   onMount(() => {
     // getAdmins();
     // getBus();
     checkSession();
-    addBus("Ba-69-8288","double_decker",60);
   });
 </script>
 
 {#if $isAuthenticated}
-<main>
+<main class="flex">
+  <div class="w-fit">
+      <Navbar />
+  </div>
+  <div class="w-full p-6">
   <h1>Admin Table</h1>
+
+  <form on:submit={handleAddBus}>
+    <input type="text" bind:value={reg_id} placeholder="Registration ID" />
+    <input type="text" bind:value={type} placeholder="Type" />
+    <input type="number" bind:value={capacity} placeholder="Capacity" />
+
+    <button type="submit">Add Bus</button>
+  </form>
+
   
   {#if addbus.length > 0}
         <!-- {#each buses as { reg_id, type, capacity }} -->

@@ -115,6 +115,27 @@ app.get('/api/bus', (req, res) => {
   });
 });
 
+app.get('/api/routes', async (req, res) => {
+  const routeQuery = 'SELECT * FROM route ORDER BY id ASC';
+
+  try {
+    const routeResults = await client.query(routeQuery);
+    const routes = routeResults.rows;
+
+    // Assuming that `points` is an array of station IDs
+    for (let route of routes) {
+      const pointsQuery = 'SELECT name FROM station WHERE id = ANY($1)';
+      const pointsResult = await client.query(pointsQuery, [route.points]);
+      route.names = pointsResult.rows.map(row => row.name);
+    }
+
+    res.json(routes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Route to add bus data
 app.post('/api/bus/add', (req, res) => {
       console.log(req.body);
