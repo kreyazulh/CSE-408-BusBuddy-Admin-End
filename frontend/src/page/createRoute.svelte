@@ -107,6 +107,32 @@ async function fetchRoutes() {
         console.log('Selected Names:', selectedNames);
     };
 
+    const confirmDelete = async (routeId) => {
+    if (window.confirm('Do you really want to delete this route?')) {
+      await deleteRoute(routeId);
+    }
+  };
+
+  const deleteRoute = async (routeId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/route/delete/${routeId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('Route deleted successfully');
+        fetchRoutes(); // Refresh the list of routes
+      } else {
+        console.error('Failed to delete route');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   
     afterUpdate(() => { 
       if (tempSelectedNames.length > 0) {
@@ -116,7 +142,6 @@ async function fetchRoutes() {
     });
   
     onMount(() => {
-        checkSession();
         fetchRoutes();
         fetchStationNames();
     });
@@ -131,14 +156,27 @@ async function fetchRoutes() {
     <div class="flex-1 ml-56 p-6">
       <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Bus Routes</h1>
 
-      <!-- Display existing routes -->
+      {#if routes.length > 0}
       {#each routes as route}
-        <div class="bg-gray-100 rounded-md p-4 mb-4">
-          <p class="font-semibold">Route ID: {route.id}</p>
-          <p>Terminal Point: {route.terminal_point}</p>
-          <p>Stations: {route.names}</p>
-        </div>
-      {/each}
+  <div class="bg-gray-100 rounded-md p-4 mb-4 flex justify-between items-center">
+    <!-- Existing route display -->
+    <div>
+      <p class="font-semibold">Route ID: {route.id}</p>
+      <p>Terminal Point: {route.terminal_point}</p>
+      <p>Stations: {route.names}</p>
+    </div>
+
+    <!-- Delete button -->
+    <button
+      class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      on:click={() => confirmDelete(route.id)}>
+      Delete
+    </button>
+  </div>
+{/each}
+{:else}
+  <p>Loading...</p>
+{/if}
         <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
       
         <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>

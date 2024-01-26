@@ -51,7 +51,6 @@
     }
   
     onMount(() => {
-    checkSession();
   });
   </script>
   

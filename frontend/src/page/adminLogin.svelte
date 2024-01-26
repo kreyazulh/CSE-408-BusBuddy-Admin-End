@@ -1,5 +1,6 @@
 <script>
     import '.././app.css';
+    import "../tailwind.css";
     import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
     import { isAuthenticated } from '.././auth';
@@ -50,7 +51,7 @@
   </script>
 
 <main>
-  <div class="admin-login-frame">
+  <div class="admin-login-frame" >
     <div class="admin-logindefault">
       <div class="admin-logindefault-inner">
         <div class="frame-container">

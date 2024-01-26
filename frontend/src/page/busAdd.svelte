@@ -66,7 +66,6 @@
   onMount(() => {
     // getAdmins();
     // getBus();
-    checkSession();
   });
 </script>
 
