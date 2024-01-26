@@ -16,4 +16,20 @@ router.get('/', (req, res) => {
     });
   });
 
+router.post('/add', (req, res) => {
+    const client = req.client;
+    console.log(req.body);
+    client.query (
+        "INSERT INTO bus_staff(id, phone, password, role, name) values($1, $2, $3, $4, $5)",
+        [req.body.id, req.body.phone, req.body.password, req.body.role, req.body.name]
+    ).then(qres => {
+        console.log(qres);
+        if (qres.rowCount === 1) res.send(true);
+        else if (qres.rowCount === 0) res.send(false);
+    }).catch(e => {
+        console.error(e.stack);
+        res.send(false);
+    });
+});
+
 module.exports = router;
