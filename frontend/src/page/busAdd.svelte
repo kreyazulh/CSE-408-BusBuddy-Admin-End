@@ -10,13 +10,13 @@
 
   // Fetch admin data from the server
   async function getAdmins() {
-    const response = await fetch('http://localhost:3000/api/admins');
+    const response = await fetch('http://localhost:3000/api/admin/');
     admins = await response.json();
   }
 
 
   async function getBus() {
-    const response = await fetch('http://localhost:3000/api/bus');
+    const response = await fetch('http://localhost:3000/api/bus/');
     buses = await response.json();
   }
 

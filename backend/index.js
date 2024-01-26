@@ -15,7 +15,7 @@ app.use(
 );
 dotenv.config();
 
-const {Pool, Client} = require('pg');
+const {Client} = require('pg');
 
 
 const client = new Client({
@@ -31,15 +31,6 @@ client.connect();
 app.listen(3000, ()=>{
     console.log("Server running on port 3000");
 });
-
-// app.get('/admins', (req, res)=>{
-//     client.query(`Select * from admin`, (err, result)=>{
-//         if(!err){
-//             res.send(result.rows);
-//         }
-//     });
-//     client.end;
-// });
 
 // Express middleware to parse JSON
 app.use(BodyParser.json());
@@ -58,164 +49,31 @@ app.use(session({
   }
 }));
 
-
-app.get('/api/check-session', (req, res) => {
-  console.log(req.session);
-  console.log(req.session.userId);
-  res.json({ isAuthenticated: !!req.session.userId });
+// Define the middleware
+app.use((req, res, next) => {
+  req.client = client;
+  next();
 });
 
-// Route to handle login
-app.post('/api/login', (req, res) => {
-    const { id, password } = req.body;
-    const query = 'SELECT * FROM admin WHERE id = $1 AND password = $2';
-  
-    client.query(query, [id, password], (error, results) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        if (results.rowCount === 1) {
-          req.session.userId = id;
-          res.json({ status: 'success' });
-        } else {
-          res.json({ status: 'fail' });
-        }
-      }
-    });
-  });
 
-  
+var auth = require('./routes/auth');
+var bus = require('./routes/bus');
+var route = require('./routes/route');
+var station = require('./routes/station');
+var staff = require('./routes/staff');
+var audit = require('./routes/admin');
 
-// Route to get admin data
-app.get('/api/admins', (req, res) => {
-  const query = 'SELECT * FROM admin';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
+app.use('/api/auth', auth);
+app.use('/api/route', route);
+app.use('/api/station', station);
+app.use('/api/staff', staff);
+app.use('/api/bus', bus);
+app.use('/api/admin', audit);
 
-// Route to get bus data
-app.get('/api/bus', (req, res) => {
-  const query = 'SELECT * FROM bus';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
 
-app.get('/api/routes', async (req, res) => {
-  const routeQuery = 'SELECT * FROM route ORDER BY id ASC';
 
-  try {
-    const routeResults = await client.query(routeQuery);
-    const routes = routeResults.rows;
 
-    // Assuming that `points` is an array of station IDs
-    for (let route of routes) {
-      const pointsQuery = 'SELECT name FROM station WHERE id = ANY($1)';
-      const pointsResult = await client.query(pointsQuery, [route.points]);
-      route.names = pointsResult.rows.map(row => row.name);
-    }
 
-    res.json(routes);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
-// Route to add bus data
-app.post('/api/bus/add', (req, res) => {
-      console.log(req.body);
-      client.query (
-          "INSERT INTO bus(reg_id, type, capacity) values($1, $2, $3)",
-          [req.body.reg_id, req.body.type, req.body.capacity]
-      ).then(qres => {
-          console.log(qres);
-          if (qres.rowCount === 1) res.send(true);
-          else if (qres.rowCount === 0) res.send(false);
-      }).catch(e => {
-          console.error(e.stack);
-          res.send(false);
-      });
-});
 
-// Route to get bus staff data
-app.get('/api/bus_staff', (req, res) => {
-  const query = 'SELECT * FROM bus_staff';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
-
-app.post('/api/createroute', async (req, res) => {
-  try {
-    const { terminal_point, names } = req.body;
-
-    const countQuery = 'SELECT COUNT(*) FROM route';
-    const countResult = await client.query(countQuery);
-
-    const countValue = parseInt(countResult.rows[0].count, 10);
-    const nextId = (countValue + 1).toString();
-
-    const stationIdsQuery = 'SELECT id FROM station WHERE name = ANY($1::text[])';
-    const stationIdsResult = await client.query(stationIdsQuery, [names]);
-
-    const stationIds = stationIdsResult.rows.map(row => row.id);
-
-    const insertQuery = 'INSERT INTO route (id, terminal_point, points) VALUES ($1, $2, $3) RETURNING *';
-    const result = await client.query(insertQuery, [nextId, terminal_point, stationIds]);
-
-    res.json({ status: 'success', route: result.rows[0] });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// Route to get station names
-app.get('/api/stations', async (req, res) => {
-  try {
-      const query = 'SELECT name FROM station';
-      const result = await client.query(query);
-
-      res.json(result.rows);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.post('/api/logout', (req, res) => {
-  req.session.userId = null;
-  console.log("logout");
-  req.session.destroy((error) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.clearCookie('connect.sid');
-
-      res.json({ status: 'success' });
-    }
-  });
-});
 
