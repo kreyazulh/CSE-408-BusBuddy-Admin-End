@@ -86,7 +86,7 @@
         <Navbar />
     </div>
     <div class="w-full p-6">
-        <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
+        <h1 class="text-3xl font-bold mb-4 text-maroon-500 mx-auto">Create Route</h1>
       
         <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
         <input type="text" bind:value={terminalPoint} id="terminalPoint" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300" />
@@ -99,7 +99,7 @@
         </select>
       
         <div class="mt-4">
-          <h3 class="text-lg font-semibold text-maroon">Selected Names:</h3>
+          <h3 class="text-lg font-semibold text-maroon-500">Selected Names:</h3>
           {#if selectedNames.length > 0}
             <ul class="list-disc pl-4 mt-2">
               {#each selectedNames as selectedName}
@@ -118,7 +118,7 @@
       
         {#if createdRoute}
           <div class="mt-4">
-            <h2 class="text-2xl font-bold text-maroon">Route Created</h2>
+            <h2 class="text-2xl font-bold text-maroon-500">Route Created</h2>
             <p>Terminal Point: {createdRoute.terminal_point}</p>
           </div>
         {/if}

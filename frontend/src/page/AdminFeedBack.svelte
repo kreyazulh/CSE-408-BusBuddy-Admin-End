@@ -453,7 +453,7 @@ cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--color-maroon);
+  background-color: var(--color-maroon-500);
   width: 255px;
   height: 1024px;
 }
@@ -674,7 +674,7 @@ cursor: pointer;
   right: 1.92%;
   bottom: 61.23%;
   left: 0;
-  background-color: var(--color-maroon);
+  background-color: var(--color-maroon-500);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -776,7 +776,7 @@ cursor: pointer;
   overflow: hidden;
   text-align: left;
   font-size: var(--font-size-base);
-  color: var(--color-black);
+  color: var(--color-black-700);
   font-family: var(--font-open-sans);
 }
 

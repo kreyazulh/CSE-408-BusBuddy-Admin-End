@@ -292,7 +292,7 @@
 }
 .admin-login-frame {
   position: relative;
-  background-color: var(--color-black);
+  background-color: var(--color-black-700);
   width: 100%;
   height: 1024px;
   overflow: hidden;
