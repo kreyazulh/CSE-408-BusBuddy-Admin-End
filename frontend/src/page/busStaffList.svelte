@@ -20,10 +20,10 @@
 
 {#if $isAuthenticated}
   <main class="flex">
-    <div class="w-fit">
+    <div class="z-10">
       <Navbar />
     </div>
-    <div class="mx-auto max-w-lg">
+    <div class="flex-1 ml-56">
       <h1 class="text-4xl font-bold mb-4 text-blue-600">Bus Staff List</h1>
       
       {#if bus_staffs.length > 0}

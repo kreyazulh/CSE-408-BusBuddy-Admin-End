@@ -12,6 +12,19 @@
     let selectedNames = [];
     let stationNames = [];
     let tempSelectedNames = [];
+
+    let routes = [];
+
+async function fetchRoutes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/routes');
+    routes = await response.json();
+    console.log(routes);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
+
   
     const fetchStationNames = async () => {
         try {
@@ -33,7 +46,6 @@
         }
     };
   
-    // Function to remove a name from selectedNames
     const removeSelectedName = (name) => {
         selectedNames = selectedNames.filter(selected => selected !== name);
         tempSelectedNames = tempSelectedNames.filter(tempSelected => tempSelected !== name);
@@ -55,6 +67,7 @@
             if (data.status === 'success') {
                 createdRoute = data.route; // Store the created route information
                 // Clear the selectedNames array after successful creation
+                fetchRoutes();
                 selectedNames = [];
                 tempSelectedNames = [];
             } else {
@@ -75,6 +88,7 @@
     onMount(async() => {
         const initialIsAuthenticated = await checkSession();
         isAuthenticated.set(initialIsAuthenticated);
+        fetchRoutes();
         fetchStationNames();
     });
     
@@ -82,10 +96,20 @@
   
   {#if $isAuthenticated}
   <main class="flex">
-    <div class="w-fit">
+    <div class="z-10">
         <Navbar />
     </div>
-    <div class="w-full p-6">
+    <div class="flex-1 ml-56 p-6">
+      <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Bus Routes</h1>
+
+      <!-- Display existing routes -->
+      {#each routes as route}
+        <div class="bg-gray-100 rounded-md p-4 mb-4">
+          <p class="font-semibold">Route ID: {route.id}</p>
+          <p>Terminal Point: {route.terminal_point}</p>
+          <p>Stations: {route.names}</p>
+        </div>
+      {/each}
         <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
       
         <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
