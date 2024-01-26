@@ -12,7 +12,6 @@
   }
   
   onMount(() => {
-    checkSession();
     getBusStaffList();
   });
 </script>

@@ -50,4 +50,23 @@ router.get('/', async (req, res) => {
     }
   });
 
+  // Route to delete a bus route
+router.delete('/delete/:routeId', async (req, res) => {
+    const client = req.client;
+    const { routeId } = req.params;
+    const deleteQuery = 'DELETE FROM route WHERE id = $1';
+  
+    try {
+      const deleteResult = await client.query(deleteQuery, [routeId]);
+      if (deleteResult.rowCount > 0) {
+        res.json({ message: 'Route deleted successfully' });
+      } else {
+        res.status(404).json({ error: 'Route not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting route:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   module.exports = router;

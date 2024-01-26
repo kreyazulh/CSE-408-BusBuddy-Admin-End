@@ -7,6 +7,8 @@
   import CreateRoute from './page/createRoute.svelte';
   import StaffProfile from './page/staffProfile.svelte';
   import AddStaff from './page/addStaff.svelte';
+  import BusList from './page/busList.svelte';
+
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
 
@@ -38,6 +40,7 @@
     <Route path="/createRoute" component={CreateRoute} />
     <Route path="/staffProfile" component={StaffProfile} />
     <Route path="/addStaff" component={AddStaff} />
+    <Route path="/busList" component={BusList} />
   </Router>
 </main>
 
