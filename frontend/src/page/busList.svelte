@@ -5,7 +5,7 @@
   let buses = [];
 
   async function getBusList() {
-    const response = await fetch('http://localhost:3000/api/bus');
+    const response = await fetch('http://localhost:3000/api/bus/');
     buses = await response.json();
   }
 

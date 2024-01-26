@@ -1,13 +1,14 @@
 <script>
   import "../tailwind.css";
   import { navigate } from 'svelte-routing';
-  import { isAuthenticated } from '../auth';
+  import { isAuthenticated, checkSession } from '../auth';
+  import { onMount } from 'svelte';
 
 
 // Logout function
 const logout = async () => {
  // Make API request to your backend for logout
-        const response = await fetch('http://localhost:3000/api/logout', {
+        const response = await fetch('http://localhost:3000/api/auth/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,6 +36,10 @@ async function createRoute() {
 async function getBusStaffList() {
   navigate('/busStaffList');
 }
+
+onMount(() => {
+        checkSession();
+    });
 
 
 </script>

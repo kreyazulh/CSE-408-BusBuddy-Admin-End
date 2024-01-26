@@ -17,7 +17,7 @@
 
 async function fetchRoutes() {
   try {
-    const response = await fetch('http://localhost:3000/api/routes');
+    const response = await fetch('http://localhost:3000/api/route/');
     routes = await response.json();
     console.log(routes);
   } catch (error) {
@@ -28,7 +28,7 @@ async function fetchRoutes() {
   
     const fetchStationNames = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/stations', {
+            const response = await fetch('http://localhost:3000/api/station/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ async function fetchRoutes() {
   
     const createRoute = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/createroute', {
+            const response = await fetch('http://localhost:3000/api/route/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,9 +85,8 @@ async function fetchRoutes() {
         console.log('Selected Names:', selectedNames);
     });
   
-    onMount(async() => {
-        const initialIsAuthenticated = await checkSession();
-        isAuthenticated.set(initialIsAuthenticated);
+    onMount(() => {
+        checkSession();
         fetchRoutes();
         fetchStationNames();
     });

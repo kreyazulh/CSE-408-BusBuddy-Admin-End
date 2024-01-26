@@ -7,7 +7,7 @@ export const isAuthenticated = writable(initialIsAuthenticated);
 
 export const checkSession = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/check-session', {
+    const response = await fetch('http://localhost:3000/api/auth/check-session', {
       method: 'GET',
       credentials: 'include',
       headers: {
