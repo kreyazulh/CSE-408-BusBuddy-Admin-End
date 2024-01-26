@@ -55,6 +55,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.path}`);
+  next();
+});
+
 
 var auth = require('./routes/auth');
 var bus = require('./routes/bus');

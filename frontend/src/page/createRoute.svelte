@@ -15,6 +15,9 @@
 
     let routes = [];
 
+    let searchTerm = '';
+    let filteredStationNames = [];
+
 async function fetchRoutes() {
   try {
     const response = await fetch('http://localhost:3000/api/route/');
@@ -38,6 +41,9 @@ async function fetchRoutes() {
   
             if (data && Array.isArray(data)) {
                 stationNames = data;
+                filteredStationNames = data;
+                console.log('Station names:', stationNames);
+
             } else {
                 console.error('Failed to fetch station names.');
             }
@@ -50,6 +56,24 @@ async function fetchRoutes() {
         selectedNames = selectedNames.filter(selected => selected !== name);
         tempSelectedNames = tempSelectedNames.filter(tempSelected => tempSelected !== name);
     };
+
+    const filterStations = () => {
+      if (searchTerm.trim() === '') {
+            filteredStationNames = stationNames;
+            console.log('Filtered stations:', filteredStationNames);
+        } else {
+            filteredStationNames = stationNames.filter(stationObj => 
+                stationObj.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            console.log('Filtered stations:', filteredStationNames);
+        }
+    };
+
+    const handleSearch = (event) => {
+        searchTerm = event.target.value;
+        filterStations();
+    };
+
   
   
     const createRoute = async () => {
@@ -78,11 +102,17 @@ async function fetchRoutes() {
         }
     };
 
-  
-    // Ensure selectedNames stays reactive
-    afterUpdate(() => {
-        selectedNames = Array.from(new Set([...selectedNames, ...tempSelectedNames]));
+    const updateStations = () => {
+      selectedNames = Array.from(new Set([...selectedNames, ...tempSelectedNames]));
         console.log('Selected Names:', selectedNames);
+    };
+
+  
+    afterUpdate(() => { 
+      if (tempSelectedNames.length > 0) {
+        updateStations();
+      }  
+        
     });
   
     onMount(() => {
@@ -114,12 +144,22 @@ async function fetchRoutes() {
         <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
         <input type="text" bind:value={terminalPoint} id="terminalPoint" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300" />
       
-        <label for="selectNames" class="block text-sm font-semibold text-gray-700 mt-2">Select Names:</label>
-        <select id="selectNames" bind:value={tempSelectedNames} multiple class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
-          {#each stationNames as { name }}
-            <option value={name}>{name}</option>
-          {/each}
-        </select>
+            <!-- Search bar for stations -->
+            <label for="selectNames" class="block text-sm font-semibold text-gray-700 mt-2">Select Stations:</label>
+    <input
+    type="text"
+    bind:value={searchTerm}
+    on:input={handleSearch}
+    placeholder="Search..."
+    class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+/>
+
+<!-- Dropdown for selecting stations -->
+<select id="selectNames" bind:value={tempSelectedNames} multiple class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+    {#each filteredStationNames as {name}}
+        <option value={name}>{name}</option>
+    {/each}
+</select >
       
         <div class="mt-4">
           <h3 class="text-lg font-semibold text-maroon">Selected Names:</h3>

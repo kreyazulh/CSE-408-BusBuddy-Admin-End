@@ -99,21 +99,3 @@
   <p>Not authenticated</p>
 {/if}
 
-<style>
-  main {
-    text-align: center;
-    margin: 2em;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1em;
-  }
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-</style>
