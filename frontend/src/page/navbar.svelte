@@ -1,8 +1,10 @@
 <script>
+  import "../tailwind.css";
   import { navigate } from 'svelte-routing';
   import { isAuthenticated, checkSession } from '../auth';
   import { onMount } from 'svelte';
 
+  let dropdowns = new Set();
 
 // Logout function
 const logout = async () => {
@@ -26,20 +28,19 @@ const logout = async () => {
         }
     };
 
-let bus_staffs = [];
-
-async function allocateRoute() {
-  navigate('/allocateRoute');
-}
-
-async function getBusStaffList() {
-  navigate('/busStaffList');
-}
-
 onMount(() => {
         checkSession();
     });
 
+function toggleDropDown(action) {
+  if (dropdowns.has(action)) {
+    dropdowns.delete(action);
+  } else {
+    dropdowns.add(action);
+  }
+  // To force Svelte to update the DOM immediately
+  dropdowns = new Set(dropdowns);
+}
 
 </script>
 
@@ -47,13 +48,13 @@ onMount(() => {
 <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
 
 <div class="min-h-screen flex flex-row bg-white">
-  <div class="flex flex-col w-56 bg-maroon text-white rounded-r-3xl overflow-hidden">
+  <div class="flex flex-col w-56 bg-maroon-500 text-white rounded-r-3xl overflow-hidden h-full postion: fixed">
     <div class="flex items-center justify-center h-20 shadow-md">
       <h1 class="text-3xl uppercase text-white-700">Admin</h1>
     </div>
     <ul class="flex flex-col py-4">
       <li>
-        <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
+        <Link to="/profile" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-home"></i></span>
           <span class="text-xs font-medium">Profile</span>
         </a>
@@ -62,65 +63,86 @@ onMount(() => {
         <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-group"></i></span>
           <span class="text-xs font-medium">Feedback</span>
-          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-700">5</span>
+          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black">5</span>
         </a>
       </li>
       <li>
         <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-note"></i></span>
           <span class="text-xs font-medium">Requisition</span>
-          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-700">1</span>
+          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black">1</span>
         </a>
       </li>
       <li>
         <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-history"></i></span>
           <span class="text-xs font-medium">Tracking history</span>
-          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-700">7</span>
+          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black">7</span>
         </a>
       </li>
-      <li>
-        <button on:click={allocateRoute} class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
-          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-map-alt"></i></span>
-          <span class="text-xs font-medium">Route Allocation</span>
+      <li class="relative">
+        <button on:click={() => toggleDropDown('Trips')}
+          class="flex flex-row items-center h-10 w-full transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5">
+          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-trip"></i></span>
+          <span class="text-xs font-medium">Trips  ▼</span>
         </button>
+        {#if dropdowns.has('Trips')}
+          <ul class="w-full z-10 flex flex-col bg-maroon-900 transition-transform ease-in-out duration-200">
+            <li>
+              <Link to="/upcomingTrips" class="Link translate-x-5 flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5">
+                <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-calendar-plus"></i></span>
+                <span class="text-xs font-medium">Upcoming Trips</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/pastTrips" class="Link translate-x-5 flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
+                <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-history"></i></span>
+                <span class="text-xs font-medium">Past Trips</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/live Tracking" class="Link translate-x-5 flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
+                <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-map"></i></span>
+                <span class="text-xs font-medium">Live Tracking</span>
+                <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-900">7</span>
+              </Link>
+            </li>
+          </ul>
+        {/if}
       </li>
       <li>
-        <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
-          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-user-plus"></i></span>
-          <span class="text-xs font-medium">User List</span>
-        </a>
+        <Link to="/feedback" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5">
+          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-group"></i></span>
+          <span class="text-xs font-medium">Feedback</span>
+          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-900">5</span>
+        </Link>
       </li>
       <li>
-        <button on:click={getBusStaffList} class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
-          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-spreadsheet"></i></span>
-          <span class="text-xs font-medium">Bus Staff List</span>
-        </button>
+        <Link to="/requisition" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5">
+          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-note"></i></span>
+          <span class="text-xs font-medium">Requisition</span>
+          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-900">1</span>
+        </Link>
       </li>
       <li>
-        <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
-          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-bus"></i></span>
-          <span class="text-xs font-medium">Bus Details</span>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
-          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-list-check"></i></span>
+        <Link to="/billingHistory" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
+          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-dollar"></i></span>
           <span class="text-xs font-medium">Billing history</span>
-        </a>
+        </Link>
       </li>
       <li>
-        <a href="#" class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
+        <Link to="/inventory" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-cart-alt"></i></span>
           <span class="text-xs font-medium">Inventory</span>
-          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-700">2</span>
+          <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black">2</span>
         </a>
       </li>
     </ul>
     <!-- Logout link -->
-    <button on:click={logout} class="mt-auto mb-8 flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
+    <button on:click={logout} class="mt-auto mb-8 flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
         <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-log-out"></i></span>
         <span class="text-xs font-medium">Logout</span>
     </button>
   </div>
 </div>
+

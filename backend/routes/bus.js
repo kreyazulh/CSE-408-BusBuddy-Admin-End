@@ -19,10 +19,11 @@ router.get('/', (req, res) => {
 
 // Route to add bus data
 router.post('/add', (req, res) => {
+  const client = req.client;
     console.log(req.body);
     client.query (
-        "INSERT INTO bus(reg_id, type, capacity) values($1, $2, $3)",
-        [req.body.reg_id, req.body.type, req.body.capacity]
+        "INSERT INTO bus(reg_id, type, capacity) values($1, $2, $3, $4)",
+        [req.body.reg_id, req.body.type, req.body.capacity, req.body.remarks]
     ).then(qres => {
         console.log(qres);
         if (qres.rowCount === 1) res.send(true);
