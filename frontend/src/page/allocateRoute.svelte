@@ -470,7 +470,7 @@
                 <button class="bg-transparent mx-2"
                 class:shrink={shrinkID === row.id+"details"}
                 on:click={() => showDetails(row.id)}>
-                  <i class="bx bxs-info-circle text-maroon-500 scale-150"></i>
+                  <i class="bx bxs-info-circle text-maroon-500 hover:text-maroon-900 scale-150"></i>
                 </button>
                 <button class="bg-transparent mx-2"
                 class:shrink={shrinkID === row.id+"save"}
