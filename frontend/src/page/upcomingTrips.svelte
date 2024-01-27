@@ -3,20 +3,22 @@
   import DeletePopUp from "./deletePopUp.svelte";
   import { onMount } from "svelte";
 
+  let errorMessage;
+
   // Sample data for the table rows
   let rows = [];
-
   let busNumbers = [];
- 
   let driverNames = [];
-
-
   let staffNames = [];
+
+  let date = null;
 
   let shrinkID = null;
 
   let isDelVisible = false;
   let rowDelID = null;
+
+  let sameValuePopUp = false;
 
   let changedRows = [];
 
@@ -63,6 +65,7 @@
   // Function to update the entries per page
   function updateEntriesToShow(event) {
     entriesPerPage = event.target.value;
+    currentPage = 1;
   }
 
   // Function to handle the search functionality
@@ -98,30 +101,27 @@
     });
   }
 
-  // Function to add or remove shifts
-  function toggleShift(id, shift) {
-    const rowIndex = searchRows.findIndex(r => r.id === id);
-    if (rowIndex !== -1) {
-      const shiftIndex = rows[rowIndex].shift.indexOf(shift);
-      if (shiftIndex !== -1) {
-        searchRows[rowIndex].shift.splice(shiftIndex, 1); // remove the shift
-      } else {
-        searchRows[rowIndex].shift.push(shift); // add the shift
-      }
-      searchRows[rowIndex] = { ...searchRows[rowIndex], shift: [...searchRows[rowIndex].shift] };
-    }
-    changedRows.push(id);
-  }
-
   // Function to update the row data when a selection is made
   function updateData(id, column, event) {
-    let value = event.target.value;
-    const rowIndex = searchRows.findIndex(r => r.id === id);
-    if (rowIndex !== -1) {
-      searchRows[rowIndex][column] = value;
-      searchRows[rowIndex] = { ...searchRows[rowIndex] };
+    let newValue = event.target.value;
+    const rowIdx = searchRows.findIndex((r) => r.id === id);
+    if (rowIdx !== -1) {
+      const oldValue = searchRows[rowIdx][column];
+      if (oldValue !== newValue) {
+        searchRows[rowIdx][column] = newValue;
+        searchRows[rowIdx] = { ...searchRows[rowIdx] };
+        changedRows.push(id);
+      }
+      else{
+        sameValuePopUp = true;
+        errorMessage = "There is another allocation with the same value";
+      }
     }
-    changedRows.push(id);
+  }
+
+  // Function to close the error popup
+  function closeErrorPopup() {
+    sameValuePopUp = false;
   }
 
   // Function to delete a row
@@ -133,14 +133,14 @@
 
   function handleDeleteConfirm() {
     isDelVisible = false;
-    let rowIndex = searchRows.findIndex(r => r.id === rowDelID);
+    let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
     if (rowIndex !== -1) {
       searchRows.splice(rowIndex, 1);
       searchRows = [...searchRows];
     }
     totalEntries = searchRows.length;
     totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    rowIndex = rows.findIndex(r => r.id === rowDelID);
+    rowIndex = rows.findIndex((r) => r.id === rowDelID);
     if (rowIndex !== -1) {
       rows.splice(rowIndex, 1);
       rows = [...rows];
@@ -154,119 +154,156 @@
     // Here you would add your logic to show the details of the row
   }
 
-
   // Function to save the row
-async function saveRow(id) {
-handleClick(id + "save");
-if (changedRows.includes(id)) {
-  let rowIndex = rows.findIndex(r => r.id === id);
-  if (rowIndex !== -1) {
-    // Extract the row data using the rowIndex
-    const rowData = rows[rowIndex];
+  async function saveRow(id) {
+    handleClick(id + "save");
+    if (changedRows.includes(id)) {
+      let rowIndex = rows.findIndex((r) => r.id === id);
+      if (rowIndex !== -1) {
+        // Extract the row data using the rowIndex
+        const rowData = rows[rowIndex];
 
-    // Assemble the data to send
-    const payload = {
-      id: rowData.id, // Assuming 'id' is used as a unique identifier for the allocation
-      currentRoute: rowData.currentRoute,
-      busNumber: rowData.busNumber,
-      driverName: rowData.driverName,
-      staffName: rowData.staffName,
-      shift: rowData.shift
-    };
+        // Assemble the data to send
+        const payload = {
+          id: rowData.id, // Assuming 'id' is used as a unique identifier for the allocation
+          currentRoute: rowData.currentRoute,
+          busNumber: rowData.busNumber,
+          driverName: rowData.driverName,
+          staffName: rowData.staffName,
+          shift: rowData.shift,
+        };
 
-    try {
-      const response = await fetch('http://localhost:3000/api/route/allocation', {
-        method: 'POST', // or 'PUT' if updating an existing allocation
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/route/allocation",
+            {
+              method: "POST", // or 'PUT' if updating an existing allocation
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            },
+          );
 
-      const result = await response.json();
-      if (response.ok) {
-        console.log('Row saved successfully:', result);
-        // Additional logic after successful save (e.g., update UI, clear fields)
-      } else {
-        console.error('Failed to save row:', result);
-        // Handle error case
+          const result = await response.json();
+          if (response.ok) {
+            console.log("Row saved successfully:", result);
+            // Additional logic after successful save (e.g., update UI, clear fields)
+          } else {
+            console.error("Failed to save row:", result);
+            // Handle error case
+          }
+        } catch (error) {
+          console.error("Error saving row:", error);
+          // Handle error case
+        }
       }
-    } catch (error) {
-      console.error('Error saving row:', error);
-      // Handle error case
+      // Remove the id from changedRows after saving
+      changedRows = changedRows.filter((r) => r !== id);
     }
   }
-  // Remove the id from changedRows after saving
-  changedRows = changedRows.filter(r => r !== id);
-}
-}
 
-async function fetchRows() {
-try {
-  const response = await fetch('http://localhost:3000/api/route/allocation'); // Replace with your actual API endpoint
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  async function fetchRows() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/route/allocation",
+      ); // Replace with your actual API endpoint
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json(); // 'data' is defined here within the function
+      console.log("Data:", data);
+
+      // Transform data to match the desired structure
+      rows = data.map((item) => ({
+        id: item.route, // Assuming 'route' is a property that corresponds to 'id'
+        currentRoute: item.route, // Or any other field that corresponds to 'currentRoute'
+        busNumber: item.bus,
+        driverName: item.driver,
+        staffName: item.helper,
+        shift: item.time_type,
+      }));
+      console.log("Rows:", rows);
+      rows = rows.filter((row) => {
+        for (let key in row) {
+          if (row[key] === null) {
+            return false;
+          }
+        }
+        return true;
+      });
+      searchRows = rows;
+      for (let i = 0; i < rows.length; i++) {
+        busNumbers.push(rows[i].busNumber);
+      }
+      busNumbers = Array.from(new Set(busNumbers));
+      for (let i = 0; i < rows.length; i++) {
+        driverNames.push(rows[i].driverName);
+      }
+      driverNames = Array.from(new Set(driverNames));
+      for (let i = 0; i < rows.length; i++) {
+        staffNames.push(rows[i].staffName);
+      }
+      staffNames = Array.from(new Set(staffNames));
+      totalEntries = rows.length;
+      totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+
+      // Populate the pages array with page numbers
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } catch (error) {
+      console.error("Could not fetch rows:", error);
+    }
   }
-  const data = await response.json(); // 'data' is defined here within the function
-  console.log('Data:', data);
 
-  // Transform data to match the desired structure
-  rows = data.map(item => ({
-    id: item.route, // Assuming 'route' is a property that corresponds to 'id'
-    currentRoute: item.route, // Or any other field that corresponds to 'currentRoute'
-    busNumber: item.bus,
-    driverName: item.driver,
-    staffName: item.helper,
-    shift: getShiftFromTimeType(item.time_type),
-  }));
-  console.log('Rows:', rows);
-  searchRows = rows;
-  for (let i = 0; i < rows.length; i++) {
-    busNumbers.push(rows[i].busNumber);
-  }
-  console.log('Bus Numbers:', busNumbers);
-  for (let i = 0; i < rows.length; i++) {
-    driverNames.push(rows[i].driverName);
-  }
-  for (let i = 0; i < rows.length; i++) {
-    staffNames.push(rows[i].staffName);
-  }
-  totalEntries=rows.length;
-  totalPages=Math.ceil(totalEntries / Number(entriesPerPage));
-
-   // Populate the pages array with page numbers
-   for (let i = 1; i <= totalPages; i++) {
-    pages.push(i);
-  }
-
-} catch (error) {
-  console.error("Could not fetch rows:", error);
-}
-
-}
-
-function getShiftFromTimeType(time_type) {
-switch (time_type) {
-  case 'morning':
-    return ['M'];
-  case 'afternoon':
-    return ['N'];
-  case 'evening':
-    return ['E'];
-  default:
-    return [];
-}
-}
-
-onMount(async () => {
-  await fetchRows();
-});
+  onMount(async () => {
+    await fetchRows();
+  });
 </script>
 
 <link
   rel="stylesheet"
   href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
 />
+
+<!-- Error Pop up -->
+{#if sameValuePopUp}
+<div class="w-full bg-black-900 bg-opacity-75 fixed z-10 inset-0 overflow-y-auto" id="my-modal">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <div class="inline-block align-bottom bg-white-700 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+          <div>
+              <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                  <svg class="h-6 w-6 text-maroon-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+              </div>
+              <div class="mt-3 text-center sm:mt-5">
+                  <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                      Error
+                  </h3>
+                  <div class="mt-2">
+                      <p class="text-sm text-gray-500">
+                          {errorMessage}
+                      </p>
+                  </div>
+              </div>
+          </div>
+          <div class="mt-5 sm:mt-6">
+              <button
+                  class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-maroon-500 text-base font-medium text-white hover:bg-maroon-900 focus:outline-none focus:translate-y-2 sm:text-sm"
+                  on:click={closeErrorPopup}>
+                  OK
+              </button>
+          </div>
+      </div>
+  </div>
+</div>
+{/if}
 
 <main class="flex w-full">
   <div>
@@ -277,7 +314,7 @@ onMount(async () => {
   <div class="flex-1 ml-56 w-full px-4 py-8 bg-white-700">
     <div class="flex items-start justify-start h-18">
       <h1 class="text-3xl font-bold underline uppercase text-maroon-500">
-        Route Allocation
+        Upcoming Trips
       </h1>
     </div>
 
@@ -303,6 +340,12 @@ onMount(async () => {
           <i class="bx bx-search-alt-2"></i>
         </span>
       </span>
+    </div>
+
+    <!--date-->
+    <div class="flex mb-2 justify-start">
+      <span class="h-10 font-bold text-black-700"> Date: </span>
+      <span class="h-10 ml-2 font-bold text-black-700">{$date}</span>
     </div>
 
     <!-- Entries per page -->
@@ -475,88 +518,112 @@ onMount(async () => {
         <tbody>
           <!-- Dynamic rows -->
           {#each searchRows as row, index}
-            <tr
-              class="{index % 2 === 0
-                ? 'bg-gray-200'
-                : 'bg-white-700'} hover:bg-gray-300" 
-            >
-              <td class="py-2 pl-2 pr-2 border-b text-center border-gray-400/10 w-1/12"
-                >{row.id}</td
+            {#if index >= (currentPage - 1) * Number(entriesPerPage) && index < currentPage * Number(entriesPerPage)}
+              <tr
+                class="{index % 2 === 0
+                  ? 'bg-gray-200'
+                  : 'bg-white-700'} hover:bg-gray-300"
               >
-              <td class="py-2 px-2 border-b text-center border-gray-400/10 w-1/6"
-                >{row.currentRoute}</td
-              >
-              <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
-                <select class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                bind:value={row.busNumber} 
-                on:change={(event) => updateData(row.id, 'busNumber', event)}>
-                  {#each busNumbers as busNumber}
-                    <option value={busNumber}>{busNumber}</option>
-                  {/each}
-                </select>
-              </td>
-              <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
-                <select class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                bind:value={row.driverName} 
-                on:change={(event) => updateData(row.id, 'driverName', event)}>
-                  {#each driverNames as driverName}
-                    <option value={driverName}>{driverName}</option>
-                  {/each}
-                </select>
-              </td>
-              <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
-                <select class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                bind:value={row.staffName} 
-                on:change={(event) => updateData(row.id, 'staffName', event)}>
-                  {#each staffNames as staffName}
-                    <option value={staffName}>{staffName}</option>
-                  {/each}
-                </select>
-              </td>
-              <td class="py-2 px-2 border-b border-gray-400/10 w-1/12">
-                <div class="flex justify-center w-full">
-                <label class="inline-flex items-center">
-                  <input type="checkbox" class="ml-2" checked={row.shift.includes('M')} on:change={() => toggleShift(row.id, 'M')} />
-                  <span class="mx-1 text-xs">M</span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input type="checkbox" checked={row.shift.includes('N')} on:change={() => toggleShift(row.id, 'N')} />
-                  <span class="mx-1 text-xs">N</span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input type="checkbox" checked={row.shift.includes('E')} on:change={() => toggleShift(row.id, 'E')} />
-                  <span class="ml-1 mr-2 text-xs">E</span>
-                </label>
-                </div>
-              </td>
-              <td class="my-2 mx-2 border-b border-gray-400/10 w-auto">
-                <div class="flex justify-center w-full">
-                <button class="bg-transparent mx-2"
-                class:shrink={shrinkID === row.id+"details"}
-                on:click={() => showDetails(row.id)}>
-                <i class="bx bxs-info-circle text-maroon-500 hover:text-maroon-900 scale-150"></i>
-                </button>
-                <button class="bg-transparent mx-2"
-                class:shrink={shrinkID === row.id+"save"}
-                on:click={() => saveRow(row.id)}>
-                {#if changedRows.includes(row.id)}
-                <i class="bx bxs-save text-maroon-500 hover:text-maroon-900 scale-150"></i>
-                {:else}
-                <i class="bx bxs-check-circle text-lime-500 hover:text-lime-700 scale-150"></i>
-                {/if}
-                </button>
-                <button class="bg-transparent mx-2"
-                class:shrink={shrinkID === row.id+"delete"}
-                on:click={() => deleteRow(row.id)}>
-                <i class="bx bxs-trash text-maroon-500 hover:text-maroon-900 scale-150"></i>
-                </button>
-                {#if isDelVisible}
-                  <DeletePopUp on:cancelDelete={() => isDelVisible = false}    
-                  on:confirmDelete = {handleDeleteConfirm}/>
-                {/if}
-                </div>
-              </td>
-            </tr>
+                <td
+                  class="py-2 pl-2 pr-2 border-b text-center border-gray-400/10 w-1/12"
+                  >{row.id}</td
+                >
+                <td
+                  class="py-2 px-2 border-b text-center border-gray-400/10 w-1/6"
+                  >{row.currentRoute}</td
+                >
+                <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
+                  <select
+                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
+                    bind:value={row.busNumber}
+                    on:change={(event) =>
+                      updateData(row.id, "busNumber", event)}
+                  >
+                    {#each busNumbers as busNumber}
+                      <option value={busNumber}>{busNumber}</option>
+                    {/each}
+                  </select>
+                </td>
+                <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
+                  <select
+                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
+                    bind:value={row.driverName}
+                    on:change={(event) =>
+                      updateData(row.id, "driverName", event)}
+                  >
+                    {#each driverNames as driverName}
+                      <option value={driverName}>{driverName}</option>
+                    {/each}
+                  </select>
+                </td>
+                <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
+                  <select
+                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
+                    bind:value={row.staffName}
+                    on:change={(event) =>
+                      updateData(row.id, "staffName", event)}
+                  >
+                    {#each staffNames as staffName}
+                      <option value={staffName}>{staffName}</option>
+                    {/each}
+                  </select>
+                </td>
+                <td class="py-2 px-2 border-b border-gray-400/10 w-1/12">
+                  <select
+                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
+                    bind:value={row.shift}
+                    on:change={(event) =>
+                      updateData(row.shift, "shift", event)}
+                  >
+                    <option value="morning">Morning</option>
+                    <option value="afternoon">Afternoon</option>
+                    <option value="evening">Evening</option>
+                </td>
+                <td class="my-2 mx-2 border-b border-gray-400/10 w-auto">
+                  <div class="flex justify-center w-full">
+                    <button
+                      class="bg-transparent mx-2"
+                      class:shrink={shrinkID === row.id + "details"}
+                      on:click={() => showDetails(row.id)}
+                    >
+                      <i
+                        class="bx bxs-info-circle text-maroon-500 hover:text-maroon-900 scale-150"
+                      ></i>
+                    </button>
+                    <button
+                      class="bg-transparent mx-2"
+                      class:shrink={shrinkID === row.id + "save"}
+                      on:click={() => saveRow(row.id)}
+                    >
+                      {#if changedRows.includes(row.id)}
+                        <i
+                          class="bx bxs-save text-maroon-500 hover:text-maroon-900 scale-150"
+                        ></i>
+                      {:else}
+                        <i
+                          class="bx bxs-check-circle text-lime-500 hover:text-lime-700 scale-150"
+                        ></i>
+                      {/if}
+                    </button>
+                    <button
+                      class="bg-transparent mx-2"
+                      class:shrink={shrinkID === row.id + "delete"}
+                      on:click={() => deleteRow(row.id)}
+                    >
+                      <i
+                        class="bx bxs-trash text-maroon-500 hover:text-maroon-900 scale-150"
+                      ></i>
+                    </button>
+                    {#if isDelVisible}
+                      <DeletePopUp
+                        on:cancelDelete={() => (isDelVisible = false)}
+                        on:confirmDelete={handleDeleteConfirm}
+                      />
+                    {/if}
+                  </div>
+                </td>
+              </tr>
+            {/if}
           {/each}
         </tbody>
       </table>

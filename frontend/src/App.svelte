@@ -1,7 +1,7 @@
 <script>
   import { Router, Route, navigate } from 'svelte-routing';
   import Login from './page/adminLogin.svelte';
-  import RouteAllocation from './page/allocateRoute.svelte';
+  import upcomingTrips from './page/upcomingTrips.svelte';
   import Navbar from './page/navbar.svelte';
   import busAdd from './page/busAdd.svelte';
   import BusStaffList from './page/busStaffList.svelte';
@@ -42,7 +42,7 @@
     <Route path="/staffProfile" component={StaffProfile} />
     <Route path="/addStaff" component={AddStaff} />
     <Route path="/busList" component={BusList} />
-    <Route path="/allocateRoute" component={RouteAllocation} />
+    <Route path="/upcomingTrips" component={upcomingTrips} />
   </Router>
 </main>
 
