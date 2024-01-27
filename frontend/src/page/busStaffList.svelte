@@ -14,6 +14,7 @@
   function goToStaffProfile(id) {
     navigate(`/staffProfile?staffId=${id}`);
 }
+
   
   onMount(() => {
     getBusStaffList();
@@ -27,7 +28,7 @@
     </div>
     <div class="flex-1 ml-56">
       <h1 class="text-4xl font-bold mb-4 text-blue-600">Bus Staff List</h1>
-      
+      <button type="submit" class="red-rectangular-button" on:click={gotoAddStaff}>Add Staff</button>
       {#if bus_staffs.length > 0}
         {#each bus_staffs as { id, name, department, designation, residence, phone }}
           <div class="bg-gray-100 rounded-md p-4 mb-4">
@@ -49,3 +50,19 @@
     </div>
   </main>
 {/if}
+
+<style>
+  .red-rectangular-button {
+    background-color: darkred;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.red-rectangular-button:hover {
+    background-color: darkred;
+}
+</style>
