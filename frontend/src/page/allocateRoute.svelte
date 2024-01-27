@@ -307,7 +307,7 @@ async function saveRow(id) {
   
       <!-- Table -->
       <div class="bg-white-700 shadow-md my-3 overflow-x-auto">
-        <table class="w-full table-fixed text-sm">
+        <table class="w-full table-auto text-sm">
           <!-- Table header -->
           <thead>
             <tr>
