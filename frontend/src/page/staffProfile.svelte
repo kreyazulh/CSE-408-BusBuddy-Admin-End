@@ -1,98 +1,64 @@
 <script>
-    // You can import your navbar here
-    import Navbar from './navbar.svelte';
-  
-    // Example user data
-    let user = {
-      id: '0546',
-      dateSinceService: '12 April 2013',
-      phone: '01616413392',
-      address: 'BUET Staff Quarter, Dhakeshwari',
-      licenseNo: '2021-22',
-      dob: '13 August 1975',
-      upcomingTrips: [
-        { time: '19 Dec, 2023, 8:58 am', tripId: '006674328', pickup: 'Mohammadpur', destination: 'BUET', busId: '34-8934' },
-        // ... more trips
-      ],
-      recentTrips: [
-        { time: '13 Dec, 2023, 8:58 am', tripId: '005388720', pickup: 'Mohammadpur', destination: 'BUET', busId: '34-8934' },
-        // ... more trips
-      ]
-    };
-  </script>
-  <main class="flex">
-  <div class="bg-gray-100 min-h-screen">
-    <Navbar />
-  </div>
-    <div class="container mx-auto px-4 py-8">
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">
-            User Profile
-          </h3>
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Edit Profile
-          </button>
-        </div>
-        <div class="border-t border-gray-200">
-          <dl>
-            <!-- Multiple detail items -->
-            {#each Object.entries(user) as [label, value]}
-              {#if Array.isArray(value)} <!-- Skip arrays for special rendering -->
-                
-              {/if}
-              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">
-                  {label}
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {value}
-                </dd>
-              </div>
-            {/each}
-          </dl>
+  import { onMount } from 'svelte';
+  // Assuming Navbar is already imported in your main layout and does not need to be here
+
+  let user = null;
+
+  // Function to fetch staff details
+  async function fetchStaffDetails(staffId) {
+      try {
+          const response = await fetch(`http://localhost:3000/api/staff/${staffId}`);
+          let data = await response.json();
+          user = data[0];
+          console.log(user);
+      } catch (error) {
+          console.error('Error:', error);
+      }
+  }
+
+  onMount(async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const staffId = urlParams.get('staffId');
+      fetchStaffDetails(staffId);
+  });
+</script>
+{#if user}
+<main class="flex flex-col items-center bg-gray-100 p-8">
+  <div class="w-full max-w-4xl bg-white rounded-lg shadow-md p-5">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-xl font-semibold text-gray-800">{user.name || 'User Name'}</h1>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Edit Profile
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h2 class="text-lg font-medium text-gray-700">Personal Details</h2>
+        <div class="mt-4">
+          <p><strong>ID:</strong> {user.id}</p>
+          <p><strong>Phone:</strong> {user.phone}</p>
+          <p><strong>Role:</strong> {user.role}</p>
+          <p><strong>Date of Birth:</strong> </p>
+          <p><strong>Address:</strong></p>
         </div>
       </div>
-  
-      <div class="mt-5">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">
-          Upcoming Trips
-        </h3>
-        <!-- Upcoming Trips List -->
-        {#each user.upcomingTrips as trip}
-          <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-2">
-            <div class="px-4 py-5 sm:px-6 grid grid-cols-2 gap-4">
-              <div>
-                <p class="text-sm font-medium text-gray-500">Time:</p>
-                <p class="mt-1 text-sm text-gray-900">{trip.time}</p>
-              </div>
-              <!-- More trip details -->
-            </div>
-          </div>
-        {/each}
-      </div>
-  
-      <div class="mt-5">
-        <h3 class="text-lg leading-6 font-medium text-gray-900">
-          Recent Trips
-        </h3>
-        <!-- Recent Trips List -->
-        {#each user.recentTrips as trip}
-          <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-2">
-            <div class="px-4 py-5 sm:px-6 grid grid-cols-2 gap-4">
-              <div>
-                <p class="text-sm font-medium text-gray-500">Time:</p>
-                <p class="mt-1 text-sm text-gray-900">{trip.time}</p>
-              </div>
-              <!-- More trip details -->
-            </div>
-          </div>
-        {/each}
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h2 class="text-lg font-medium text-gray-700">Upcoming Trips</h2>
+        <div class="mt-4">
+        </div>
       </div>
     </div>
-  </main>
-  
-  <style>
-    /* You can add additional custom styles here */
-  </style>
-  
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-lg font-medium text-gray-700">Recent Trips</h2>
+      <div class="mt-4">
+      </div>
+    </div>
+  </div>
+</main>
+{/if}
+<style>
+  /* Additional styles can be added here */
+  p {
+    margin-bottom: 0.5rem;
+  }
+</style>

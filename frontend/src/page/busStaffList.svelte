@@ -6,10 +6,19 @@
 
   let bus_staffs = [];
 
+  async function gotoAddStaff() {
+    navigate('/addStaff');
+  }
+
   async function getBusStaffList() {
     const response = await fetch('http://localhost:3000/api/staff/');
     bus_staffs = await response.json();
   }
+
+  function goToStaffProfile(id) {
+    navigate(`/staffProfile?staffId=${id}`);
+}
+
   
   onMount(() => {
     getBusStaffList();
@@ -23,13 +32,13 @@
     </div>
     <div class="flex-1 ml-56">
       <h1 class="text-4xl font-bold mb-4 text-blue-600">Bus Staff List</h1>
-      
+      <button type="submit" class="red-rectangular-button" on:click={gotoAddStaff}>Add Staff</button>
       {#if bus_staffs.length > 0}
         {#each bus_staffs as { id, name, department, designation, residence, phone }}
           <div class="bg-gray-100 rounded-md p-4 mb-4">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-lg font-semibold">ID: {id}</p>
-              <p class="text-lg font-semibold">Name: {name}</p>
+              <button class="text-lg font-semibold" on:click={() => goToStaffProfile(id)}>ID: {id}</button>
+              <button class="text-lg font-semibold" on:click={() => goToStaffProfile(id)}>Name: {name}</button>
             </div>
             <div class="flex items-center justify-between mb-2">
               <p class="text-gray-600">Department: {department}</p>
@@ -45,3 +54,19 @@
     </div>
   </main>
 {/if}
+
+<style>
+  .red-rectangular-button {
+    background-color: darkred;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.red-rectangular-button:hover {
+    background-color: darkred;
+}
+</style>
