@@ -153,30 +153,7 @@ async function fetchRoutes() {
     <div class="z-10">
         <Navbar />
     </div>
-    <div class="flex-1 ml-56 p-6">
-      <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Bus Routes</h1>
-
-      {#if routes.length > 0}
-      {#each routes as route}
-  <div class="bg-gray-100 rounded-md p-4 mb-4 flex justify-between items-center">
-    <!-- Existing route display -->
-    <div>
-      <p class="font-semibold">Route ID: {route.id}</p>
-      <p>Terminal Point: {route.terminal_point}</p>
-      <p>Stations: {route.names}</p>
-    </div>
-
-    <!-- Delete button -->
-    <button
-      class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-      on:click={() => confirmDelete(route.id)}>
-      Delete
-    </button>
-  </div>
-{/each}
-{:else}
-  <p>Loading...</p>
-{/if}
+    <div class="w-full p-6">
         <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
       
         <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
@@ -200,7 +177,7 @@ async function fetchRoutes() {
 </select >
       
         <div class="mt-4">
-          <h3 class="text-lg font-semibold text-maroon">Selected Names:</h3>
+          <h3 class="text-lg font-semibold text-maroon-500">Selected Names:</h3>
           {#if selectedNames.length > 0}
             <ul class="list-disc pl-4 mt-2">
               {#each selectedNames as selectedName}
@@ -219,7 +196,7 @@ async function fetchRoutes() {
       
         {#if createdRoute}
           <div class="mt-4">
-            <h2 class="text-2xl font-bold text-maroon">Route Created</h2>
+            <h2 class="text-2xl font-bold text-maroon-500">Route Created</h2>
             <p>Terminal Point: {createdRoute.terminal_point}</p>
           </div>
         {/if}

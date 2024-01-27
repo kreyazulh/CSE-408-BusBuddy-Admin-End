@@ -35,14 +35,14 @@
   <Router>
     <Route path="/login" component={Login} />
     <Route path="/start" component={Navbar} />
-    <Route path="/busAdd" component={busAdd} />
+    <Route path="/mashroor" component={Mashroor} />
     <Route path="/navbar" component={Navbar} />
     <Route path="/busStaffList" component={BusStaffList} />
     <Route path="/createRoute" component={CreateRoute} />
     <Route path="/staffProfile" component={StaffProfile} />
     <Route path="/addStaff" component={AddStaff} />
     <Route path="/busList" component={BusList} />
-    <Route path="/upcomingTrips" component={upcomingTrips} />
+    <Route path="/upcomingTrips" component={upcomingTrips}/>
   </Router>
 </main>
 
