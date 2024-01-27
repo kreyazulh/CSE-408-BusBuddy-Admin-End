@@ -4,14 +4,17 @@ export default {
   theme: {
     colors: {
       transparent: 'transparent',
-      current: 'currentColor',
-      black: '#000',
+      black: {
+        700: '#1142D',
+        900: '#000',
+      },
       white: {
         700: '#f9faff',
         900: '#fff',
       },
       red: {
         50: '#ffe3e3',
+        70: '#b09f9f',
         100: '#ffbdbd',
         200: '#ff9b9b',
         300: '#f86a6a',
@@ -34,10 +37,39 @@ export default {
         800: '#252f3f',
         900: '#161e2e',
       },
-      maroon: '#781b1b',
+      lime : '#84cc16',
+      maroon: {
+        500:'#781b1b',
+        900: '#4e0506',
+      },
+      cyan: {
+        50: '#ecfeff',
+        100: '#cffafe',
+        200: '#a5f3fc',
+        300: '#67e8f9',
+        400: '#22d3ee',
+        500: '#06b6d4',
+        600: '#0891b2',
+        700: '#0e7490',
+        800: '#155e75',
+        900: '#164e63',
+        950: '#083344',
+      },
+      indigo: {
+        50: '#eef2ff',
+        100: '#e0e7ff',
+        200: '#c7d2fe',
+        300: '#a5b4fc',
+        400: '#818cf8',
+        500: '#6366f1',
+        600: '#4f46e5',
+        700: '#4338ca',
+        800: '#3730a3',
+        900: '#312e81',
+        950: '#1e1b4b',
+      },
     },
     extend: {},
   },
   plugins: [],
 }
-
