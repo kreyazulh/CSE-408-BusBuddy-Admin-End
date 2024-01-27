@@ -476,15 +476,15 @@
                 class:shrink={shrinkID === row.id+"save"}
                 on:click={() => saveRow(row.id)}>
                 {#if changedRows.includes(row.id)}
-                  <i class="bx bxs-save text-maroon-500 scale-150"></i>
+                  <i class="bx bxs-save text-maroon-500 hover:text-maroon-900 scale-150"></i>
                 {:else}
-                  <i class="bx bxs-check-circle text-lime scale-150"></i>
+                  <i class="bx bxs-check-circle text-lime-500 hover:text-lime-700 scale-150"></i>
                 {/if}
                 </button>
                 <button class="bg-transparent mx-2"
                 class:shrink={shrinkID === row.id+"delete"}
                 on:click={() => deleteRow(row.id)}>
-                  <i class="bx bxs-trash text-maroon-500 scale-150"></i>
+                  <i class="bx bxs-trash text-maroon-500 hover:text-maroon-900 scale-150"></i>
                 </button>
                 {#if isDelVisible}
                   <DeletePopUp on:cancelDelete={() => isDelVisible = false}    
