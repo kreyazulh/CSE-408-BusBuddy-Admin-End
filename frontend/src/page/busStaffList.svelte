@@ -10,6 +10,10 @@
     const response = await fetch('http://localhost:3000/api/staff/');
     bus_staffs = await response.json();
   }
+
+  function goToStaffProfile(id) {
+    navigate(`/staffProfile?staffId=${id}`);
+}
   
   onMount(() => {
     getBusStaffList();
@@ -28,8 +32,8 @@
         {#each bus_staffs as { id, name, department, designation, residence, phone }}
           <div class="bg-gray-100 rounded-md p-4 mb-4">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-lg font-semibold">ID: {id}</p>
-              <p class="text-lg font-semibold">Name: {name}</p>
+              <button class="text-lg font-semibold" on:click={() => goToStaffProfile(id)}>ID: {id}</button>
+              <button class="text-lg font-semibold" on:click={() => goToStaffProfile(id)}>Name: {name}</button>
             </div>
             <div class="flex items-center justify-between mb-2">
               <p class="text-gray-600">Department: {department}</p>

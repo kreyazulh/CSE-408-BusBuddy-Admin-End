@@ -16,6 +16,21 @@ router.get('/', (req, res) => {
     });
   });
 
+  router.get('/:staffId', (req, res) => {
+    const client = req.client;
+    const { staffId } = req.params;
+    const query = 'SELECT * FROM bus_staff WHERE id = $1';
+    
+    client.query(query, [staffId], (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
+      }
+    });
+  });
+
 router.post('/add', (req, res) => {
     const client = req.client;
     console.log(req.body);
