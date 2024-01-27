@@ -7,23 +7,21 @@
   let bus_staffs = [];
 
   async function getBusStaffList() {
-    const response = await fetch('http://localhost:3000/api/bus_staff');
+    const response = await fetch('http://localhost:3000/api/staff/');
     bus_staffs = await response.json();
   }
   
-  onMount(async() => {
-    const initialIsAuthenticated = await checkSession();
-    isAuthenticated.set(initialIsAuthenticated);
+  onMount(() => {
     getBusStaffList();
   });
 </script>
 
 {#if $isAuthenticated}
   <main class="flex">
-    <div class="w-fit">
+    <div class="z-10">
       <Navbar />
     </div>
-    <div class="mx-auto max-w-lg">
+    <div class="flex-1 ml-56">
       <h1 class="text-4xl font-bold mb-4 text-blue-600">Bus Staff List</h1>
       
       {#if bus_staffs.length > 0}
@@ -43,11 +41,6 @@
             </div>
           </div>
         {/each}
-      {:else}
-        <div class="bg-gray-100 rounded-md p-4 mb-4">
-          <p class="text-gray-800">You need to login first</p>
-          <a href="/login" class="text-blue-500 underline">Log In</a>
-        </div>
       {/if}
     </div>
   </main>

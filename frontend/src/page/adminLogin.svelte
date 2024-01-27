@@ -1,5 +1,6 @@
 <script>
     import '.././app.css';
+    import "../tailwind.css";
     import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
     import { isAuthenticated } from '.././auth';
@@ -9,7 +10,7 @@
     let loginStatus = '';
   
     async function handleLoginClick() {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -50,7 +51,7 @@
   </script>
 
 <main>
-  <div class="admin-login-frame">
+  <div class="admin-login-frame" >
     <div class="admin-logindefault">
       <div class="admin-logindefault-inner">
         <div class="frame-container">

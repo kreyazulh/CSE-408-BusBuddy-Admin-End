@@ -1,12 +1,13 @@
 <script>
   import { navigate } from 'svelte-routing';
-  import { isAuthenticated } from '../auth';
+  import { isAuthenticated, checkSession } from '../auth';
+  import { onMount } from 'svelte';
 
 
 // Logout function
 const logout = async () => {
  // Make API request to your backend for logout
-        const response = await fetch('http://localhost:3000/api/logout', {
+        const response = await fetch('http://localhost:3000/api/auth/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -27,13 +28,17 @@ const logout = async () => {
 
 let bus_staffs = [];
 
-async function createRoute() {
-  navigate('/createRoute');
+async function allocateRoute() {
+  navigate('/allocateRoute');
 }
 
 async function getBusStaffList() {
   navigate('/busStaffList');
 }
+
+onMount(() => {
+        checkSession();
+    });
 
 
 </script>
@@ -42,7 +47,7 @@ async function getBusStaffList() {
 <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
 
 <div class="min-h-screen flex flex-row bg-white">
-  <div class="flex flex-col w-56 bg-maroon-500 text-white rounded-r-3xl overflow-hidden">
+  <div class="flex flex-col w-56 bg-maroon text-white rounded-r-3xl overflow-hidden">
     <div class="flex items-center justify-center h-20 shadow-md">
       <h1 class="text-3xl uppercase text-white-700">Admin</h1>
     </div>
@@ -75,7 +80,7 @@ async function getBusStaffList() {
         </a>
       </li>
       <li>
-        <button on:click={createRoute} class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
+        <button on:click={allocateRoute} class="flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-500 hover:text-white-700 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20 focus:shadow focus:text-white-700 focus:bg-gray-100 focus:bg-opacity-20">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-map-alt"></i></span>
           <span class="text-xs font-medium">Route Allocation</span>
         </button>

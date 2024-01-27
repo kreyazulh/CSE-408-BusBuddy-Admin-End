@@ -3,10 +3,13 @@
   import Login from './page/adminLogin.svelte';
   import RouteAllocation from './page/allocateRoute.svelte';
   import Navbar from './page/navbar.svelte';
-  import Mashroor from './page/mashroor.svelte';
+  import busAdd from './page/busAdd.svelte';
   import BusStaffList from './page/busStaffList.svelte';
   import CreateRoute from './page/createRoute.svelte';
   import StaffProfile from './page/staffProfile.svelte';
+  import AddStaff from './page/addStaff.svelte';
+  import BusList from './page/busList.svelte';
+
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
 
@@ -31,13 +34,12 @@
 <main>
   <Router>
     <Route path="/login" component={Login} />
-    <!-- <Route path="/start" component={Navbar} /> -->
+    <Route path="/start" component={Navbar} />
     <Route path="/mashroor" component={Mashroor} />
     <Route path="/navbar" component={Navbar} />
     <Route path="/busStaffList" component={BusStaffList} />
     <Route path="/createRoute" component={CreateRoute} />
     <Route path="/staffProfile" component={StaffProfile} />
-    <Route path="/allocateRoute" component={RouteAllocation} />
   </Router>
 </main>
 

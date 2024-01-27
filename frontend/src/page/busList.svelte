@@ -5,7 +5,7 @@
   let buses = [];
 
   async function getBusList() {
-    const response = await fetch('http://localhost:3000/api/bus');
+    const response = await fetch('http://localhost:3000/api/bus/');
     buses = await response.json();
   }
 
@@ -26,21 +26,3 @@
   {/if}
 </main>
 
-<style>
-  main {
-    text-align: center;
-    margin: 2em;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1em;
-  }
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-</style>

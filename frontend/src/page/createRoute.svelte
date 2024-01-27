@@ -12,10 +12,26 @@
     let selectedNames = [];
     let stationNames = [];
     let tempSelectedNames = [];
+
+    let routes = [];
+
+    let searchTerm = '';
+    let filteredStationNames = [];
+
+async function fetchRoutes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/');
+    routes = await response.json();
+    console.log(routes);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
+
   
     const fetchStationNames = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/stations', {
+            const response = await fetch('http://localhost:3000/api/station/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -25,6 +41,9 @@
   
             if (data && Array.isArray(data)) {
                 stationNames = data;
+                filteredStationNames = data;
+                console.log('Station names:', stationNames);
+
             } else {
                 console.error('Failed to fetch station names.');
             }
@@ -33,16 +52,33 @@
         }
     };
   
-    // Function to remove a name from selectedNames
     const removeSelectedName = (name) => {
         selectedNames = selectedNames.filter(selected => selected !== name);
         tempSelectedNames = tempSelectedNames.filter(tempSelected => tempSelected !== name);
     };
+
+    const filterStations = () => {
+      if (searchTerm.trim() === '') {
+            filteredStationNames = stationNames;
+            console.log('Filtered stations:', filteredStationNames);
+        } else {
+            filteredStationNames = stationNames.filter(stationObj => 
+                stationObj.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            console.log('Filtered stations:', filteredStationNames);
+        }
+    };
+
+    const handleSearch = (event) => {
+        searchTerm = event.target.value;
+        filterStations();
+    };
+
   
   
     const createRoute = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/createroute', {
+            const response = await fetch('http://localhost:3000/api/route/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,6 +91,7 @@
             if (data.status === 'success') {
                 createdRoute = data.route; // Store the created route information
                 // Clear the selectedNames array after successful creation
+                fetchRoutes();
                 selectedNames = [];
                 tempSelectedNames = [];
             } else {
@@ -65,16 +102,47 @@
         }
     };
 
-  
-    // Ensure selectedNames stays reactive
-    afterUpdate(() => {
-        selectedNames = Array.from(new Set([...selectedNames, ...tempSelectedNames]));
+    const updateStations = () => {
+      selectedNames = Array.from(new Set([...selectedNames, ...tempSelectedNames]));
         console.log('Selected Names:', selectedNames);
+    };
+
+    const confirmDelete = async (routeId) => {
+    if (window.confirm('Do you really want to delete this route?')) {
+      await deleteRoute(routeId);
+    }
+  };
+
+  const deleteRoute = async (routeId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/route/delete/${routeId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('Route deleted successfully');
+        fetchRoutes(); // Refresh the list of routes
+      } else {
+        console.error('Failed to delete route');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  
+    afterUpdate(() => { 
+      if (tempSelectedNames.length > 0) {
+        updateStations();
+      }  
+        
     });
   
-    onMount(async() => {
-        const initialIsAuthenticated = await checkSession();
-        isAuthenticated.set(initialIsAuthenticated);
+    onMount(() => {
+        fetchRoutes();
         fetchStationNames();
     });
     
@@ -82,21 +150,31 @@
   
   {#if $isAuthenticated}
   <main class="flex">
-    <div class="w-fit">
+    <div class="z-10">
         <Navbar />
     </div>
     <div class="w-full p-6">
-        <h1 class="text-3xl font-bold mb-4 text-maroon-500 mx-auto">Create Route</h1>
+        <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
       
         <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
         <input type="text" bind:value={terminalPoint} id="terminalPoint" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300" />
       
-        <label for="selectNames" class="block text-sm font-semibold text-gray-700 mt-2">Select Names:</label>
-        <select id="selectNames" bind:value={tempSelectedNames} multiple class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
-          {#each stationNames as { name }}
-            <option value={name}>{name}</option>
-          {/each}
-        </select>
+            <!-- Search bar for stations -->
+            <label for="selectNames" class="block text-sm font-semibold text-gray-700 mt-2">Select Stations:</label>
+    <input
+    type="text"
+    bind:value={searchTerm}
+    on:input={handleSearch}
+    placeholder="Search..."
+    class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+/>
+
+<!-- Dropdown for selecting stations -->
+<select id="selectNames" bind:value={tempSelectedNames} multiple class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+    {#each filteredStationNames as {name}}
+        <option value={name}>{name}</option>
+    {/each}
+</select >
       
         <div class="mt-4">
           <h3 class="text-lg font-semibold text-maroon-500">Selected Names:</h3>
