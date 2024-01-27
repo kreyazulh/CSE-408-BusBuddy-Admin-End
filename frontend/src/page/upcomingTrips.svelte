@@ -101,23 +101,15 @@
     });
   }
 
-  // Function to update the row data when a selection is made
   function updateData(id, column, event) {
     let newValue = event.target.value;
     const rowIdx = searchRows.findIndex((r) => r.id === id);
     if (rowIdx !== -1) {
-      const oldValue = searchRows[rowIdx][column];
-      if (oldValue !== newValue) {
         searchRows[rowIdx][column] = newValue;
-        searchRows[rowIdx] = { ...searchRows[rowIdx] };
+        searchRows = [...searchRows];
         changedRows.push(id);
-      }
-      else{
-        sameValuePopUp = true;
-        errorMessage = "There is another allocation with the same value";
-      }
     }
-  }
+}
 
   // Function to close the error popup
   function closeErrorPopup() {
@@ -573,11 +565,12 @@
                     class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
                     bind:value={row.shift}
                     on:change={(event) =>
-                      updateData(row.shift, "shift", event)}
+                      updateData(row.id, "shift", event)}
                   >
                     <option value="morning">Morning</option>
                     <option value="afternoon">Afternoon</option>
                     <option value="evening">Evening</option>
+                  </select>
                 </td>
                 <td class="my-2 mx-2 border-b border-gray-400/10 w-auto">
                   <div class="flex justify-center w-full">
