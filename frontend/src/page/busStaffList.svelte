@@ -6,6 +6,10 @@
 
   let bus_staffs = [];
 
+  async function gotoAddStaff() {
+    navigate('/addStaff');
+  }
+
   async function getBusStaffList() {
     const response = await fetch('http://localhost:3000/api/staff/');
     bus_staffs = await response.json();
