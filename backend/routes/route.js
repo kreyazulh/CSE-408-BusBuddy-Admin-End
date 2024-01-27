@@ -69,4 +69,28 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
+  router.post('/allocation', async (req, res) => {
+    const { id, currentRoute, busNumber, driverName, staffName, shift } = req.body;
+    const client = req.client;
+
+    console.log(req.body);
+  
+    // Construct the SQL query to insert data into the 'allocation' table
+    const insertQuery = `
+      INSERT INTO route_allocation (id, current_route, bus_number, driver_name, staff_name, shift)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      ON CONFLICT (id) DO UPDATE
+      SET current_route = $2, bus_number = $3, driver_name = $4, staff_name = $5, shift = $6
+    `;
+  
+    try {
+      // Execute the query
+      await client.query(insertQuery, [id, currentRoute, busNumber, driverName, staffName, shift]);
+      res.json({ message: 'Allocation saved successfully' });
+    } catch (error) {
+      console.error('Error saving allocation:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   module.exports = router;
