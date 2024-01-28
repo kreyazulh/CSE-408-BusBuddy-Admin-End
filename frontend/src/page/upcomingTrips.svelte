@@ -10,8 +10,12 @@
   let busNumbers = [];
   let driverNames = [];
   let staffNames = [];
+  let routes = [];
+  let tomorrowTime = {time: ''};
 
   let date = null;
+
+
 
   let shrinkID = null;
 
@@ -111,10 +115,6 @@
     }
 }
 
-  // Function to close the error popup
-  function closeErrorPopup() {
-    sameValuePopUp = false;
-  }
 
   // Function to delete a row
   function deleteRow(id) {
@@ -148,17 +148,23 @@
 
   // Function to save the row
   async function saveRow(id) {
+    console.log(id);
     handleClick(id + "save");
+    console.log("Changed rows:", changedRows);
     if (changedRows.includes(id)) {
-      let rowIndex = rows.findIndex((r) => r.id === id);
+      console.log("Saving row:", searchRows);
+      let rowIndex = searchRows.findIndex((r) => r.id === id);
+      console.log("Row index:", rowIndex);
       if (rowIndex !== -1) {
         // Extract the row data using the rowIndex
-        const rowData = rows[rowIndex];
+        const rowData = searchRows[rowIndex];
+
+        console.log("Row data:", rowData);
 
         // Assemble the data to send
         const payload = {
           id: rowData.id, // Assuming 'id' is used as a unique identifier for the allocation
-          currentRoute: rowData.currentRoute,
+          currentRoute: rowData.route_no,
           busNumber: rowData.busNumber,
           driverName: rowData.driverName,
           staffName: rowData.staffName,
@@ -195,26 +201,36 @@
     }
   }
 
-  async function fetchRows() {
-    try {
-      const response = await fetch(
-        "http://localhost:3000/api/route/allocation",
-      ); // Replace with your actual API endpoint
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json(); // 'data' is defined here within the function
-      console.log("Data:", data);
 
-      // Transform data to match the desired structure
-      rows = data.map((item) => ({
-        id: item.route, // Assuming 'route' is a property that corresponds to 'id'
-        currentRoute: item.route, // Or any other field that corresponds to 'currentRoute'
-        busNumber: item.bus,
-        driverName: item.driver,
-        staffName: item.helper,
-        shift: item.time_type,
-      }));
+async function fetchRoutes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/');
+    routes = await response.json();
+    console.log(routes);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
+
+async function fetchRows() {
+  try {
+    const response = await fetch("http://localhost:3000/api/route/allocation");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    let data = await response.json();
+
+    let rows = data.map(item => ({
+      id: item.id,
+      route_no: item.route,
+      busNumber: item.bus,
+      driverName: item.driver,
+      staffName: item.helper,
+      shift: item.time_type,
+      currentRoute: routes.find(route => route.id === item.route)?.terminal_point || 'Not Assigned'
+    })).filter(row => !Object.values(row).includes(null));
+
+    console.log("Rows:", rows);
       console.log("Rows:", rows);
       rows = rows.filter((row) => {
         for (let key in row) {
@@ -224,6 +240,7 @@
         }
         return true;
       });
+
       searchRows = rows;
       for (let i = 0; i < rows.length; i++) {
         busNumbers.push(rows[i].busNumber);
@@ -249,8 +266,26 @@
     }
   }
 
+
+async function fetchTomorrowsTime() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/time');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    tomorrowTime = data;
+    console.log('Tomorrow\'s time:', tomorrowTime);
+  } catch (error) {
+    console.error('Error fetching tomorrow\'s time:', error);
+  }
+}
+
+
   onMount(async () => {
+    await fetchRoutes();
     await fetchRows();
+    await fetchTomorrowsTime();
   });
 </script>
 
@@ -299,8 +334,11 @@
     <!--date-->
     <div class="flex mb-2 justify-start">
       <span class="h-10 font-bold text-black-700"> Date: </span>
-      <span class="h-10 ml-2 font-bold text-black-700">{$date}</span>
+      {#if tomorrowTime}
+      <span class="h-10 ml-2 font-bold text-black-700">{tomorrowTime.time}</span>
+      {/if}
     </div>
+   
 
     <!-- Entries per page -->
     <div class="flex mb-1">
