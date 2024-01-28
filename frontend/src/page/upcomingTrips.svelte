@@ -67,6 +67,10 @@
   function updateEntriesToShow(event) {
     entriesPerPage = event.target.value;
     currentPage = 1;
+    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+    for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
   }
 
   // Function to handle the search functionality

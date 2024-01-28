@@ -55,6 +55,10 @@
   function updateEntriesToShow(event) {
     entriesPerPage = event.target.value;
     currentPage = 1;
+    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+    for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
   }
 
    // Function to handle the search functionality
@@ -149,7 +153,7 @@
         }
         return true;
       });
-    // console.log(buses);
+    console.log(buses);
     searchRows = buses;
     totalEntries = searchRows.length;
     totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
@@ -182,7 +186,7 @@
       </h1>
     </div>
 
-     <!-- Search Bar -->
+     <!-- Search Bar & Add Button-->
      <div class="flex mb-4 justify-end">
       <button
         class=" mr-3 bg-indigo-700 hover:bg-indigo-900 text-white-700 font-semibold py-2 px-4 rounded-full focus:translate-y-1.5"
