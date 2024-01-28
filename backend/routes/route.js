@@ -1,6 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
+function getTomorrowsDate() {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split('T')[0];
+}
+
 router.get('/', async (req, res) => {
     const client = req.client;
     const routeQuery = 'SELECT * FROM route ORDER BY id ASC';
@@ -73,10 +80,29 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
+
+  router.get('/time', (req, res) => {
+    try {
+      const tomorrowsDateTime = getTomorrowsDate();
+      res.json({ time: tomorrowsDateTime });
+    } catch (error) {
+      console.error('Error getting time:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+
   router.get('/allocation', (req, res) => {
     const client = req.client;
-    const query = 'SELECT * FROM allocation';
-    
+    const date = req.query.date || getTomorrowsDate();
+    console.log(date);
+    let query = 'SELECT * FROM allocation';
+  
+    // If a date is provided, add a WHERE clause to filter by that date
+    if (date) {
+      query += ` WHERE DATE(start_timestamp) = '${date}'`; // Replace 'timestamp_column' with your actual column name
+    }
+  
     client.query(query, (error, results) => {
       if (error) {
         console.error(error);
@@ -140,24 +166,48 @@ router.delete('/delete/:routeId', async (req, res) => {
   
     console.log(req.body);
   
-    // Format shift as an array literal
-    const shiftArrayLiteral = `{${shift}}`;
-    console.log(shiftArrayLiteral);
-  
     // Construct the SQL query to insert data into the 'allocation' table
     const insertQuery = `
-      INSERT INTO route_allocation (id, current_route, bus_number, driver_name, staff_name, shift)
+      INSERT INTO allocation (id, route, bus, driver, helper, time_type)
       VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT (id) DO UPDATE
-      SET current_route = $2, bus_number = $3, driver_name = $4, staff_name = $5, shift = $6
+      SET route = $2, bus = $3, driver = $4, helper = $5, time_type = $6
     `;
   
     try {
       // Execute the query
-      await client.query(insertQuery, [id, currentRoute, busNumber, driverName, staffName, shiftArrayLiteral]);
+      await client.query(insertQuery, [id, currentRoute, busNumber, driverName, staffName, shift]);
       res.json({ message: 'Allocation saved successfully' });
     } catch (error) {
       console.error('Error saving allocation:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  router.post('/allocation/delete', async (req, res) => {
+    const { id } = req.body; // assuming the ID is sent in the request body
+    const client = req.client;
+
+    console.log(req.body);
+  
+    // Construct the SQL query to delete data from the 'allocation' table
+    const deleteQuery = `
+      DELETE FROM allocation
+      WHERE id = $1
+    `;
+  
+    try {
+      // Execute the query
+      const result = await client.query(deleteQuery, [id]);
+      
+      // Check if the allocation was found and deleted
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: 'Allocation not found' });
+      }
+  
+      res.json({ message: 'Allocation deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting allocation:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });

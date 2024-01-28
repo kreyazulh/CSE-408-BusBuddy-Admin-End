@@ -34,5 +34,25 @@ router.post('/add', (req, res) => {
     });
 });
 
+router.delete('/delete', async (req, res) => {
+  const { id } = req.body; // Get the ID of the bus record to delete
+  const client = req.client;
+  console.log(req.body);
+
+  try {
+    // Construct the SQL query to delete the record
+    const deleteQuery = 'DELETE FROM bus WHERE reg_id = $1';
+
+    // Execute the query
+    await client.query(deleteQuery, [id]);
+
+    // Send a response indicating successful deletion
+    res.json({ message: 'Bus deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting bus:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;
   

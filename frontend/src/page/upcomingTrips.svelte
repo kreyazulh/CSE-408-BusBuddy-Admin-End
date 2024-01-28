@@ -3,14 +3,19 @@
   import DeletePopUp from "./deletePopUp.svelte";
   import { navigate } from 'svelte-routing';
   import { onMount } from "svelte";
+  import { isAuthenticated } from "../auth";
 
   // Sample data for the table rows
   let rows = [];
   let busNumbers = [];
   let driverNames = [];
   let staffNames = [];
+  let routes = [];
+  let tomorrowTime = {time: ''};
 
   let date = null;
+
+
 
   let shrinkID = null;
 
@@ -63,6 +68,10 @@
   function updateEntriesToShow(event) {
     entriesPerPage = event.target.value;
     currentPage = 1;
+    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+    for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
   }
 
   // Function to handle the search functionality
@@ -113,24 +122,53 @@
     handleClick(id + "delete");
     isDelVisible = true;
     rowDelID = id;
+    console.log("Row to delete:", id);
   }
 
-  function handleDeleteConfirm() {
-    isDelVisible = false;
-    let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      searchRows.splice(rowIndex, 1);
-      searchRows = [...searchRows];
-    }
-    totalEntries = searchRows.length;
-    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    rowIndex = rows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      rows.splice(rowIndex, 1);
-      rows = [...rows];
-      //write rows in DB
+async function handleDeleteConfirm() {
+  isDelVisible = false;
+  let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
+
+  console.log("Row index:", rowIndex);
+  
+  if (rowIndex !== -1) {
+    try {
+      const response = await fetch("http://localhost:3000/api/route/allocation/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: rowDelID }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Row deleted successfully:", result);
+        
+        // Remove the row from the UI
+        searchRows.splice(rowIndex, 1);
+        searchRows = [...searchRows];
+        totalEntries = searchRows.length;
+        totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+
+        rowIndex = rows.findIndex((r) => r.id === rowDelID);
+        if (rowIndex !== -1) {
+          rows.splice(rowIndex, 1);
+          rows = [...rows];
+        }
+
+        // Additional logic after successful deletion (e.g., update UI)
+      } else {
+        console.error("Failed to delete row:", result);
+        // Handle error case
+      }
+    } catch (error) {
+      console.error("Error deleting row:", error);
+      // Handle error case
     }
   }
+}
 
   // Function to show the details of a row
   function showDetails(id) {
@@ -142,15 +180,17 @@
   async function saveRow(id) {
     handleClick(id + "save");
     if (changedRows.includes(id)) {
-      let rowIndex = rows.findIndex((r) => r.id === id);
+      let rowIndex = searchRows.findIndex((r) => r.id === id);
       if (rowIndex !== -1) {
         // Extract the row data using the rowIndex
-        const rowData = rows[rowIndex];
+        const rowData = searchRows[rowIndex];
+
+        console.log("Row data:", rowData);
 
         // Assemble the data to send
         const payload = {
           id: rowData.id, // Assuming 'id' is used as a unique identifier for the allocation
-          currentRoute: rowData.currentRoute,
+          currentRoute: rowData.route_no,
           busNumber: rowData.busNumber,
           driverName: rowData.driverName,
           staffName: rowData.staffName,
@@ -187,26 +227,36 @@
     }
   }
 
-  async function fetchRows() {
-    try {
-      const response = await fetch(
-        "http://localhost:3000/api/route/allocation",
-      ); // Replace with your actual API endpoint
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json(); // 'data' is defined here within the function
-      console.log("Data:", data);
 
-      // Transform data to match the desired structure
-      rows = data.map((item) => ({
-        id: item.route, // Assuming 'route' is a property that corresponds to 'id'
-        currentRoute: item.route, // Or any other field that corresponds to 'currentRoute'
-        busNumber: item.bus,
-        driverName: item.driver,
-        staffName: item.helper,
-        shift: item.time_type,
-      }));
+async function fetchRoutes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/');
+    routes = await response.json();
+    console.log(routes);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
+
+async function fetchRows() {
+  try {
+    const response = await fetch("http://localhost:3000/api/route/allocation");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    let data = await response.json();
+
+    let rows = data.map(item => ({
+      id: item.id,
+      route_no: item.route,
+      busNumber: item.bus,
+      driverName: item.driver,
+      staffName: item.helper,
+      shift: item.time_type,
+      currentRoute: routes.find(route => route.id === item.route)?.terminal_point || 'Not Assigned'
+    })).filter(row => !Object.values(row).includes(null));
+
+    console.log("Rows:", rows);
       console.log("Rows:", rows);
       rows = rows.filter((row) => {
         for (let key in row) {
@@ -216,6 +266,7 @@
         }
         return true;
       });
+
       searchRows = rows;
       for (let i = 0; i < rows.length; i++) {
         busNumbers.push(rows[i].busNumber);
@@ -245,8 +296,25 @@
     navigate('/scheduleTrip');
   }
 
+async function fetchTomorrowsTime() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/time');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    tomorrowTime = data;
+    console.log('Tomorrow\'s time:', tomorrowTime);
+  } catch (error) {
+    console.error('Error fetching tomorrow\'s time:', error);
+  }
+}
+
+
   onMount(async () => {
+    await fetchRoutes();
     await fetchRows();
+    await fetchTomorrowsTime();
   });
 </script>
 
@@ -255,6 +323,7 @@
   href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
 />
 
+{#if isAuthenticated}
 <main class="flex w-full">
   <div>
     <Navbar />
@@ -298,8 +367,11 @@
     <!--date-->
     <div class="flex mb-2 justify-start">
       <span class="h-10 font-bold text-black-700"> Date: </span>
-      <span class="h-10 ml-2 font-bold text-black-700">{$date}</span>
+      {#if tomorrowTime}
+      <span class="h-10 ml-2 font-bold text-black-700">{tomorrowTime.time}</span>
+      {/if}
     </div>
+   
 
     <!-- Entries per page -->
     <div class="flex mb-1">
@@ -614,6 +686,7 @@
     </div>
   </div>
 </main>
+{/if}
 
 <style>
   .shrink {

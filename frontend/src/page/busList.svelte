@@ -55,6 +55,10 @@
   function updateEntriesToShow(event) {
     entriesPerPage = event.target.value;
     currentPage = 1;
+    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+    for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
   }
 
    // Function to handle the search functionality
@@ -97,22 +101,49 @@
     rowDelID = id;
   }
 
-  function handleDeleteConfirm() {
-    isDelVisible = false;
-    let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      searchRows.splice(rowIndex, 1);
-      searchRows = [...searchRows];
-    }
-    totalEntries = searchRows.length;
-    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    rowIndex = buses.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      buses.splice(rowIndex, 1);
-      buses = [...buses];
-      //write rows in DB
+  async function handleDeleteConfirm() {
+  isDelVisible = false;
+  let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
+
+  if (rowIndex !== -1) {
+    try {
+      const response = await fetch("http://localhost:3000/api/bus/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: rowDelID }),
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (response.ok) {
+        console.log("Row deleted successfully:", result);
+
+        // Remove the row from the UI
+        searchRows.splice(rowIndex, 1);
+        searchRows = [...searchRows];
+        totalEntries = searchRows.length;
+        totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+
+        rowIndex = buses.findIndex((r) => r.id === rowDelID);
+        if (rowIndex !== -1) {
+          buses.splice(rowIndex, 1);
+          buses = [...buses];
+        }
+
+        // Additional logic after successful deletion (e.g., update UI)
+      } else {
+        console.error("Failed to delete row:", result);
+        // Handle error case
+      }
+    } catch (error) {
+      console.error("Error deleting row:", error);
+      // Handle error case
     }
   }
+}
 
    // Function to show the details of a row
    function showDetails(id) {
@@ -149,7 +180,7 @@
         }
         return true;
       });
-    // console.log(buses);
+    console.log(buses);
     searchRows = buses;
     totalEntries = searchRows.length;
     totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
@@ -182,7 +213,7 @@
       </h1>
     </div>
 
-     <!-- Search Bar -->
+     <!-- Search Bar & Add Button-->
      <div class="flex mb-4 justify-end">
       <button
         class=" mr-3 bg-indigo-700 hover:bg-indigo-900 text-white-700 font-semibold py-2 px-4 rounded-full focus:translate-y-1.5"
