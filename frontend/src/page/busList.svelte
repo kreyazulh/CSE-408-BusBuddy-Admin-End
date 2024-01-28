@@ -97,22 +97,49 @@
     rowDelID = id;
   }
 
-  function handleDeleteConfirm() {
-    isDelVisible = false;
-    let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      searchRows.splice(rowIndex, 1);
-      searchRows = [...searchRows];
-    }
-    totalEntries = searchRows.length;
-    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    rowIndex = buses.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      buses.splice(rowIndex, 1);
-      buses = [...buses];
-      //write rows in DB
+  async function handleDeleteConfirm() {
+  isDelVisible = false;
+  let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
+
+  if (rowIndex !== -1) {
+    try {
+      const response = await fetch("http://localhost:3000/api/bus/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: rowDelID }),
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (response.ok) {
+        console.log("Row deleted successfully:", result);
+
+        // Remove the row from the UI
+        searchRows.splice(rowIndex, 1);
+        searchRows = [...searchRows];
+        totalEntries = searchRows.length;
+        totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+
+        rowIndex = buses.findIndex((r) => r.id === rowDelID);
+        if (rowIndex !== -1) {
+          buses.splice(rowIndex, 1);
+          buses = [...buses];
+        }
+
+        // Additional logic after successful deletion (e.g., update UI)
+      } else {
+        console.error("Failed to delete row:", result);
+        // Handle error case
+      }
+    } catch (error) {
+      console.error("Error deleting row:", error);
+      // Handle error case
     }
   }
+}
 
    // Function to show the details of a row
    function showDetails(id) {
