@@ -3,8 +3,6 @@
   import DeletePopUp from "./deletePopUp.svelte";
   import { onMount } from "svelte";
 
-  let errorMessage;
-
   // Sample data for the table rows
   let rows = [];
   let busNumbers = [];
@@ -17,8 +15,6 @@
 
   let isDelVisible = false;
   let rowDelID = null;
-
-  let sameValuePopUp = false;
 
   let changedRows = [];
 
@@ -110,11 +106,6 @@
         changedRows.push(id);
     }
 }
-
-  // Function to close the error popup
-  function closeErrorPopup() {
-    sameValuePopUp = false;
-  }
 
   // Function to delete a row
   function deleteRow(id) {
