@@ -259,44 +259,6 @@
   href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
 />
 
-<!-- Error Pop up -->
-{#if sameValuePopUp}
-<div class="w-full bg-black-900 bg-opacity-75 fixed z-10 inset-0 overflow-y-auto" id="my-modal">
-  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="inline-block align-bottom bg-white-700 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-          role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-          <div>
-              <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                  <svg class="h-6 w-6 text-maroon-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-              </div>
-              <div class="mt-3 text-center sm:mt-5">
-                  <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                      Error
-                  </h3>
-                  <div class="mt-2">
-                      <p class="text-sm text-gray-500">
-                          {errorMessage}
-                      </p>
-                  </div>
-              </div>
-          </div>
-          <div class="mt-5 sm:mt-6">
-              <button
-                  class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-maroon-500 text-base font-medium text-white hover:bg-maroon-900 focus:outline-none focus:translate-y-2 sm:text-sm"
-                  on:click={closeErrorPopup}>
-                  OK
-              </button>
-          </div>
-      </div>
-  </div>
-</div>
-{/if}
-
 <main class="flex w-full">
   <div>
     <Navbar />
@@ -560,18 +522,10 @@
                     {/each}
                   </select>
                 </td>
-                <td class="py-2 px-2 border-b border-gray-400/10 w-1/12">
-                  <select
-                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                    bind:value={row.shift}
-                    on:change={(event) =>
-                      updateData(row.id, "shift", event)}
-                  >
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
-                    <option value="evening">Evening</option>
-                  </select>
-                </td>
+                <td
+                  class="py-2 pl-2 pr-2 border-b text-center border-gray-400/10 w-1/12"
+                  >{row.shift}</td
+                >
                 <td class="my-2 mx-2 border-b border-gray-400/10 w-auto">
                   <div class="flex justify-center w-full">
                     <button
