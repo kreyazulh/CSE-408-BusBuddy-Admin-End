@@ -158,35 +158,8 @@ const deleteRoute = async (routeId) => {
       <Navbar />
   </div>
   <div class="flex-1 ml-56 p-6">
-    <button 
-    class="bg-green-500 hover:bg-lime-700 text-white font-bold py-2 px-4 rounded-full m-4" 
-    on:click={goToCreateRoute}
-    style="position: absolute; top: 0; right: 0;">
-    Create Route
-  </button>
-    <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Bus Routes</h1>
 
-    {#if routes.length > 0}
-    {#each routes as route}
-<div class="bg-gray-100 rounded-md p-4 mb-4 flex justify-between items-center">
-  <!-- Existing route display -->
-  <div>
-    <p class="font-semibold">Route ID: {route.id}</p>
-    <p>Terminal Point: {route.terminal_point}</p>
-    <p>Stations: {route.names}</p>
-  </div>
 
-  <!-- Delete button -->
-  <button
-    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-    on:click={() => confirmDelete(route.id)}>
-    Delete
-  </button>
-</div>
-{/each}
-{:else}
-<p>Loading...</p>
-{/if}
       <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
     
       <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
