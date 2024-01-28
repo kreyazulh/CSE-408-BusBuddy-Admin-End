@@ -3,8 +3,6 @@
   import DeletePopUp from "./deletePopUp.svelte";
   import { onMount } from "svelte";
 
-  let errorMessage;
-
   // Sample data for the table rows
   let rows = [];
   let busNumbers = [];
@@ -17,8 +15,6 @@
 
   let isDelVisible = false;
   let rowDelID = null;
-
-  let sameValuePopUp = false;
 
   let changedRows = [];
 
@@ -110,11 +106,6 @@
         changedRows.push(id);
     }
 }
-
-  // Function to close the error popup
-  function closeErrorPopup() {
-    sameValuePopUp = false;
-  }
 
   // Function to delete a row
   function deleteRow(id) {
@@ -326,7 +317,7 @@
         <!-- Table header -->
         <thead>
           <tr>
-            <th class="bg-white-700 border-b border-gray-400/10 w-1/12">
+            <th class="bg-white-700 border-b  w-1/12">
               <div
                 class="flex items-center justify-center space-x-1 bg-red-70 rounded-full"
               >
@@ -357,7 +348,7 @@
                 </div>
               </div></th
             >
-            <th class="bg-white-700 border-b border-gray-400/10 w-1/6">
+            <th class="bg-white-700 border-b  w-1/6">
               <div
                 class="flex items-center justify-center space-x-1 bg-red-70 rounded-full"
               >
@@ -388,7 +379,7 @@
                 </div>
               </div></th
             >
-            <th class=" bg-white-700 border-b border-gray-400/10 w-1/6">
+            <th class=" bg-white-700 border-b  w-1/6">
               <div
                 class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full"
               >
@@ -397,7 +388,7 @@
                 </span>
               </div>
             </th>
-            <th class="bg-white-700 border-b border-gray-400/10 w-1/6">
+            <th class="bg-white-700 border-b  w-1/6">
               <div
                 class="flex items-center justify-center space-x-1 bg-red-70 rounded-full"
               >
@@ -426,7 +417,7 @@
                 </div>
               </div></th
             >
-            <th class="bg-white-700 border-b border-gray-400/10 w-1/6">
+            <th class="bg-white-700 border-b  w-1/6">
               <div
                 class="flex items-center justify-center space-x-1 bg-red-70 rounded-full"
               >
@@ -457,7 +448,7 @@
                 </div>
               </div></th
             >
-            <th class=" bg-white-700 border-b border-gray-400/10 w-1/12">
+            <th class=" bg-white-700 border-b  w-1/12">
               <div
                 class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full"
               >
@@ -479,14 +470,14 @@
                   : 'bg-white-700'} hover:bg-gray-300"
               >
                 <td
-                  class="py-2 pl-2 pr-2 border-b text-center border-gray-400/10 w-1/12"
+                  class="py-2 pl-2 pr-2 border-b text-center  w-1/12"
                   >{row.id}</td
                 >
                 <td
-                  class="py-2 px-2 border-b text-center border-gray-400/10 w-1/6"
+                  class="py-2 px-2 border-b text-center  w-1/6"
                   >{row.currentRoute}</td
                 >
-                <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
+                <td class="py-2 px-2 border-b  w-1/6">
                   <select
                     class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
                     bind:value={row.busNumber}
@@ -498,7 +489,7 @@
                     {/each}
                   </select>
                 </td>
-                <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
+                <td class="py-2 px-2 border-b  w-1/6">
                   <select
                     class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
                     bind:value={row.driverName}
@@ -510,7 +501,7 @@
                     {/each}
                   </select>
                 </td>
-                <td class="py-2 px-2 border-b border-gray-400/10 w-1/6">
+                <td class="py-2 px-2 border-b  w-1/6">
                   <select
                     class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
                     bind:value={row.staffName}
@@ -523,10 +514,10 @@
                   </select>
                 </td>
                 <td
-                  class="py-2 pl-2 pr-2 border-b text-center border-gray-400/10 w-1/12"
+                  class="py-2 pl-2 pr-2 border-b text-center  w-1/12"
                   >{row.shift}</td
                 >
-                <td class="my-2 mx-2 border-b border-gray-400/10 w-auto">
+                <td class="my-2 mx-2 border-b  w-auto">
                   <div class="flex justify-center w-full">
                     <button
                       class="bg-transparent mx-2"
