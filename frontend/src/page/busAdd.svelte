@@ -1,6 +1,6 @@
 <script>
   import Navbar from './navbar.svelte';
-  import { checkSession, isAuthenticated } from '../auth';
+  import { isAuthenticated } from '../auth';
   import { onMount } from 'svelte';
   import { navigate } from 'svelte-routing';
 
@@ -63,15 +63,14 @@
       <h2 class="text-3xl font-bold underline uppercase text-maroon-500">Add Bus</h2>
 
       <div class="my-4 px-5">
-
         <label class="block text-gray-600 font-semibold mb-2" for="input1">Bus Reg ID:</label>
-        <input required pattern="[A-Z]{2}[0-9]{2}[A-Z]{3}" placeholder="eg: BA-01-2345"
+        <input required pattern="[A-Z]{2}[-][0-9]{2}[-][0-9]{4}" placeholder="eg: BA-01-2345"
         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={reg_id} />
       </div>
 
       <div class="my-4 px-5">
         <label class="block text-gray-600 font-semibold mb-2" for="input2">Capacity:</label>
-        <input required pattern="[0-9]{4}" placeholder="eg: 30"
+        <input required placeholder="eg: 30"
         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="number"  bind:value={capacity} />
       </div>
 
@@ -92,7 +91,7 @@
         <textarea class="min-h-[100px] max-h-[300px] h-28 appearance-none block w-full bg-white-900 text-black-900 focus:ring focus:border-blue-300 rounded-lg py-4 px-4" placeholder="Enter any remark" spellcheck="false" bind:value={remarks} ></textarea>
 									<p class="text-xs text-gray-400 text-left my-3">You inserted {remarks.length} characters</p>
       </div>
-      <p class=" text-lg text-center text-indigo-500 font-bold">{addBusResponse}</p>
+      <p class="my-2 text-lg text-center text-indigo-500 font-bold">{addBusResponse}</p>
       <div class="flex my-4 pt-4 justify-end pr-8">
         <button type="submit" class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full"
         on:click={()=>{
