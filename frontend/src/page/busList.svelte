@@ -12,8 +12,6 @@
   let isDelVisible = false;
   let rowDelID = null;
 
-  let changedRows = [];
-
   // Pagination data
    let totalEntries = 0;
   let entriesPerPage = "10";
