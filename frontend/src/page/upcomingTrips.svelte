@@ -1,6 +1,7 @@
 <script>
   import Navbar from "./navbar.svelte";
   import DeletePopUp from "./deletePopUp.svelte";
+  import { navigate } from 'svelte-routing';
   import { onMount } from "svelte";
 
   // Sample data for the table rows
@@ -240,6 +241,10 @@
     }
   }
 
+  async function gotoAddTrip() {
+    navigate('/scheduleTrip');
+  }
+
   onMount(async () => {
     await fetchRows();
   });
@@ -265,6 +270,9 @@
 
     <!-- Search Bar -->
     <div class="flex mb-4 justify-end">
+      <button
+        class=" mr-3 bg-indigo-700 hover:bg-indigo-900 text-white-700 font-semibold py-2 px-4 rounded-full focus:translate-y-1.5"
+        on:click={gotoAddTrip}> Add Trip</button>
       <span class="h-8 bg-gray-300 rounded-full">
         <input
           id="search"
@@ -494,8 +502,7 @@
                     class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
                     bind:value={row.driverName}
                     on:change={(event) =>
-                      updateData(row.id, "driverName", event)}
-                  >
+                      updateData(row.id, "driverName", event)}>
                     {#each driverNames as driverName}
                       <option value={driverName}>{driverName}</option>
                     {/each}

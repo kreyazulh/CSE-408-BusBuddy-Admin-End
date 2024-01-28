@@ -87,6 +87,53 @@ router.delete('/delete/:routeId', async (req, res) => {
     });
   });
 
+  router.post('/allocation/add', async (req, res) => {
+    const { date, route, shift, bus_id, driver, collector } = req.body;
+    const client = req.client;
+  
+    console.log(req.body);
+    
+    const schedQuery = 'SELECT id FROM schedule WHERE route=$1 AND time_type=$2';
+    const schedResult = await client.query(schedQuery, [route,shift]);
+    const schedId = BigInt(schedResult.rows.map(row => row.id));
+
+    // console.log(schedResult);
+    console.log(schedId);
+  
+    // Construct the SQL query to insert data into the 'allocation' table
+    const insertQuery = `CALL create_allocation($1,$2,$3,$4,$5,$6)`;
+  
+    try {
+      // Execute the query
+      await client.query(insertQuery, [schedId, date, bus_id, driver, collector, 'mashroor']);
+      console.log("New Trip");
+      res.json({ message: 'Allocation saved successfully' });
+    } catch (error) {
+      console.error('Error saving allocation:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  router.post('/allocation/bulk', async (req, res) => {
+    const { date } = req.body;
+    const client = req.client;
+  
+    console.log(req.body);
+  
+    // Construct the SQL query to insert data into the 'allocation' table
+    const insertQuery = `CALL update_allocation($1,$2)`;
+  
+    try {
+      // Execute the query
+      await client.query(insertQuery, [date, req.session.userId]);
+      console.log("Bulk Trip");
+      res.json({ message: 'Allocation saved successfully' });
+    } catch (error) {
+      console.error('Error saving allocation:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   router.post('/allocation', async (req, res) => {
     const { id, currentRoute, busNumber, driverName, staffName, shift } = req.body;
     const client = req.client;
