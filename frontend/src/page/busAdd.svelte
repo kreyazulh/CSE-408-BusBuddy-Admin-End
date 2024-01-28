@@ -47,7 +47,6 @@
   }
 
   function handleAddBus(event) {
-    event.preventDefault(); // Prevent the form from refreshing the page
     addBus();
   }
 
