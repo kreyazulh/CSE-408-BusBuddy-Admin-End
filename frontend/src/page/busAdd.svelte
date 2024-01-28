@@ -62,7 +62,7 @@
         <Navbar />
     </div>
     <div class="flex-1 ml-56 p-6">
-      <h2 class="text-3xl font-bold uppercase text-maroon-500">Add Bus</h2>
+      <h2 class="text-3xl font-bold text-maroon-500">Add Bus</h2>
       <div class="mb-4">
         <label class="block text-gray-600 font-semibold mb-2" for="input1">Bus Reg ID:</label>
         <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={reg_id} />
