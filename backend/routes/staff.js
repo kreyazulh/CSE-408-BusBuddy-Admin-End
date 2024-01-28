@@ -16,6 +16,35 @@ router.get('/', (req, res) => {
     });
   });
 
+  router.get('/driver', (req, res) => {
+    const client = req.client;
+    const query = 'SELECT * FROM bus_staff WHERE role=$1';
+    
+    client.query(query,['driver'],(error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
+      }
+    });
+  });
+
+  router.get('/collector', (req, res) => {
+    const client = req.client;
+    const query = 'SELECT * FROM bus_staff WHERE role=$1';
+    
+    client.query(query,['collector'],(error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
+      }
+    });
+  });
+
+
   router.get('/:staffId', (req, res) => {
     const client = req.client;
     const { staffId } = req.params;

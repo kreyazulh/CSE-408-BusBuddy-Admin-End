@@ -8,6 +8,7 @@
   import CreateRoute from './page/createRoute.svelte';
   import StaffProfile from './page/staffProfile.svelte';
   import AddStaff from './page/addStaff.svelte';
+  import ScheduleTrip from './page/scheduleTrip.svelte';
   import BusList from './page/busList.svelte';
   import RouteList from './page/routeList.svelte';
 
@@ -41,6 +42,7 @@
     <Route path="/createRoute" component={CreateRoute} />
     <Route path="/staffProfile" component={StaffProfile} />
     <Route path="/addStaff" component={AddStaff} />
+    <Route path="/scheduleTrip" component={ScheduleTrip} />
     <Route path="/busList" component={BusList} />
     <Route path="/upcomingTrips" component={upcomingTrips}/>
     <Route path="/busAdd" component={busAdd} />
