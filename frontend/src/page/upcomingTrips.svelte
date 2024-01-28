@@ -2,6 +2,7 @@
   import Navbar from "./navbar.svelte";
   import DeletePopUp from "./deletePopUp.svelte";
   import { onMount } from "svelte";
+  import { isAuthenticated } from "../auth";
 
   // Sample data for the table rows
   let rows = [];
@@ -116,24 +117,53 @@
     handleClick(id + "delete");
     isDelVisible = true;
     rowDelID = id;
+    console.log("Row to delete:", id);
   }
 
-  function handleDeleteConfirm() {
-    isDelVisible = false;
-    let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      searchRows.splice(rowIndex, 1);
-      searchRows = [...searchRows];
-    }
-    totalEntries = searchRows.length;
-    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    rowIndex = rows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      rows.splice(rowIndex, 1);
-      rows = [...rows];
-      //write rows in DB
+async function handleDeleteConfirm() {
+  isDelVisible = false;
+  let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
+
+  console.log("Row index:", rowIndex);
+  
+  if (rowIndex !== -1) {
+    try {
+      const response = await fetch("http://localhost:3000/api/route/allocation/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: rowDelID }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Row deleted successfully:", result);
+        
+        // Remove the row from the UI
+        searchRows.splice(rowIndex, 1);
+        searchRows = [...searchRows];
+        totalEntries = searchRows.length;
+        totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+
+        rowIndex = rows.findIndex((r) => r.id === rowDelID);
+        if (rowIndex !== -1) {
+          rows.splice(rowIndex, 1);
+          rows = [...rows];
+        }
+
+        // Additional logic after successful deletion (e.g., update UI)
+      } else {
+        console.error("Failed to delete row:", result);
+        // Handle error case
+      }
+    } catch (error) {
+      console.error("Error deleting row:", error);
+      // Handle error case
     }
   }
+}
 
   // Function to show the details of a row
   function showDetails(id) {
@@ -143,13 +173,9 @@
 
   // Function to save the row
   async function saveRow(id) {
-    console.log(id);
     handleClick(id + "save");
-    console.log("Changed rows:", changedRows);
     if (changedRows.includes(id)) {
-      console.log("Saving row:", searchRows);
       let rowIndex = searchRows.findIndex((r) => r.id === id);
-      console.log("Row index:", rowIndex);
       if (rowIndex !== -1) {
         // Extract the row data using the rowIndex
         const rowData = searchRows[rowIndex];
@@ -289,6 +315,7 @@ async function fetchTomorrowsTime() {
   href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
 />
 
+{#if isAuthenticated}
 <main class="flex w-full">
   <div>
     <Navbar />
@@ -649,6 +676,7 @@ async function fetchTomorrowsTime() {
     </div>
   </div>
 </main>
+{/if}
 
 <style>
   .shrink {

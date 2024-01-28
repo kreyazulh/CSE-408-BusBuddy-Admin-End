@@ -137,4 +137,32 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
+  router.post('/allocation/delete', async (req, res) => {
+    const { id } = req.body; // assuming the ID is sent in the request body
+    const client = req.client;
+
+    console.log(req.body);
+  
+    // Construct the SQL query to delete data from the 'allocation' table
+    const deleteQuery = `
+      DELETE FROM allocation
+      WHERE id = $1
+    `;
+  
+    try {
+      // Execute the query
+      const result = await client.query(deleteQuery, [id]);
+      
+      // Check if the allocation was found and deleted
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: 'Allocation not found' });
+      }
+  
+      res.json({ message: 'Allocation deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting allocation:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   module.exports = router;
