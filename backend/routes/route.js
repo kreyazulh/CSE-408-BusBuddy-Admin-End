@@ -86,8 +86,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   router.post('/allocation', async (req, res) => {
     const { id, currentRoute, busNumber, driverName, staffName, shift } = req.body;
     const client = req.client;
-
+  
     console.log(req.body);
+  
+    // Format shift as an array literal
+    const shiftArrayLiteral = `{${shift}}`;
+    console.log(shiftArrayLiteral);
   
     // Construct the SQL query to insert data into the 'allocation' table
     const insertQuery = `
@@ -99,7 +103,7 @@ router.delete('/delete/:routeId', async (req, res) => {
   
     try {
       // Execute the query
-      await client.query(insertQuery, [id, currentRoute, busNumber, driverName, staffName, shift]);
+      await client.query(insertQuery, [id, currentRoute, busNumber, driverName, staffName, shiftArrayLiteral]);
       res.json({ message: 'Allocation saved successfully' });
     } catch (error) {
       console.error('Error saving allocation:', error);

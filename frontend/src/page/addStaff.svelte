@@ -49,10 +49,6 @@
     }
   }
 
-  async function gotoAddBus() {
-    navigate('/busAdd');
-  }
-
   function handleAddStaff(event) {
     event.preventDefault(); // Prevent the form from refreshing the page
     addStaff();
@@ -69,7 +65,6 @@
     </div>
     <div class="flex-1 ml-56 p-6">
       <h2 class="text-3xl font-bold uppercase text-maroon-500">Add Bus Staff</h2>
-      <button type="submit" class="red-rectangular-button" on:click={gotoAddBus}>Add Bus</button>
       <div class="mb-4">
         <label class="block text-gray-600 font-semibold mb-2" for="input1">Staff ID:</label>
         <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text" id="input1" bind:value={id} />
