@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 
 function getTomorrowsDate() {
-  const today = new Date();
+  // Get the current time in GMT+6
+  const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Etc/GMT-6' }));
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
+  // Format to YYYY-MM-DD
   return tomorrow.toISOString().split('T')[0];
 }
 

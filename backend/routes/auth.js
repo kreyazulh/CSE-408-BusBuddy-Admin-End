@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const sharedConfig = require('.././sharedId');
 
 
 router.get('/check-session', (req, res) => {
@@ -21,6 +22,9 @@ router.post('/login', (req, res) => {
       } else {
         if (results.rowCount === 1) {
           req.session.userId = id;
+          sharedConfig.userId = id;
+          console.log("login");
+          console.log(sharedConfig.userId);
           res.json({ status: 'success' });
         } else {
           res.json({ status: 'fail' });
@@ -31,6 +35,7 @@ router.post('/login', (req, res) => {
 
 router.post('/logout', (req, res) => {
     req.session.userId = null;
+    sharedConfig.userId = null;
     console.log("logout");
     req.session.destroy((error) => {
       if (error) {
