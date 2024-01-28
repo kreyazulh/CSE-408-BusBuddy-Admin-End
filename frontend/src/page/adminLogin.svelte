@@ -25,7 +25,7 @@
       if (result.status === 'success') {
         loginStatus = 'Login successful!';
         isAuthenticated.set(true);
-        navigate('/routeList');
+        navigate('/profile');
       } else {
         loginStatus = 'Login failed. Please check your ID and password.';
       }

@@ -102,22 +102,38 @@
     rowDelID = id;
   }
 
-  function handleDeleteConfirm() {
-    isDelVisible = false;
-    let rowIndex = searchRows.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
+  async function handleDeleteConfirm() {
+  isDelVisible = false;
+  let rowIndex = bus_staffs.findIndex((staff) => staff.id === rowDelID);
+
+  if (rowIndex !== -1) {
+    try {
+      const response = await fetch("http://localhost:3000/api/staff/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: rowDelID }),
+      });
+
       searchRows.splice(rowIndex, 1);
-      searchRows = [...searchRows];
-    }
-    totalEntries = searchRows.length;
-    totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    rowIndex = bus_staffs.findIndex((r) => r.id === rowDelID);
-    if (rowIndex !== -1) {
-      bus_staffs.splice(rowIndex, 1);
-      bus_staffs = [...bus_staffs];
-      //write rows in DB
+        searchRows = [...searchRows];
+        totalEntries = searchRows.length;
+        totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+
+        rowIndex = bus_staffs.findIndex((r) => r.id === rowDelID);
+        if (rowIndex !== -1) {
+          bus_staffs.splice(rowIndex, 1);
+          bus_staffs = [...bus_staffs];
+        } else {
+        // Handle the case where the server returns an error
+        console.error("Failed to delete staff member");
+      }
+    } catch (error) {
+      console.error("Error deleting staff member:", error);
     }
   }
+}
 
    // Function to show the details of a row
    function showDetails(id) {

@@ -76,4 +76,18 @@ router.post('/add', (req, res) => {
     });
 });
 
+router.delete('/delete', async (req, res) => {
+  const { id } = req.body;
+  const client = req.client;
+
+  try {
+    const deleteQuery = 'DELETE FROM bus_staff WHERE id = $1';
+    await client.query(deleteQuery, [id]);
+    res.json({ message: 'Staff deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting staff:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;

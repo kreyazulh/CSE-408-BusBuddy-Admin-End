@@ -11,6 +11,7 @@
   import ScheduleTrip from './page/scheduleTrip.svelte';
   import BusList from './page/busList.svelte';
   import RouteList from './page/routeList.svelte';
+  import AdminProfile from './page/adminProfile.svelte';
 
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
@@ -47,6 +48,7 @@
     <Route path="/upcomingTrips" component={upcomingTrips}/>
     <Route path="/busAdd" component={busAdd} />
     <Route path="/routeList" component={RouteList} />
+    <Route path="/profile" component={AdminProfile} />
   </Router>
 </main>
 
