@@ -46,10 +46,6 @@
     }
   }
 
-  function handleAddBus(event) {
-    addBus();
-  }
-
   onMount(() => {
 });
 </script>
@@ -97,7 +93,7 @@
 									<p class="text-xs text-gray-400 text-left my-3">You inserted {remarks.length} characters</p>
       </div>
       <p class=" text-lg text-center text-indigo-500 font-bold">{addBusResponse}</p>
-      <div class="flex my-4 pt-6 justify-end pr-8">
+      <div class="flex my-4 pt-4 justify-end pr-8">
         <button type="submit" class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full"
         on:click={()=>{
           if(reg_id.length!=10){
