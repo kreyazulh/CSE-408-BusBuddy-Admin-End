@@ -310,8 +310,7 @@ async function fetchTomorrowsTime() {
   }
 }
 
-
-  onMount(async () => {
+onMount(async () => {
     await fetchRoutes();
     await fetchRows();
     await fetchTomorrowsTime();
