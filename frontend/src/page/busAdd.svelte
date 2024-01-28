@@ -61,12 +61,14 @@
         <Navbar />
     </div>
 
+
     <div class="flex-1 w-full bg-black-900 bg-opacity-60">
     <div class="flex justify-center  items-center">
       <div class="w-1/3 py-5 px-5 my-10 rounded-lg shadow-lg bg-white-700">
       <h2 class="text-3xl font-bold underline uppercase text-maroon-500">Add Bus</h2>
 
       <div class="my-4 px-5">
+
         <label class="block text-gray-600 font-semibold mb-2" for="input1">Bus Reg ID:</label>
         <input required pattern="[A-Z]{2}[0-9]{2}[A-Z]{3}" placeholder="eg: AB12CDE"
         class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={reg_id} />

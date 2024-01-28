@@ -160,55 +160,81 @@ const deleteRoute = async (routeId) => {
   <div class="flex-1 ml-56 p-6">
 
 
-      <h1 class="text-3xl font-bold mb-4 text-maroon mx-auto">Create Route</h1>
+    <h1 class="text-3xl font-bold text-maroon-500">Create Route</h1>
     
-      <label for="terminalPoint" class="block text-sm font-semibold text-gray-700 mt-2 mx-auto">Terminal Point:</label>
-      <input type="text" bind:value={terminalPoint} id="terminalPoint" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300" />
-    
+    <div class="mb-4">
+      <label class="block text-gray-600 font-semibold mb-2" for="terminalPoint">Terminal Point:</label>
+      <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={terminalPoint} />
+    </div>
           <!-- Search bar for stations -->
-          <label for="selectNames" class="block text-sm font-semibold text-gray-700 mt-2">Select Stations:</label>
-  <input
-  type="text"
-  bind:value={searchTerm}
-  on:input={handleSearch}
-  placeholder="Search..."
-  class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-/>
+    <label for="selectNames" class="block text-gray-600 font-semibold mb-2">Select Stations:</label>
+    <input
+      type="text"
+      bind:value={searchTerm}
+      on:input={handleSearch}
+      placeholder="Search..."
+      class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" />
 
-<!-- Dropdown for selecting stations -->
-<select id="selectNames" bind:value={tempSelectedNames} multiple class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
-  {#each filteredStationNames as {name}}
-      <option value={name}>{name}</option>
-  {/each}
-</select >
+    <!-- Dropdown for selecting stations -->
+    <select id="selectNames" bind:value={tempSelectedNames} multiple class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300">
+      {#each filteredStationNames as {name}}
+          <option class="w-full px-3 py-2 focus:outline-none focus:ring focus:border-blue-300" value={name}>{name}</option>
+      {/each}
+    </select >
     
-      <div class="mt-4">
-        <h3 class="text-lg font-semibold text-maroon">Selected Names:</h3>
-        {#if selectedNames.length > 0}
-          <ul class="list-disc pl-4 mt-2">
-            {#each selectedNames as selectedName}
-              <li class="flex items-center justify-between bg-gray-100 p-2 mt-2 rounded-md">
-                {selectedName}
-                <button on:click={() => removeSelectedName(selectedName)} class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-full">X</button>
-              </li>
-            {/each}
-          </ul>
-        {:else}
-          <p class="text-gray-800">No names selected</p>
-        {/if}
-      </div>
-    
-      <button on:click={createRoute} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4">Create Route</button>
-    
-      {#if createdRoute}
-        <div class="mt-4">
-          <h2 class="text-2xl font-bold text-maroon">Route Created</h2>
-          <p>Terminal Point: {createdRoute.terminal_point}</p>
-        </div>
+    <div class="mt-4">
+      <h3 class="text-lg font-semibold text-maroon">Selected Names:</h3>
+      {#if selectedNames.length > 0}
+        <ul class="list-disc pl-4 mt-2">
+          {#each selectedNames as selectedName}
+            <li class="flex items-center justify-between bg-gray-100 p-2 mt-2 rounded-md">
+              {selectedName}
+              <button on:click={() => removeSelectedName(selectedName)} class="close-button">X</button>
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <p class="text-gray-800">No names selected</p>
       {/if}
     </div>
+    
+    <button on:click={createRoute} class="red-rectangular-button">Create Route</button>
+    
+    {#if createdRoute}
+      <div class="mt-4">
+        <h2 class="text-2xl font-bold text-maroon">Route Created</h2>
+        <p>Terminal Point: {createdRoute.terminal_point}</p>
+      </div>
+    {/if}
+  </div>
 </main>
 {:else}
 <p>You need to log in first</p>
 <a href="/login">Log In</a>
   {/if}
+
+<style>
+
+.close-button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.red-rectangular-button {
+  background-color: darkred;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.red-rectangular-button:hover {
+  background-color: darkred;
+}
+
+</style>

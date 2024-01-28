@@ -42,6 +42,10 @@ router.get('/', async (req, res) => {
   
       const insertQuery = 'INSERT INTO route (id, terminal_point, points) VALUES ($1, $2, $3) RETURNING *';
       const result = await client.query(insertQuery, [nextId, terminal_point, stationIds]);
+
+      const schedQuery = 'CALL dummy_schedule($1, $2)';
+      const schedResult = await client.query(schedQuery, [nextId, stationIds]);
+
   
       res.json({ status: 'success', route: result.rows[0] });
     } catch (error) {
