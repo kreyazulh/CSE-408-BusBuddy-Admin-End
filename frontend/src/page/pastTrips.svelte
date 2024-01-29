@@ -7,22 +7,12 @@
 
   // Sample data for the table rows
   let rows = [];
-  let busNumbers = [];
-  let driverNames = [];
-  let staffNames = [];
   let routes = [];
-  let tomorrowTime = {time: ''};
-
-  let date = null;
-
-
 
   let shrinkID = null;
 
   let isDelVisible = false;
   let rowDelID = null;
-
-  let changedRows = [];
 
   // Pagination data
   let totalEntries = 0;
@@ -49,7 +39,6 @@
   // Function to navigate to a page
   function goToPage(page) {
     currentPage = page;
-    // Here you would also add your logic to fetch the data for the current page
   }
 
   // Function to get the range of numbers to display in pagination
@@ -107,16 +96,6 @@
     });
   }
 
-  function updateData(id, column, event) {
-    let newValue = event.target.value;
-    const rowIdx = searchRows.findIndex((r) => r.id === id);
-    if (rowIdx !== -1) {
-        searchRows[rowIdx][column] = newValue;
-        searchRows = [...searchRows];
-        changedRows.push(id);
-    }
-}
-
   // Function to delete a row
   function deleteRow(id) {
     handleClick(id + "delete");
@@ -133,7 +112,7 @@ async function handleDeleteConfirm() {
   
   if (rowIndex !== -1) {
     try {
-      const response = await fetch("http://localhost:3000/api/route/allocation/delete", {
+      const response = await fetch("http://localhost:3000/api/trip/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -176,58 +155,6 @@ async function handleDeleteConfirm() {
     // Here you would add your logic to show the details of the row
   }
 
-  // Function to save the row
-  async function saveRow(id) {
-    handleClick(id + "save");
-    if (changedRows.includes(id)) {
-      let rowIndex = searchRows.findIndex((r) => r.id === id);
-      if (rowIndex !== -1) {
-        // Extract the row data using the rowIndex
-        const rowData = searchRows[rowIndex];
-
-        console.log("Row data:", rowData);
-
-        // Assemble the data to send
-        const payload = {
-          id: rowData.id, // Assuming 'id' is used as a unique identifier for the allocation
-          currentRoute: rowData.route_no,
-          busNumber: rowData.busNumber,
-          driverName: rowData.driverName,
-          staffName: rowData.staffName,
-          shift: rowData.shift,
-        };
-
-        try {
-          const response = await fetch(
-            "http://localhost:3000/api/route/allocation",
-            {
-              method: "POST", // or 'PUT' if updating an existing allocation
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            },
-          );
-
-          const result = await response.json();
-          if (response.ok) {
-            console.log("Row saved successfully:", result);
-            // Additional logic after successful save (e.g., update UI, clear fields)
-          } else {
-            console.error("Failed to save row:", result);
-            // Handle error case
-          }
-        } catch (error) {
-          console.error("Error saving row:", error);
-          // Handle error case
-        }
-      }
-      // Remove the id from changedRows after saving
-      changedRows = changedRows.filter((r) => r !== id);
-    }
-  }
-
-
 async function fetchRoutes() {
   try {
     const response = await fetch('http://localhost:3000/api/route/');
@@ -240,7 +167,7 @@ async function fetchRoutes() {
 
 async function fetchRows() {
   try {
-    const response = await fetch("http://localhost:3000/api/route/allocation");
+    const response = await fetch("http://localhost:3000/api/trip");
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -248,6 +175,7 @@ async function fetchRows() {
 
     let rows = data.map(item => ({
       id: item.id,
+      date: item.start_timestamp.split('T')[0],
       route_no: item.route,
       busNumber: item.bus,
       driverName: item.driver,
@@ -268,18 +196,6 @@ async function fetchRows() {
       });
 
       searchRows = rows;
-      for (let i = 0; i < rows.length; i++) {
-        busNumbers.push(rows[i].busNumber);
-      }
-      busNumbers = Array.from(new Set(busNumbers));
-      for (let i = 0; i < rows.length; i++) {
-        driverNames.push(rows[i].driverName);
-      }
-      driverNames = Array.from(new Set(driverNames));
-      for (let i = 0; i < rows.length; i++) {
-        staffNames.push(rows[i].staffName);
-      }
-      staffNames = Array.from(new Set(staffNames));
       totalEntries = rows.length;
       totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
 
@@ -292,28 +208,9 @@ async function fetchRows() {
     }
   }
 
-  async function gotoAddTrip() {
-    navigate('/scheduleTrip');
-  }
-
-async function fetchTomorrowsTime() {
-  try {
-    const response = await fetch('http://localhost:3000/api/route/time');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    tomorrowTime = data;
-    console.log('Tomorrow\'s time:', tomorrowTime);
-  } catch (error) {
-    console.error('Error fetching tomorrow\'s time:', error);
-  }
-}
-
 onMount(async () => {
     await fetchRoutes();
     await fetchRows();
-    await fetchTomorrowsTime();
   });
 </script>
 
@@ -332,15 +229,12 @@ onMount(async () => {
   <div class="flex-1 ml-56 w-full px-4 py-8 bg-white-700">
     <div class="flex items-start justify-start h-18">
       <h1 class="text-3xl font-bold underline uppercase text-maroon-500">
-        Upcoming Trips
+        Past Trips
       </h1>
     </div>
 
     <!-- Search Bar -->
     <div class="flex mb-4 justify-end">
-      <button
-        class=" mr-3 bg-indigo-700 hover:bg-indigo-900 text-white-700 font-semibold py-2 px-4 rounded-full focus:translate-y-1.5"
-        on:click={gotoAddTrip}> Add Trip</button>
       <span class="h-8 bg-gray-300 rounded-full">
         <input
           id="search"
@@ -363,15 +257,6 @@ onMount(async () => {
       </span>
     </div>
 
-    <!--date-->
-    <div class="flex mb-2 justify-start">
-      <span class="h-10 font-bold text-black-700"> Date: </span>
-      {#if tomorrowTime}
-      <span class="h-10 ml-2 font-bold text-black-700">{tomorrowTime.time}</span>
-      {/if}
-    </div>
-   
-
     <!-- Entries per page -->
     <div class="flex mb-1">
       <label for="entriesToShow" class="text-sm font-semibold text-gray-700"
@@ -392,7 +277,7 @@ onMount(async () => {
 
     <!-- Table -->
     <div class="bg-white-700 shadow-md my-3 overflow-x-auto">
-      <table class="w-full table-fixed text-normal">
+      <table class="w-full table-auto text-normal">
         <!-- Table header -->
         <thead>
           <tr>
@@ -422,6 +307,37 @@ onMount(async () => {
                     <span
                       class="inline-block ml-1 my-0 text-xs text-maroon-900 hover:text-black-900"
                       class:shrink={shrinkID === "iddesc"}>▼</span
+                    >
+                  </button>
+                </div>
+              </div></th
+            >
+            <th class="bg-white-700 border-b  w-1/12">
+              <div
+                class="flex items-center justify-center space-x-1 bg-red-70 rounded-full"
+              >
+                <span
+                  class="pl-2 font-semibold uppercase text-xs text-black-700"
+                >
+                  Date
+                </span>
+                <div class="flex flex-col">
+                  <button
+                    class="h-3 bg-transparent transform scale-75"
+                    on:click={() => sortTable("date", "asc")}
+                  >
+                    <span
+                      class="inline-block ml-1 my-0 text-xs text-maroon-900 hover:text-black-900"
+                      class:shrink={shrinkID === "dateasc"}>▲</span
+                    >
+                  </button>
+                  <button
+                    class="bg-transparent transform scale-75"
+                    on:click={() => sortTable("date", "desc")}
+                  >
+                    <span
+                      class="inline-block ml-1 my-0 text-xs text-maroon-900 hover:text-black-900"
+                      class:shrink={shrinkID === "datedesc"}>▼</span
                     >
                   </button>
                 </div>
@@ -553,44 +469,25 @@ onMount(async () => {
                   >{row.id}</td
                 >
                 <td
+                  class="py-2 px-2 border-b text-center  w-1/12"
+                  >{row.date}</td
+                >
+                <td
                   class="py-2 px-2 border-b text-center  w-1/6"
                   >{row.currentRoute}</td
                 >
-                <td class="py-2 px-2 border-b  w-1/6">
-                  <select
-                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                    bind:value={row.busNumber}
-                    on:change={(event) =>
-                      updateData(row.id, "busNumber", event)}
-                  >
-                    {#each busNumbers as busNumber}
-                      <option value={busNumber}>{busNumber}</option>
-                    {/each}
-                  </select>
-                </td>
-                <td class="py-2 px-2 border-b  w-1/6">
-                  <select
-                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                    bind:value={row.driverName}
-                    on:change={(event) =>
-                      updateData(row.id, "driverName", event)}>
-                    {#each driverNames as driverName}
-                      <option value={driverName}>{driverName}</option>
-                    {/each}
-                  </select>
-                </td>
-                <td class="py-2 px-2 border-b  w-1/6">
-                  <select
-                    class="w-full px-1 text-nowrap text-ellipsis bg-gray-100 rounded-full focus:bg-white-700 text-black-700 text-sm"
-                    bind:value={row.staffName}
-                    on:change={(event) =>
-                      updateData(row.id, "staffName", event)}
-                  >
-                    {#each staffNames as staffName}
-                      <option value={staffName}>{staffName}</option>
-                    {/each}
-                  </select>
-                </td>
+                <td
+                  class="py-2 px-2 border-b text-center  w-1/6"
+                  >{row.busNumber}</td
+                >
+                <td
+                  class="py-2 px-2 border-b text-center  w-1/6"
+                  >{row.driverName}</td
+                >
+                <td
+                  class="py-2 px-2 border-b text-center  w-1/6"
+                  >{row.staffName}</td
+                >
                 <td
                   class="py-2 pl-2 pr-2 border-b text-center  w-1/12"
                   >{row.shift}</td
@@ -605,21 +502,6 @@ onMount(async () => {
                       <i
                         class="bx bxs-info-circle text-maroon-500 hover:text-maroon-900 scale-150"
                       ></i>
-                    </button>
-                    <button
-                      class="bg-transparent mx-2"
-                      class:shrink={shrinkID === row.id + "save"}
-                      on:click={() => saveRow(row.id)}
-                    >
-                      {#if changedRows.includes(row.id)}
-                        <i
-                          class="bx bxs-save text-maroon-500 hover:text-maroon-900 scale-150"
-                        ></i>
-                      {:else}
-                        <i
-                          class="bx bxs-check-circle text-lime-500 hover:text-lime-700 scale-150"
-                        ></i>
-                      {/if}
                     </button>
                     <button
                       class="bg-transparent mx-2"

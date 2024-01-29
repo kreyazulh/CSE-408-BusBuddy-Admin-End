@@ -72,7 +72,7 @@
         <div>
           <p class="font-semibold">Route ID: {route.id}</p>
           <p>Terminal Point: {route.terminal_point}</p>
-          <p>Stations: {route.names.join(', ')}</p>
+          <p>Stations: {route.names.join(' -> ')}</p>
         </div>
         <button
           class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
