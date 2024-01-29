@@ -112,7 +112,7 @@ async function handleDeleteConfirm() {
   
   if (rowIndex !== -1) {
     try {
-      const response = await fetch("http://localhost:3000/api/trip/delete", {
+      const response = await fetch("http://localhost:3000/api/trip/allocation/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
