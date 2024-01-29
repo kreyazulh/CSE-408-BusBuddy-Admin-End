@@ -38,3 +38,20 @@ describe('POST /api/bus/add', () => {
     });
 
   });
+
+  describe('DELETE /api/bus/delete', () => {
+    it('should delete a bus and return a success message', async () => {
+      const busToDelete = {
+        id: 'BA-11-1234', // Use the ID of the bus you want to delete
+      };
+  
+      const res = await request(app)
+        .delete('/api/bus/delete') // Adjust if your route is different
+        .send(busToDelete)
+        .expect(200); // Adjust if your endpoint sends a different status code
+  
+      // Check if the response is as expected
+      expect(res.body).toEqual({ message: 'Bus deleted successfully' });
+    });
+  
+  });
