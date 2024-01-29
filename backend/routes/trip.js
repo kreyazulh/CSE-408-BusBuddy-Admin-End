@@ -166,7 +166,7 @@ router.delete('/delete/:routeId', async (req, res) => {
   
     // Construct the SQL query to delete data from the 'allocation' table
     const deleteQuery = `
-      DELETE FROM allocation
+      DELETE FROM trip
       WHERE id = $1
     `;
   
