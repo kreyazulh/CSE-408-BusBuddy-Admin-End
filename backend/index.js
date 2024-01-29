@@ -64,12 +64,14 @@ app.use((req, res, next) => {
 var auth = require('./routes/auth');
 var bus = require('./routes/bus');
 var route = require('./routes/route');
+var trip = require('./routes/trip');
 var station = require('./routes/station');
 var staff = require('./routes/staff');
 var audit = require('./routes/admin');
 
 app.use('/api/auth', auth);
 app.use('/api/route', route);
+app.use('/api/trip', trip);
 app.use('/api/station', station);
 app.use('/api/staff', staff);
 app.use('/api/bus', bus);
