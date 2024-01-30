@@ -13,6 +13,7 @@
   import BusList from './page/busList.svelte';
   import RouteList from './page/routeList.svelte';
   import AdminProfile from './page/adminProfile.svelte';
+  import map from './page/map.svelte';
 
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
@@ -51,6 +52,7 @@
     <Route path="/busAdd" component={busAdd} />
     <Route path="/routeList" component={RouteList} />
     <Route path="/profile" component={AdminProfile} />
+    <Route path="/map" component={map} />
   </Router>
 </main>
 

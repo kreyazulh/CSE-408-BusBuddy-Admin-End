@@ -186,4 +186,26 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
+  router.get('/tracking', async (req, res) => {
+    const client = req.client;
+    const { tripId } = req.query;  // Assuming you're passing a tripId as a query parameter
+  
+    // Construct the SQL query to fetch the allocation data
+    // Using parameterized query for 'tripId'
+    const query = `
+      SELECT path FROM trip
+      WHERE id = $1
+    `;
+  
+    try {
+      // Execute the query with the tripId from the query parameters
+      const result = await client.query(query, [tripId]);
+      console.log(result);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching trip data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   module.exports = router;
