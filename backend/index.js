@@ -5,6 +5,10 @@ const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
+(async () => {
+  const module = await import('node-fetch');
+})();
+
 var app = Express();
 
 app.use(
@@ -78,7 +82,58 @@ app.use('/api/bus', bus);
 app.use('/api/admin', audit);
 
 
+fetch('http://3.141.62.8:6969/api/getTripData', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ trip_id: '1924' })
+})
+.then(response => response.json()) // This returns a Promise
+.then(data => {
+  console.log(data); // Log the actual data here
+})
+.catch(error => {
+  console.error('Error:', error);
+});
+
+
+
+
 module.exports = app;
+
+
+// {
+//   success: true,
+//   id: '1924',
+//   start_timestamp: '2024-01-31T10:58:29.913Z',
+//   route: '2',
+//   time_type: 'morning',
+//   time_list: [
+//     { station: '12', time: null },
+//     { station: '13', time: null },
+//     { station: '14', time: null },
+//     { station: '15', time: null },
+//     { station: '16', time: null },
+//     { station: '70', time: null }
+//   ],
+//   travel_direction: 'to_buet',
+//   bus: 'Ba-22-4326',
+//   is_default: true,
+//   driver: 'rafiqul',
+//   helper: 'jamal7898',
+//   approved_by: null,
+//   end_timestamp: null,
+//   start_location: { latitude: '23.7481383', longitude: '90.3800983' },
+//   end_location: null,
+//   path: [
+//     { latitude: '23.747948333333333', longitude: '90.38021' },
+//     { latitude: '23.74714', longitude: '90.38071' },
+//     { latitude: '23.746336666666668', longitude: '90.381165' },
+//     { latitude: '23.745058333333333', longitude: '90.381905' }
+//   ],
+//   passenger_count: 0
+// }
 
 
 
