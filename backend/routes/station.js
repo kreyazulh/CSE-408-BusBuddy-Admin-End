@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 // Route to get station names
+// usage : createRoute
 router.get('/', async (req, res) => {
     const client = req.client;
     try {

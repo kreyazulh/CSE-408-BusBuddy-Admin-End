@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 // Route to get bus staff data
+// usage : busStaffList
 router.get('/', (req, res) => {
     const client = req.client;
     const query = 'SELECT * FROM bus_staff';
@@ -16,6 +17,7 @@ router.get('/', (req, res) => {
     });
   });
 
+// usage : scheduleTrip
   router.get('/driver', (req, res) => {
     const client = req.client;
     const query = 'SELECT * FROM bus_staff WHERE role=$1';
@@ -30,6 +32,7 @@ router.get('/', (req, res) => {
     });
   });
 
+  // usage : scheduleTrip
   router.get('/collector', (req, res) => {
     const client = req.client;
     const query = 'SELECT * FROM bus_staff WHERE role=$1';
@@ -44,7 +47,7 @@ router.get('/', (req, res) => {
     });
   });
 
-
+// usage : staffProfile
   router.get('/:staffId', (req, res) => {
     const client = req.client;
     const { staffId } = req.params;
@@ -60,6 +63,7 @@ router.get('/', (req, res) => {
     });
   });
 
+  // usage : addStaff
 router.post('/add', (req, res) => {
     const client = req.client;
     console.log(req.body);
@@ -76,6 +80,7 @@ router.post('/add', (req, res) => {
     });
 });
 
+// usage : busStaffList
 router.delete('/delete', async (req, res) => {
   const { id } = req.body;
   const client = req.client;
