@@ -82,19 +82,34 @@ app.use('/api/bus', bus);
 app.use('/api/admin', audit);
 
 
-fetch('http://3.141.62.8:6969/api/getTripData', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ trip_id: '1924' })
-})
-.then(response => response.json()) // This returns a Promise
-.then(data => {
-  console.log(data); // Log the actual data here
-})
-.catch(error => {
-  console.error('Error:', error);
+app.post('/api/proxyGetTripData', async (req, res) => {
+  console.log(req.body);
+
+  try {
+    // Call the other API
+    const apiResponse = await fetch('http://3.141.62.8:6969/api/getTripData', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(req.body)
+    });
+
+    // Check if the request was successful
+    if (!apiResponse.ok) {
+      throw new Error(`API responded with status ${apiResponse.status}`);
+    }
+
+    // Parse the JSON from the API response
+    const data = await apiResponse.json();
+
+    // Send the data back to the frontend
+    res.json(data);
+  } catch (error) {
+    // Handle any errors that occurred during the process
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 

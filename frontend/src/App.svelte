@@ -14,7 +14,9 @@
   import RouteList from './page/routeList.svelte';
   import AdminProfile from './page/adminProfile.svelte';
   import TripDetails from './page/tripDetails.svelte';
-  import map from './page/map.svelte';
+  import ShowLive from './page/showLive.svelte';
+  import LiveTrack from './page/liveTrack.svelte';
+
 
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
@@ -53,8 +55,10 @@
     <Route path="/busAdd" component={busAdd} />
     <Route path="/routeList" component={RouteList} />
     <Route path="/profile" component={AdminProfile} />
-    <Route path="/map" component={map} />
+    <Route path="/showLive" component={ShowLive} />
     <Route path="/tripDetails" component={TripDetails} />
+    <Route path="/liveTrack" component={LiveTrack} />
   </Router>
+
 </main>
 

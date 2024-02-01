@@ -169,4 +169,19 @@ router.delete('/delete/:routeId', async (req, res) => {
     });
   });
 
+  router.get('/liveTrips', (req, res) => {
+    const client = req.client;
+    let query = 'SELECT * FROM trip WHERE is_live=\'true\'';
+
+  
+    client.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
+      }
+    });
+  });
+
   module.exports = router;
