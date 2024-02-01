@@ -10,6 +10,7 @@ router.get('/check-session', (req, res) => {
   });
 
 // Route to handle login
+// usage : adminLogin
 router.post('/login', (req, res) => {
     const client = req.client;
     const { id, password } = req.body;
@@ -33,20 +34,22 @@ router.post('/login', (req, res) => {
     });
   });
 
+
+// usage : navbar
 router.post('/logout', (req, res) => {
-    req.session.userId = null;
-    sharedConfig.userId = null;
-    console.log("logout");
-    req.session.destroy((error) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.clearCookie('connect.sid');
-  
-        res.json({ status: 'success' });
-      }
-    });
+  req.session.userId = null;
+  sharedConfig.userId = null;
+  console.log("logout");
+  req.session.destroy((error) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.clearCookie('connect.sid');
+
+      res.json({ status: 'success' });
+    }
   });
+});
 
 module.exports = router;

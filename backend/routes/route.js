@@ -10,6 +10,7 @@ function getTomorrowsDate() {
   return tomorrow.toISOString().split('T')[0];
 }
 
+// usage : createRoute, routeList, upcomingTrips 
 router.get('/', async (req, res) => {
     const client = req.client;
     const routeQuery = 'SELECT * FROM route ORDER BY id ASC';
@@ -32,7 +33,8 @@ router.get('/', async (req, res) => {
     }
   });
 
-  
+
+  // usage : createRoute,
   router.post('/create', async (req, res) => {
     const client = req.client;
     try {
@@ -64,6 +66,7 @@ router.get('/', async (req, res) => {
   });
 
   // Route to delete a bus route
+  // usage : createRoute, routeList
 router.delete('/delete/:routeId', async (req, res) => {
     const client = req.client;
     const { routeId } = req.params;
@@ -83,6 +86,7 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
 
+  // usage : upcomingTrips
   router.get('/time', (req, res) => {
     try {
       const tomorrowsDateTime = getTomorrowsDate();
@@ -93,7 +97,7 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
-
+  // usage : upcomingTrips
   router.get('/allocation', (req, res) => {
     const client = req.client;
     const date = req.query.date || getTomorrowsDate();
@@ -115,6 +119,7 @@ router.delete('/delete/:routeId', async (req, res) => {
     });
   });
 
+  // usage : scheduleTrip
   router.post('/allocation/add', async (req, res) => {
     const { date, route, shift, bus_id, driver, collector } = req.body;
     const client = req.client;
@@ -142,6 +147,7 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
+  // usage : scheduleTrip
   router.post('/allocation/bulk', async (req, res) => {
     const { date } = req.body;
     const client = req.client;
@@ -186,6 +192,7 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
+  // usage : upcomingTrips
   router.post('/allocation/delete', async (req, res) => {
     const { id } = req.body; // assuming the ID is sent in the request body
     const client = req.client;
