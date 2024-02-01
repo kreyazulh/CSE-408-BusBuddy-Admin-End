@@ -90,8 +90,6 @@ router.delete('/delete/:routeId', async (req, res) => {
   router.post('/delete', async (req, res) => {
     const { id } = req.body; // assuming the ID is sent in the request body
     const client = req.client;
-
-    console.log(req.body);
   
     // Construct the SQL query to delete data from the 'allocation' table
     const deleteQuery = `
@@ -119,6 +117,7 @@ router.delete('/delete/:routeId', async (req, res) => {
   router.get('/tracking', async (req, res) => {
     const client = req.client;
     const { tripId } = req.query;  // Assuming you're passing a tripId as a query parameter
+    console.log(tripId);
   
     // Construct the SQL query to fetch the allocation data
     // Using parameterized query for 'tripId'
@@ -140,10 +139,26 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   router.get('/validTripId', (req, res) => {
     const client = req.client;
-    let query = 'SELECT id FROM trip WHERE path IS NOT NULL';
+    let query = 'SELECT * FROM trip WHERE path IS NOT NULL';
 
   
     client.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        console.log(results.rows);
+        res.json(results.rows);
+      }
+    });
+  });
+
+  router.get('/validTripId/:tripId', (req, res) => {
+    const client = req.client;
+    const { tripId } = req.params;
+    let query = 'SELECT * FROM trip WHERE id = $1 AND path IS NOT NULL';
+  
+    client.query(query, [tripId], (error, results) => {
       if (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

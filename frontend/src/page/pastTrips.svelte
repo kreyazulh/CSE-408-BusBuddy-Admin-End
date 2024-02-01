@@ -152,6 +152,7 @@ async function handleDeleteConfirm() {
   // Function to show the details of a row
   function showDetails(id) {
     handleClick(id + "details");
+    navigate(`/tripDetails?tripId=${id}`);
     // Here you would add your logic to show the details of the row
   }
 
