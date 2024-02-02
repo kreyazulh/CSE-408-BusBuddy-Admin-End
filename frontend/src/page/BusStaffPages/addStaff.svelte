@@ -18,6 +18,7 @@
   let route= "";
   let dob = "";
   let address = "";
+  let salary = 0;
 
 
   let allocatedRoutes = [];
@@ -193,9 +194,20 @@ async function fetchBuses() {
               <label class="block text-gray-600 font-semibold mb-2" for="address">Address:</label>
               <input
                 placeholder="eg: 123, ABC Road, XYZ"
-                class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
                 type="text"
                 bind:value={address}
+              />
+            </div>
+
+            <!-- salary -->
+            <div class="my-4 px-5">
+              <label class="block text-gray-600 font-semibold mb-2" for="salary">Salary:</label>
+              <input
+                placeholder="eg: 25000"
+                class="{salary===0 ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                type="number"
+                bind:value={salary}
               />
             </div>
           </div>
@@ -307,6 +319,11 @@ async function fetchBuses() {
       </div>
     </div>
 </main>
+{:else}
+  <div>
+    <p class="text-3xl font-extrabold text-maroon-500">Access Denied</p>
+    {navigate("/login")}
+  </div>
 {/if}
 
 <style>
