@@ -124,9 +124,7 @@ async function fetchBuses() {
 
 
 {#if $isAuthenticated}
-  <main
-    class="flex min-h-screen min-w-full bg-gradient-to-b from-maroon-500 via-maroon-900 to-black-900"
-  >
+  <main class="flex min-h-screen min-w-full bg-gradient-to-b from-maroon-500 via-maroon-900 to-black-900">
     <div>
       <Navbar />
     </div>

@@ -7,7 +7,7 @@
   import busAdd from './page/busAdd.svelte';
   import BusStaffList from './page/busStaffList.svelte';
   import CreateRoute from './page/createRoute.svelte';
-  import StaffProfile from './page/staffProfile.svelte';
+  import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
   import ScheduleTrip from './page/scheduleTrip.svelte';
   import BusList from './page/busList.svelte';
