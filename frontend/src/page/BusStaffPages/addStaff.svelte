@@ -1,11 +1,11 @@
 <script>
-  import Navbar from "./navbar.svelte";
-  import { isAuthenticated } from "../auth";
+  import Navbar from "../GlobalComponents/navbar.svelte";
+  import { isAuthenticated } from "../../auth";
   import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
-  import Password from "./password.svelte";
-  import ErrorPopUp from "./errorPopUp.svelte";
-  import SuccessfulPopUp from "./successfulPopUp.svelte";
+  import Password from "../GlobalComponents/password.svelte";
+  import ErrorPopUp from "../GlobalComponents/PopUps/errorPopUp.svelte";
+  import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
 
   let isShrink = false;
 
@@ -225,13 +225,13 @@ async function fetchBuses() {
               <option value="" hidden>Select Route</option>
               <optgroup label="Allocated Route" class="text-maroon-500 italic">
               {#each allocatedRoutes as route}
-                <option value={route.route_id} class="text-black-900">{route.route_name}</option>
+                <option value={route.route_id} class="text-black-900 not-italic">{route.route_name}</option>
               {/each}
               </optgroup>
               <hr class="my-2 border border-gray-200" />
               <optgroup label="Unallocated Route" class="text-maroon-500 italic">
                 {#each unallocatedRoutes as route}
-                  <option value={route.route_id} class="text-black-900">{route.route_name}</option>
+                  <option value={route.route_id} class="text-black-900 not-italic">{route.route_name}</option>
                 {/each}
                 </optgroup>
               </select>
@@ -247,13 +247,13 @@ async function fetchBuses() {
               <option value="" hidden>Select Bus</option>
               <optgroup label="Allocated Bus" class="text-maroon-500 italic">
               {#each allocatedBuses as bus}
-                <option value={bus.bus_no} class="text-black-900">{bus.bus_no}</option>
+                <option value={bus.bus_no} class="text-black-900 not-italic">{bus.bus_no}</option>
               {/each}
               </optgroup>
               <hr class="my-2 border border-gray-200" />
               <optgroup label="Unallocated Bus" class="text-maroon-500 italic">
                 {#each unallocatedBuses as bus}
-                  <option value={bus.bus_no} class="text-black-900">{bus.bus_no}</option>
+                  <option value={bus.bus_no} class="text-black-900 not-italic">{bus.bus_no}</option>
                 {/each}
                 </optgroup>
               </select>
