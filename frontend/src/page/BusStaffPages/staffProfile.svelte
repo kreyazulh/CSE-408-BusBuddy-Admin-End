@@ -201,6 +201,5 @@
 {:else}
   <div>
     <p class="text-3xl font-extrabold text-maroon-500">Access Denied</p>
-    {navigate("/login")}
   </div>
 {/if}

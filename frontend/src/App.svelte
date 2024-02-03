@@ -8,6 +8,7 @@
   import BusStaffList from './page/busStaffList.svelte';
   import CreateRoute from './page/createRoute.svelte';
   import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
+  import AddStudent from './page/userPages/addStudent.svelte';
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
   import ScheduleTrip from './page/scheduleTrip.svelte';
   import BusList from './page/busList.svelte';
@@ -58,6 +59,7 @@
     <Route path="/showLive" component={ShowLive} />
     <Route path="/tripDetails" component={TripDetails} />
     <Route path="/liveTrack" component={LiveTrack} />
+    <Route path="/addStudent" component={AddStudent} />
   </Router>
 
 </main>
