@@ -35,7 +35,7 @@ try {
 
   const fetchStationNames = async () => {
       try {
-          const response = await fetch('http://localhost:3000/api/station/', {
+          const response = await fetch('http://localhost:3000/api/station/name', {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',

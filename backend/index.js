@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 (async () => {
   const module = await import('node-fetch');
@@ -72,6 +73,7 @@ var trip = require('./routes/trip');
 var station = require('./routes/station');
 var staff = require('./routes/staff');
 var audit = require('./routes/admin');
+var user = require('./routes/user');
 
 app.use('/api/auth', auth);
 app.use('/api/route', route);
@@ -80,6 +82,18 @@ app.use('/api/station', station);
 app.use('/api/staff', staff);
 app.use('/api/bus', bus);
 app.use('/api/admin', audit);
+app.use('/api/user', user);
+
+
+
+// (async () => {
+//   try {
+//     const hashedPassword = await bcrypt.hash("password", 10);
+//     console.log(hashedPassword);
+//   } catch (error) {
+//     console.error('Error hashing password:', error);
+//   }
+// })();
 
 
 app.post('/api/proxyGetTripData', async (req, res) => {

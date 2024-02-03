@@ -3,10 +3,23 @@ var router = express.Router();
 
 // Route to get station names
 // usage : createRoute
-router.get('/', async (req, res) => {
+router.get('/name', async (req, res) => {
     const client = req.client;
     try {
         const query = 'SELECT name FROM station';
+        const result = await client.query(query);
+  
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  router.get('/', async (req, res) => {
+    const client = req.client;
+    try {
+        const query = 'SELECT * FROM station';
         const result = await client.query(query);
   
         res.json(result.rows);

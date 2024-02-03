@@ -50,6 +50,11 @@ function shuffleArray(array) {
   return array;
 }
 
+function onInputChanged(event) {
+    password = event.target.value;
+    dispatch('passwordChanged', password);
+  }
+
 function passwordChanged(){
   let newPassword = generatePassword();
   if (newPassword !== password) {
@@ -70,6 +75,7 @@ onMount(() => {
   href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css"
 />
 
+
 <div class="relative mb-2">
     {#if showPasswordField}
       <input
@@ -79,6 +85,7 @@ onMount(() => {
         placeholder="Select Password"
         on:input={(e) => {
           checkStrength();
+          onInputChanged(e);
         }}
         bind:value={password}
       />
@@ -90,6 +97,7 @@ onMount(() => {
         placeholder="Select Password"
         on:input={(e) => {
           checkStrength();
+          onInputChanged(e);
         }}
         bind:value={password}
       />
