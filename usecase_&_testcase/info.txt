@@ -1,0 +1,5 @@
+actors: Admin, Student, Bus_Staff, Teacher
+
+usecase: name, scenario, actors, preconditions, steps
+
+testcase: name, description, input, expected (outcome, status)

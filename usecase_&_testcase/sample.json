@@ -1,0 +1,351 @@
+[
+    {
+        "usecase": {
+            "name": "Bus Tracking",
+            "scenario": "Admin can track a live bus.",
+            "actors": "Admin",
+            "preconditions": "Driver must initiate an allocated trip ",
+            "steps": [
+              "Admin navigates to the live tracking section",
+              "Admin selects a live trip from the list",
+              "System displays the live trace of the bus on the map"
+            ]
+        },
+        "testCases": [
+          {
+            "name": "Live Trip Tracking",
+            "description": "Verify that Admin selects a valid live trip ID to view the bus's path on the map.",
+            "input": {
+              "tripId": "1931"
+            },
+            "expected": {
+              "outcome": "Bus trace visible on map",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Bus Tracking Finished",
+            "description": "Verify that Admin selects a finished trip ID, which should not be displayed.",
+            "input": {
+              "tripId": "1931"
+            },
+            "expected": {
+              "outcome": "Bus not displayed on map",
+              "status": "Success"
+            }
+          }
+        ]
+      },
+      {
+        "usecase": {
+          "name": "Add a trip allocation",
+          "scenario": "Admin defines a new trip allocation",
+          "actors": "Admin",
+          "preconditions": "Routes, Buses and Bus Staffs are available.",
+          "steps": [
+            "Admin navigates to the trip allocation module",
+            "Admin enters details for a new trip including route, driver, bus, and time",
+            "Admin submits the trip allocation",
+            "Admin initiates bulk allocation",
+            "System adds the trip allocation to the database"
+          ]
+        },
+        "testCases": [
+          {
+            "name": "Single Trip Allocation",
+            "description": "Verify that Admin adds a single trip allocation to the database.",
+            "input": {
+              "route": "Badda",
+              "driver": "altaf68",
+              "helper": "hossain43",
+              "bus": "Ba-12-5555",
+              "shift": "morning",
+              "time": "2023-10-15T08:00:00Z",
+              "admin": "mashroor"
+            },
+            "expected": {
+              "outcome": "Trip added to database",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Bulk Trip Allocation",
+            "description": "Verify that Admin makes bulk allocation of all trips due for the next day.",
+            "input": {
+              "date": "2023-10-16",
+              "admin": "mashroor"
+            },
+            "expected": {
+              "outcome": "Bulk Allocation saved successfully",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Empty Trip Data Selection",
+            "description": "Verify that the system handles the case where an Admin fails to submit an allocation with empty fields.",
+            "input": {
+              "route": "",
+              "driver": "",
+              "helper": "",
+              "bus": "Ba-12-5555",
+              "shift": "",
+              "time": "",
+              "admin": "mashroor"
+            },
+            "expected": {
+              "outcome": "Error saving bulk allocation",
+              "status": "Success"
+            }
+          }
+        ]
+      },
+      {
+        "usecase": {
+          "name": "View lists of user, bus, route, staff etc",
+          "scenario": "Authorized Admin can view list of all buses, routes, users and staff",
+          "actors": "Admin",
+          "preconditions": "Routes, Buses and Bus Staffs are available.",
+          "steps": [
+            "Admin logs into the system",
+            "Admin navigates to the respective section (users, buses, routes, staff)",
+            "Admin views a list of entities in the selected section",
+            "Admin clicks on an entity to view its full details"
+          ]
+        },
+        
+        "testCases": [
+          {
+            "name": "View Users List",
+            "description": "Verify that Admin can view the list of all users.",
+            "input": {},
+            "expected": {
+              "outcome": "User list displayed",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "View Buses List",
+            "description": "Verify that Admin can view the list of all buses.",
+            "input": {},
+            "expected": {
+              "outcome": "Bus list displayed",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "View Routes List",
+            "description": "Verify that Admin can view the list of all Routes.",
+            "input": {},
+            "expected": {
+              "outcome": "Route list displayed",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "View Staff List",
+            "description": "Verify that Admin can view the list of all staff.",
+            "input": {},
+            "expected": {
+              "outcome": "Staff list displayed",
+              "status": "Success"
+            }
+          }
+        ]
+      },
+      {
+        "usecase": {
+          "name": "Add data to user, bus, route, staff etc database",
+          "scenario": "Authorized Admin can add new buses, routes, users and staff",
+          "actors": "Admin",
+          "preconditions": "Admin needs to be logged in.",
+          "steps": [
+            "Admin logs into the system",
+            "Admin navigates to the data addition section for users, buses, routes, or staff",
+            "Admin fills in the required fields for the new entity",
+            "Admin submits the request to add the new entity",
+            "System validates the data and adds the entity to the database"
+          ]
+        },
+        "testCases": [
+          {
+            "name": "New User Addition",
+            "description": "Verify that Admin can add a new user to the database.",
+            "input": {
+              "id" : "201905069",
+              "name": "John Doe",
+              "email": "johndoe@example.com",
+              "phone": "01912345678",
+              "role": "student"
+            },
+            "expected": {
+              "outcome": "New user added",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "New Bus Addition",
+            "description": "Verify that Admin can add a new Bus to the database.",
+            "input": {
+              "id" : "Ba-12-1234",
+              "type": "minibus",
+              "capacity": "60"
+            },
+            "expected": {
+              "outcome": "New bus added",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "New Bus Addition Missing Field",
+            "description": "Admin attempt to add a new bus with a missing mandatory field.",
+            "input": {
+              "id": "",
+              "capacity": ""
+            },
+            "expected": {
+              "outcome": "Bus not added",
+              "status": "Failure"
+            }
+          }
+        ]
+      },
+      {
+        "usecase": {
+          "name": "Feedbacks from clients and respond",
+          "scenario": "Authorized Admin can view and respond to client feedbacks",
+          "actors": "Admin",
+          "preconditions": "Admin needs to be logged in.",
+          "steps": [
+            "Admin logs into the system",
+            "Admin navigates to the feedback section",
+            "Admin views all feedbacks from clients",
+            "Admin selects a feedback to read",
+            "Admin responds to the feedback",
+            "System updates the feedback status and optionally notifies the client"
+          ]
+        },
+        "testCases": [
+          {
+            "name": "Feedback List",
+            "description": "Verify that Admin can view all client's feedback.",
+            "input": {},
+            "expected": {
+              "outcome": "Feedback List Shown",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Feedback Details",
+            "description": "Verify that Admin can view a specific client's feedback.",
+            "input": {
+              "feedbackId" : "183"
+            },
+            "expected": {
+              "outcome": "Feedback Details Shown",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Feedback Response",
+            "description": "Verify that Admin can respond to client's feedback.",
+            "input": {
+              "feedbackId": "183",
+              "response" : "the concerned issue is being looked into soon."
+            },
+            "expected": {
+              "outcome": "Feedback Responded",
+              "status": "Success"
+            }
+          }
+        ]
+      },
+      {
+        "usecase": {
+          "name": "Requisition from teachers and respond",
+          "scenario": "Authorized Admin can view and respond to teacher requisition requests.",
+          "actors": "Admin",
+          "preconditions": "Admin needs to be logged in.",
+          "steps": [
+            "Admin logs into the system",
+            "Admin navigates to the requisition requests section",
+            "Admin views all requisition requests from teachers",
+            "Admin selects a request to view details",
+            "Admin approves or rejects the request",
+            "System updates the request status"
+          ]
+        },
+        "testCases": [
+          {
+            "name": "Requisition List",
+            "description": "Verify that Admin can view all Teacher requisitions.",
+            "input": {},
+            "expected": {
+              "outcome": "Requisition List Shown",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Requisition Approval",
+            "description": "Admin views and approves a teacher's requisition request.",
+            "input": {
+              "requestId": "123"
+            },
+            "expected": {
+              "outcome": "Request approved",
+              "status": "Approved"
+            }
+          },
+          {
+            "name": "Requisition Rejection",
+            "description": "Admin views and rejects a teacher's requisition request.",
+            "input": {
+              "requestId": "456"
+            },
+            "expected": {
+              "outcome": "Request rejected",
+              "status": "Rejected"
+            }
+          }
+        ]
+      },
+      {
+        "usecase": {
+          "name": "Billing and Inventory list for automobiles",
+          "scenario": "Authorized Admin can view and updte billing and inventory management.",
+          "actors": "Admin",
+          "preconditions": "Admin needs to be logged in.",
+          "steps": [
+            "Admin logs into the system",
+            "Admin navigates to the inventory section",
+            "Admin views the list of automobile parts and their billing information",
+            "Admin adds or deletes inventory items as needed",
+            "System updates the inventory list"
+          ]
+        },
+        "testCases": [
+          {
+            "name": "Inventory List",
+            "description": "Admin views the inventory list of automobile parts.",
+            "input": {},
+            "expected": {
+              "outcome": "Inventory list displayed",
+              "status": "Success"
+            }
+          },
+          {
+            "name": "Inventory Item Addition",
+            "description": "Admin adds a new item to the automobile parts inventory.",
+            "input": {
+              "partName": "Brake Pad",
+              "quantity": "100",
+              "price": "20"
+            },
+            "expected": {
+              "outcome": "Item added to inventory",
+              "status": "Success"
+            }
+          }
+        ]
+      }
+    ]
+  
