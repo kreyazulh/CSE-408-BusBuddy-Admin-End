@@ -239,9 +239,11 @@
                   errorMessage = 'Please enter a valid name';
                 }else if(phone.length!=11){
                   errorMessage = 'Please enter a valid phone number';
-                } else if(password.length<8){
+                } 
+                else if(password.length<8){
                   errorMessage = 'Password must be at least 8 characters long';
-                }else {
+                }
+                else {
                   addStudent();
                 }
               }}>Add</button>

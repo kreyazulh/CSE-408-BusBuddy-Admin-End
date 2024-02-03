@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const sharedConfig = require('.././sharedId');
+const bcrypt = require('bcrypt');
 
 
 router.get('/check-session', (req, res) => {
@@ -10,29 +11,46 @@ router.get('/check-session', (req, res) => {
   });
 
 // Route to handle login
-// usage : adminLogin
-router.post('/login', (req, res) => {
+
+  router.post('/login', async (req, res) => {
     const client = req.client;
+    // Extract login credentials from request body
     const { id, password } = req.body;
-    const query = 'SELECT * FROM admin WHERE id = $1 AND password = $2';
-  
-    client.query(query, [id, password], (error, results) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        if (results.rowCount === 1) {
-          req.session.userId = id;
-          sharedConfig.userId = id;
-          console.log("login");
-          console.log(sharedConfig.userId);
-          res.json({ status: 'success' });
-        } else {
-          res.json({ status: 'fail' });
+
+    try {
+        // Fetch user from the database by phone
+        const queryResult = await client.query(
+            "SELECT * FROM admin WHERE id = $1",
+            [id]
+        );
+
+        if (queryResult.rowCount === 0) {
+            // If no user is found, send an error response
+            return res.status(404).send({ success: false, message: "Admin not found." });
         }
-      }
-    });
-  });
+
+        // User found, extract the stored hashed password
+        const admin = queryResult.rows[0];
+        const hashedPassword = admin.password;
+
+        // Compare the provided password with the stored hashed password
+        const isMatch = await bcrypt.compare(password, hashedPassword);
+
+        if (isMatch) {
+            // Passwords match, login successful
+            req.session.userId = id;
+            sharedConfig.userId = id;
+            res.send({ status: "success", message: "Login successful." });
+            // Proceed to create session/token or any post-login process
+        } else {
+            // Passwords do not match, login failed
+            res.status(401).send({ status: "fail", message: "Incorrect password." });
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).send({ status: "fail", message: "Error processing login request." });
+    }
+});
 
 
 // usage : navbar
