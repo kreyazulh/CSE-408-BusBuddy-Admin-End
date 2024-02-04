@@ -74,6 +74,7 @@ var station = require('./routes/station');
 var staff = require('./routes/staff');
 var audit = require('./routes/admin');
 var user = require('./routes/user');
+var feedback = require('./routes/feedback');
 
 app.use('/api/auth', auth);
 app.use('/api/route', route);
@@ -83,6 +84,7 @@ app.use('/api/staff', staff);
 app.use('/api/bus', bus);
 app.use('/api/admin', audit);
 app.use('/api/user', user);
+app.use('/api/feedback', feedback);
 
 
 
