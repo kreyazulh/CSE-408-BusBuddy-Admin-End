@@ -17,6 +17,8 @@
   import TripDetails from './page/tripDetails.svelte';
   import ShowLive from './page/showLive.svelte';
   import LiveTrack from './page/liveTrack.svelte';
+  import FeedbackList from './page/userPages/feedbackList.svelte';
+  import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
 
 
   import { onMount } from 'svelte';
@@ -60,6 +62,8 @@
     <Route path="/tripDetails" component={TripDetails} />
     <Route path="/liveTrack" component={LiveTrack} />
     <Route path="/addStudent" component={AddStudent} />
+    <Route path="/feedbackList" component={FeedbackList} />
+    <Route path="/feedbackStudent" component={FeedbackStudent} />
   </Router>
 
 </main>

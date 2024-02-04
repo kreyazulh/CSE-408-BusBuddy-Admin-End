@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import Navbar from "../GlobalComponents/navbar.svelte";
   import { isAuthenticated } from "../../auth";
   import { navigate } from "svelte-routing";
@@ -38,6 +39,32 @@
 
   let allocatedRoute = 'Uttara';
   let allocatedBus = 'BA-01-2468';
+
+  async function fetchStaffDetails() {
+      const response = await fetch(`http://localhost:3000/api/staff/${username}`);
+      const data = await response.json();
+      // phone = data.phone;
+
+      const wow =  data.map((row) => {
+        return {
+          phone : row.phone,
+          name : row.name,
+          role : row.role
+        };
+      })[0];
+      
+      phone = wow.phone;
+      name = wow.name;
+      role = wow.role;
+
+      console.log(name);
+    }
+
+  onMount(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      username = urlParams.get('staffId');
+      fetchStaffDetails();
+    });
 
 </script>
 
