@@ -5,7 +5,7 @@
   import pastTrips from './page/pastTrips.svelte';
   import Navbar from './page/navbar.svelte';
   import busAdd from './page/busAdd.svelte';
-  import BusStaffList from './page/busStaffList.svelte';
+  import BusStaffList from './page/BusStaffPages/busStaffList.svelte';
   import CreateRoute from './page/createRoute.svelte';
   import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
   import AddStudent from './page/userPages/addStudent.svelte';
