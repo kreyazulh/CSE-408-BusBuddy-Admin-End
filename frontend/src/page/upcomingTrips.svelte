@@ -1,6 +1,6 @@
 <script>
   import Navbar from "./navbar.svelte";
-  import DeletePopUp from "./deletePopUp.svelte";
+  import DeletePopUp from "./GlobalComponents/PopUps/deletePopUp.svelte";
   import { navigate } from 'svelte-routing';
   import { onMount } from "svelte";
   import { isAuthenticated } from "../auth";

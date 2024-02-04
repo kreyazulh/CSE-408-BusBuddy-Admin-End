@@ -3,7 +3,7 @@
   import Navbar from './navbar.svelte'; // Assuming you want to use the same Navbar
   import { isAuthenticated } from '../auth'; // If authentication check is needed
   import { navigate } from 'svelte-routing';
-  import DeletePopUp from "./deletePopUp.svelte";
+  import DeletePopUp from "./GlobalComponents/PopUps/deletePopUp.svelte";
 
   let buses = [];
 
