@@ -4,9 +4,12 @@
     import { isAuthenticated } from '../../auth'; // If authentication check is needed
     import { navigate } from 'svelte-routing';
     import DeletePopUp from "../deletePopUp.svelte";
+
+    let selectedRole = 'student';
   
     let studentFeedbacks = [];
     let teacherFeedbacks = [];
+    let searchRows = [];
   
     let shrinkID = null;
   
@@ -22,7 +25,8 @@
   
     // Search data
     let searchQuery = "Search...";
-    let searchRows = [];
+    let searchStudentRows = [];
+    let searchTeacherRows = [];
   
      // Add a variable to track the sort state
     let sortColumn = "id";
@@ -66,10 +70,18 @@
      function updateSearchQuery(event) {
       searchQuery = event.target.value;
       if (searchQuery.trim() === "") {
-        searchRows = studentFeedbacks; // If the search query is empty, show all rows
+        searchStudentRows = studentFeedbacks; // If the search query is empty, show all rows
+        searchTeacherRows = teacherFeedbacks; // If the search query is empty, show all rows
       } else {
         // Filter rows based on the searchQuery
-        searchRows = studentFeedbacks.filter((row) => {
+        searchStudentRows = studentFeedbacks.filter((row) => {
+          // Check if any value in the row contains the searchQuery as a substring
+          return Object.values(row).some((value) =>
+            value.toString().toLowerCase().includes(searchQuery.toLowerCase()),
+          );
+        });
+
+        searchTeacherRows = teacherFeedbacks.filter((row) => {
           // Check if any value in the row contains the searchQuery as a substring
           return Object.values(row).some((value) =>
             value.toString().toLowerCase().includes(searchQuery.toLowerCase()),
@@ -77,7 +89,12 @@
         });
       }
       // Update the totalEntries and totalPages
-      totalEntries = searchRows.length;
+      if(selectedRole=='student'){
+      totalEntries = searchStudentRows.length;
+      }
+      else{
+        totalEntries = searchTeacherRows.length;
+      }
       totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
     }
   
@@ -86,7 +103,14 @@
       handleClick(column + order);
       sortColumn = column;
       sortOrder = order;
-      searchRows = searchRows.sort((a, b) => {
+      searchStudentRows = searchStudentRows.sort((a, b) => {
+        if (sortOrder === "asc") {
+          return a[sortColumn] > b[sortColumn] ? 1 : -1;
+        } else {
+          return a[sortColumn] < b[sortColumn] ? 1 : -1;
+        }
+      });
+      searchTeacherRows = searchTeacherRows.sort((a, b) => {
         if (sortOrder === "asc") {
           return a[sortColumn] > b[sortColumn] ? 1 : -1;
         } else {
@@ -149,7 +173,12 @@
      // Function to show the details of a row
      function showDetails(id) {
       handleClick(id + "details");
-      navigate(`/feedbackStudent?feedbackId=${id}`);
+      if(selectedRole=='student'){
+        navigate(`/feedbackStudent?feedbackId=${id}`);
+      }
+      else{
+        navigate(`/feedbackTeacher?feedbackId=${id}`);
+      }
       // Here you would add your logic to show the details of the row
     }
   
@@ -159,14 +188,10 @@
      //navigate to edit details page
     }
   
-    async function gotoAddBus() {
-      navigate('/busAdd');
-    }
-  
-    async function getBusList() {
-      const response = await fetch('http://localhost:3000/api/feedback/student');
-      const data = await response.json();
-      studentFeedbacks = data.map((row) => {
+    async function getFeedbackList() {
+      const response1 = await fetch('http://localhost:3000/api/feedback/student');
+      const data1 = await response1.json();
+      studentFeedbacks = data1.map((row) => {
         return {
           id: row.id,
           complainer_id : row.complainer_id,
@@ -177,25 +202,40 @@
         };
       });
       console.log(studentFeedbacks);
-    //   studentFeedbacks = studentFeedbacks.filter((row) => {
-    //       for (let key in row) {
-    //         if (row[key] === null) {
-    //           return false;
-    //         }
-    //       }
-    //       return true;
-    //     });
-      console.log(studentFeedbacks);
-      searchRows = studentFeedbacks;
-      totalEntries = searchRows.length;
+      searchStudentRows = studentFeedbacks;
+
+
+      const response2 = await fetch('http://localhost:3000/api/feedback/teacher');
+      const data2 = await response2.json();
+      teacherFeedbacks = data2.map((row) => {
+        return {
+          id: row.id,
+          complainer_id : row.complainer_id,
+          route : row.route,
+          sub_time : row.submission_timestamp,
+          trip_id : row.trip_id,
+          subject : row.subject
+        };
+      });
+      console.log(teacherFeedbacks);
+      searchTeacherRows = teacherFeedbacks;
+
+
+      totalEntries = searchStudentRows.length;
       totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
       for (let i = 1; i <= totalPages; i++) {
           pages.push(i);
         }
     }
+
+    $: if (selectedRole === 'student') {
+      searchRows = searchStudentRows;
+    } else {
+      searchRows = searchTeacherRows;
+    }
   
     onMount(async() => {
-      await getBusList();
+      await getFeedbackList();
     });
   </script>
   
@@ -216,6 +256,17 @@
         <h1 class="text-3xl font-bold underline uppercase text-maroon-500">
           Feedbacks
         </h1>
+      </div>
+      <div>
+        <label>
+          <input type="radio" bind:group={selectedRole} value="student">
+          Student
+        </label>
+        
+        <label>
+          <input type="radio" bind:group={selectedRole} value="teacher">
+          Teacher
+        </label>
       </div>
   
        <!-- Search Bar & Add Button-->
