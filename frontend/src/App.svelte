@@ -19,6 +19,7 @@
   import LiveTrack from './page/liveTrack.svelte';
   import FeedbackList from './page/userPages/feedbackList.svelte';
   import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
+  import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
 
 
   import { onMount } from 'svelte';
@@ -64,6 +65,7 @@
     <Route path="/addStudent" component={AddStudent} />
     <Route path="/feedbackList" component={FeedbackList} />
     <Route path="/feedbackStudent" component={FeedbackStudent} />
+    <Route path="/feedbackTeacher" component={FeedbackTeacher} />
   </Router>
 
 </main>
