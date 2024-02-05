@@ -105,7 +105,7 @@
     navigate(`/staffProfile?staffId=${id}`);
   }
 
-  // Function to save the row
+  // Function to edit the row
   async function editRow(id) {
     handleClick(id + "edit");
     navigate(`/editStaff?staffId=${id}`);
