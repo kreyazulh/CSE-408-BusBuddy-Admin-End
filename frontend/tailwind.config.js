@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{html,js,svelte,ts}"],
+  mode: 'jit',
   theme: {
     colors: {
       transparent: 'transparent',

@@ -16,7 +16,7 @@
   import AdminProfile from './page/adminProfile.svelte';
   import TripDetails from './page/tripDetails.svelte';
   import ShowLive from './page/showLive.svelte';
-  import LiveTrack from './page/liveTrack.svelte';
+  import LiveTrack from './page/LiveTracking/liveTracking.svelte';
   import FeedbackList from './page/userPages/feedbackList.svelte';
   import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
   import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
