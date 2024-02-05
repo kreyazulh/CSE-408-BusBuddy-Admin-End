@@ -27,58 +27,99 @@
 
   </script>
 
-    <main class="flex min-h-screen min-w-full bg-gradient-to-b from-maroon-500 to-maroon-900">
-        <div>
-            <Navbar />
-        </div>
+<div class="flex min-h-screen min-w-full">
   
-  <div class="min-h-screen bg-gray-100 py-6 flex flex-1 justify-center sm:py-12">
-    <div class="relative py-3 sm:max-w-xl sm:mx-auto">
-      <div class="absolute inset-0 bg-gradient-to-r from-red-300 to-red-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-      <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-        <div class="max-w-md mx-auto">
+    <div>
+      <Navbar />
+    </div>
+
+  <div class="flex min-w-full">
+    <!-- Sidebar -->
+    <aside class="w-64" aria-label="Sidebar">
+      <!-- Sidebar content here -->
+    </aside>
+
+    <!-- Main content -->
+    <div class="flex-1">
+      <!-- Admin Info -->
+      <div class="p-4">
+        <div class="flex items-center space-x-4">
+          <img src={admin.photo} alt="Admin Photo" class="w-10 h-10 rounded-full">
           <div>
-            <img src="{admin.photo}" alt="Admin Photo" class="h-24 w-24 rounded-full mx-auto"/>
-          </div>
-          <div class="divide-y divide-gray-200">
-            <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-              <div class="flex justify-center">
-                <h3 class="text-xl font-bold">{admin.id}</h3>
-              </div>
-              <ul class="list-disc space-y-2">
-                <li class="flex items-start">
-                  <span class="h-6 flex items-center sm:h-7">
-                    <svg class="flex-shrink-0 h-5 w-5 text-cyan-500" viewBox="0 0 20 20" fill="currentColor">
-                      <!-- Icon -->
-                    </svg>
-                  </span>
-                  <p class="ml-2">
-                    Role: <span class="font-semibold">Administrator</span>
-                  </p>
-                </li>
-                <li class="flex items-start">
-                  <span class="h-6 flex items-center sm:h-7">
-                    <svg class="flex-shrink-0 h-5 w-5 text-cyan-500" viewBox="0 0 20 20" fill="currentColor">
-                      <!-- Icon -->
-                    </svg>
-                  </span>
-                  <p class="ml-2">Email: <span class="font-semibold">{admin.email}</span></p>
-                </li>
-                <!-- Add more list items as needed -->
-              </ul>
-              <div class="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
-                <p>Want to change any details?</p>
-                <p>
-                  <a href="#" class="text-cyan-600 hover:text-cyan-700"> Update Profile &rarr; </a>
-                </p>
-              </div>
-            </div>
+            <h1 class="font-bold">{admin.id}</h1>
+            <p>{admin.email}</p>
           </div>
         </div>
       </div>
+
+      <!-- Dashboard Widgets -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+        <!-- Total Users Widget -->
+        <div class="bg-white p-4 rounded-lg shadow">
+          <span class="text-gray-500">Total Users</span>
+          <h2 class="text-xl font-bold">5600</h2>
+        </div>
+
+        <!-- Users Today Widget -->
+        <div class="bg-white p-4 rounded-lg shadow">
+          <span class="text-gray-500">Users Today</span>
+          <h2 class="text-xl font-bold">2353</h2>
+        </div>
+
+        <!-- Trips Completed Today Widget -->
+        <div class="bg-white p-4 rounded-lg shadow">
+          <span class="text-gray-500">Trips Completed Today</span>
+          <h2 class="text-xl font-bold">21/24</h2>
+        </div>
+
+        <!-- Duration Dropdown (Placeholder) -->
+        <div class="bg-white p-4 rounded-lg shadow">
+          <label for="duration" class="block mb-2 text-sm font-medium text-gray-900">Duration</label>
+          <select id="duration" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <option selected>All Time</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Analytics Chart (Placeholder) -->
+      <div class="p-4">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <!-- Replace this div with your actual chart component -->
+          <div class="h-64">Analytics Chart</div>
+        </div>
+      </div>
+
+      <!-- Ticket Transactions -->
+      <div class="p-4">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <h2 class="font-bold mb-2">Ticket Transactions</h2>
+          <!-- Ticket Transactions Table -->
+          <!-- ... -->
+        </div>
+      </div>
+
+      <!-- Live Car Status -->
+      <div class="p-4">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <h2 class="font-bold mb-2">Live Car Status</h2>
+          <!-- Live Car Status Table -->
+          <!-- ... -->
+        </div>
+      </div>
+
+      <!-- Change Username or Password Button -->
+      <div class="p-4">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Change Username or Password
+        </button>
+      </div>
     </div>
   </div>
-    </main>
+</div>
+
   
   <style>
     /* Add custom styles or overrides for Tailwind CSS here */
