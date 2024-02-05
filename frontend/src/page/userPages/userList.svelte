@@ -209,9 +209,10 @@
     teachers = data2.map((row) => {
       return {
         id: row.id,
+        name: row.name,
         phone : row.phone,
-        name : row.name,
-        route : row.default_route
+        designation : row.designation,
+        department : row.department
       };
     });
     console.log(teachers);
@@ -322,7 +323,9 @@
       <table class="w-full table-auto">
         <!-- Table header -->
         <thead>
+          {#if selectedRole==='student'}
           <tr>
+            
             <th class="bg-white-700  w-1/4">
               <div
                 class="flex items-center justify-center space-x-1 bg-red-70 rounded-full"
@@ -400,8 +403,50 @@
                     </span>
                   </div>
                 </th>
-              
           </tr>
+          {:else}
+          <tr>
+            
+            <th class=" bg-white-700  w-1/4">
+              <div
+                class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full"
+              >
+                <span class="font-semibold uppercase text-xs text-black-700">
+                  Name
+                </span>
+              </div>
+            </th>
+              <th class=" bg-white-700  w-1/4">
+                <div
+                  class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full"
+                >
+                  <span class="font-semibold uppercase text-xs text-black-700">
+                    Department
+                  </span>
+                </div>
+              </th>
+
+              <th class=" bg-white-700  w-1/4">
+                <div
+                  class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full"
+                >
+                  <span class="font-semibold uppercase text-xs text-black-700">
+                    Designation
+                  </span>
+                </div>
+              </th>
+              
+                <th class=" bg-white-700  w-1/4">
+                  <div
+                    class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full"
+                  >
+                    <span class="font-semibold uppercase text-xs text-black-700">
+                      Phone
+                    </span>
+                  </div>
+                </th>
+          </tr>
+          {/if}
         </thead>
 
         <tbody>
@@ -412,6 +457,7 @@
             class="{index % 2 === 0
               ? 'bg-gray-200'
               : 'bg-white-700'} hover:bg-gray-300">
+              {#if selectedRole === 'student'}
               <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.id}
               </td>
               <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.name}
@@ -420,6 +466,17 @@
               </td>
               <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.phone}
               </td>
+              {:else}
+              <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.name}
+              </td>
+              <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.department}
+              </td>
+              <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.designation}
+              </td>
+              <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.phone}
+              </td>
+              {/if}
+              
               <td class="my-2 mx-2 w-auto">
                 <div class="flex justify-center w-full">
                   <button

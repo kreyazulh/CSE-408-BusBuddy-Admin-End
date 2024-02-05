@@ -32,6 +32,31 @@
      // Add a variable to track the sort state
     let sortColumn = "id";
     let sortOrder = "asc"; // or 'desc' for descending order
+
+    function ordinalSuffix(day) {
+    if (day > 3 && day < 21) return day + 'th';
+    switch (day % 10) {
+      case 1: return day + "st";
+      case 2: return day + "nd";
+      case 3: return day + "rd";
+      default: return day + "th";
+    }
+  }
+
+  // Function to format date
+  function formatDate(dateString) {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const date = new Date(dateString);
+
+    const hours = date.getHours() % 12 || 12; // Convert 24h to 12h format and handle midnight
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = date.getHours() < 12 ? 'AM' : 'PM';
+    const day = ordinalSuffix(date.getDate());
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${hours}:${minutes} ${ampm}, ${day} ${month}, ${year}`;
+  }
   
     function handleClick(name) {
       shrinkID = name;
@@ -414,7 +439,7 @@
                 </td>
                 <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.route}
                 </td>
-                <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.sub_time}
+                <td class="py-2 pl-2 pr-2 text-center w-1/4">{formatDate(row.sub_time)}
                 </td>
                 <td class="py-2 pl-2 pr-2 text-center w-1/4">{row.subject}
                 </td>

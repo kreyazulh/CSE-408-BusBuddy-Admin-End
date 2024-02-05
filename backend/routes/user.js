@@ -18,6 +18,20 @@ router.get('/student', (req, res) => {
     });
   });
 
+  router.get('/teacher', (req, res) => {
+    const client = req.client;
+    const query = 'SELECT * FROM buet_staff';
+    
+    client.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
+      }
+    });
+  });
+
 router.post('/student/add', async (req, res) => {
     const client = req.client;
     console.log(req.body);

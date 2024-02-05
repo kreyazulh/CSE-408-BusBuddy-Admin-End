@@ -14,6 +14,31 @@
   let subject = '';
   let response = '';
 
+  function ordinalSuffix(day) {
+    if (day > 3 && day < 21) return day + 'th';
+    switch (day % 10) {
+      case 1: return day + "st";
+      case 2: return day + "nd";
+      case 3: return day + "rd";
+      default: return day + "th";
+    }
+  }
+
+  // Function to format date
+  function formatDate(dateString) {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const date = new Date(dateString);
+
+    const hours = date.getHours() % 12 || 12; // Convert 24h to 12h format and handle midnight
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = date.getHours() < 12 ? 'AM' : 'PM';
+    const day = ordinalSuffix(date.getDate());
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${hours}:${minutes} ${ampm}, ${day} ${month}, ${year}`;
+  }
+
 
   async function fetchStaffDetails() {
       const response = await fetch(`http://localhost:3000/api/feedback/teacher/${id}`);
@@ -100,8 +125,8 @@
                   <p class="text-lg font-semibold text-gray-700 pb-2">Id : {id}</p>
                   <p class="text-lg font-semibold text-gray-700 pb-2">Complainer: {complainer_id}</p>
                   <p class="text-lg font-semibold text-gray-700 pb-2">Route: {route}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Submission Time: {subtime}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Concerned Time: {contime}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Submission Time: {formatDate(subtime)}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Concerned Time: {formatDate(contime)}</p>
                   <p class="text-lg font-semibold text-gray-700 pb-2">Text:</p><p> {text}</p>
                 </div> 
                 <div class="my-4 px-5">
