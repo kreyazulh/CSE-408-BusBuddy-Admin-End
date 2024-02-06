@@ -23,7 +23,6 @@ router.get('/', (req, res) => {
 router.get('/profile', async (req, res) => {
   const client = req.client;
   var id = sharedConfig.userId;
-  console.log("came here");
   console.log(id);
   const query = 'SELECT * FROM admin WHERE id = $1';
 
@@ -40,6 +39,32 @@ router.get('/profile', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.get('/trips/last7days', async (req, res) => {
+  const client = req.client;
+  try {
+    const result = await client.query(`
+      SELECT 
+        DATE(start_timestamp) as trip_date, 
+        COUNT(*) as trip_count
+      FROM 
+        trip
+      WHERE 
+        start_timestamp >= current_date - interval '7 days'
+      GROUP BY 
+        DATE(start_timestamp)
+      ORDER BY 
+        DATE(start_timestamp);
+    `);
+
+    // Send the result back to the client
+    res.json(result.rows);
+    console.log(result.rows);
+  } catch (error) {
+    console.error('Error fetching trip counts:', error);
+    res.status(500).send({ success: false, message: "Error processing request." });
   }
 });
 

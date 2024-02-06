@@ -3,8 +3,48 @@
     import { navigate } from 'svelte-routing';
     import { isAuthenticated } from '../auth';
     import Navbar from './navbar.svelte';
+    import BarChart from './BarChart.svelte';
+
+
     // Import any required components or functions
     let admin = {id: '', password: '', email: '', photo: ''};
+    let pastTrips = [];
+
+
+  let chartData = {
+    labels: [],
+    datasets: [
+      {
+        label: 'Trip Count',
+        data: [],
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  let options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+      title: {
+        display: true, // Set to `true` to display the title
+        text: 'Trips in the Last 7 Days' // Title text
+      }
+    }
+  };
+
+  let data;
+
+
+    
     // Fetch admin details
     async function fetchAdminDetails() {
         try {
@@ -21,9 +61,48 @@
         }
     }
 
+    async function lastTrips() {
+        try {
+            const response = await fetch(`http://localhost:3000/api/admin//trips/last7days`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            let infodata = await response.json();
+            pastTrips = infodata;
+            console.log(pastTrips);
+
+            updateChartData();
+
+
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function updateChartData() {
+      chartData.labels = pastTrips.map(trip =>
+  new Date(trip.trip_date).toLocaleDateString('en-US', {
+    month: 'short', // "short" for abbreviated month name, "numeric" for month number.
+    day: 'numeric' // "numeric" for the day of the month.
+  })
+);
+
+        chartData.datasets[0].data = pastTrips.map(trip => trip.trip_count);
+        data = chartData;
+        console.log("data", data);
+    }
+
     onMount(async () => {
         fetchAdminDetails();
+        lastTrips(); 
     });
+
+    $: if (pastTrips.length > 0) {
+    updateChartData();
+  }
 
   </script>
 
@@ -87,8 +166,10 @@
       <!-- Analytics Chart (Placeholder) -->
       <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow">
-          <!-- Replace this div with your actual chart component -->
-          <div class="h-64">Analytics Chart</div>
+          <div class="h-4">Analytics Chart</div>
+        <div class="w-2/5">
+          <BarChart {data} {options} />
+        </div>
         </div>
       </div>
 
