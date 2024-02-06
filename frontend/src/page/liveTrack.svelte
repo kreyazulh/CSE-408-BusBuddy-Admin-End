@@ -3,8 +3,7 @@
     import L from 'leaflet';
     import Navbar from './navbar.svelte';
     
-    
-  
+
     let mapContainer;
     let map;
     let selectedTripDetails = null;
