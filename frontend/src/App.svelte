@@ -6,8 +6,9 @@
   import Navbar from './page/navbar.svelte';
   import busAdd from './page/busAdd.svelte';
   import BusStaffList from './page/BusStaffPages/busStaffList.svelte';
-  import CreateRoute from './page/createRoute.svelte';
   import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
+  import EditStaff from './page/BusStaffPages/editStaff.svelte';
+  import CreateRoute from './page/createRoute.svelte';
   import AddStudent from './page/userPages/addStudent.svelte';
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
   import ScheduleTrip from './page/scheduleTrip.svelte';
@@ -53,6 +54,7 @@
     <Route path="/createRoute" component={CreateRoute} />
     <Route path="/staffProfile" component={StaffProfile} />
     <Route path="/addStaff" component={AddStaff} />
+    <Route path="/editStaff" component={EditStaff} />
     <Route path="/scheduleTrip" component={ScheduleTrip} />
     <Route path="/busList" component={BusList} />
     <Route path="/upcomingTrips" component={upcomingTrips}/>

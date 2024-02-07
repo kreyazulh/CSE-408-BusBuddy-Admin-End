@@ -1,7 +1,6 @@
 <script>
   import Navbar from "../GlobalComponents/navbar.svelte";
   import { isAuthenticated } from "../../auth";
-  import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import Password from "../GlobalComponents/password.svelte";
   import ErrorPopUp from "../GlobalComponents/PopUps/errorPopUp.svelte";
@@ -14,18 +13,9 @@
   let role = "";
   let name = "";
   let password = "";
-  let busno = "";
-  let route= "";
   let dob = "";
   let address = "";
   let salary = 0;
-
-
-  let allocatedRoutes = [];
-  let unallocatedRoutes = [];
-  
-  let allocatedBuses = [];
-  let unallocatedBuses = [];
 
   let success = -1;
   let addStaffResponse = "";
@@ -81,45 +71,6 @@
       success = 0;
     }
   }
-
-async function fetchRoutes() {
-  try {
-    const response = await fetch('http://localhost:3000/api/route/');
-    const data= await response.json();
-    allocatedRoutes = data.map((route)=> {
-      return {
-        route_id: route.id,
-        route_name: route.terminal_point
-      }
-    });
-    console.log(allocatedRoutes);
-  } catch (error) {
-    console.error('Error fetching routes:', error);
-  }
-  // unallocated routes
-}
-
-async function fetchBuses() {
-  try {
-    // fetch allocated & unallocated buses in seperate arrays
-    const response = await fetch('http://localhost:3000/api/bus/');
-    const data = await response.json();
-    // console.log(data);
-    allocatedBuses = data.map((bus)=>{
-      return {
-        bus_no: bus.reg_id
-      }
-    });
-    console.log(allocatedBuses);
-  } catch (error) {
-    console.error('Error fetching buses:', error);
-  }
-}
-
-  onMount(async () => {
-    await fetchRoutes();
-    await fetchBuses();
-  });
 </script>
 
 
@@ -197,17 +148,6 @@ async function fetchBuses() {
                 bind:value={address}
               />
             </div>
-
-            <!-- salary -->
-            <div class="my-4 px-5">
-              <label class="block text-gray-600 font-semibold mb-2" for="salary">Salary:</label>
-              <input
-                placeholder="eg: 25000"
-                class="{salary===0 ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                type="number"
-                bind:value={salary}
-              />
-            </div>
           </div>
 
           <div class = "w-1/2">
@@ -225,54 +165,21 @@ async function fetchBuses() {
             </select>
             </div>
 
-            <!-- allocate route -->
-            <div class = "my-4 px-5">
-              <label class="block text-gray-600 font-semibold mb-2" for="route">Allocate Route:</label>
-              <select
-                class="{route===""?'text-gray-400':'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                id="routeDropdown"
-                bind:value={route}>
-              <option value="" hidden>Select Route</option>
-              <optgroup label="Allocated Route" class="text-maroon-500 italic">
-              {#each allocatedRoutes as route}
-                <option value={route.route_id} class="text-black-900 not-italic">{route.route_name}</option>
-              {/each}
-              </optgroup>
-              <hr class="my-2 border border-gray-200" />
-              <optgroup label="Unallocated Route" class="text-maroon-500 italic">
-                {#each unallocatedRoutes as route}
-                  <option value={route.route_id} class="text-black-900 not-italic">{route.route_name}</option>
-                {/each}
-                </optgroup>
-              </select>
-            </div>
-
-            <!-- allocate bus -->
-            <div class = "my-4 px-5">
-              <label class="block text-gray-600 font-semibold mb-2" for="bus">Allocate Bus:</label>
-              <select
-                class="{busno===""?'text-gray-400':'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                id="busDropdown"
-                bind:value={busno}>
-              <option value="" hidden>Select Bus</option>
-              <optgroup label="Allocated Bus" class="text-maroon-500 italic">
-              {#each allocatedBuses as bus}
-                <option value={bus.bus_no} class="text-black-900 not-italic">{bus.bus_no}</option>
-              {/each}
-              </optgroup>
-              <hr class="my-2 border border-gray-200" />
-              <optgroup label="Unallocated Bus" class="text-maroon-500 italic">
-                {#each unallocatedBuses as bus}
-                  <option value={bus.bus_no} class="text-black-900 not-italic">{bus.bus_no}</option>
-                {/each}
-                </optgroup>
-              </select>
+            <!-- salary -->
+            <div class="my-4 px-5">
+              <label class="block text-gray-600 font-semibold mb-2" for="salary">Salary:</label>
+              <input
+                placeholder="eg: 25000"
+                class="{salary===0 ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                type="number"
+                bind:value={salary}
+              />
             </div>
 
             <!-- password -->
             <div class="my-4 px-5">
               <label class="block text-gray-600 font-semibold mb-2" for="password">Password:</label>
-              <Password  on:passwordChanged={handlePasswordChange}/>
+              <Password password={password} on:passwordChanged={handlePasswordChange}/>
             </div>
           </div>
         </div>

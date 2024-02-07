@@ -1,0 +1,232 @@
+<script>
+    import Navbar from "../GlobalComponents/navbar.svelte";
+    import { isAuthenticated } from "../../auth";
+    import { navigate } from "svelte-routing";
+    import Password from "../GlobalComponents/password.svelte";
+    import ErrorPopUp from "../GlobalComponents/PopUps/errorPopUp.svelte";
+    import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
+  
+    let isShrink = false;
+  
+    let id = "Altaf90";
+    let phone = "01711567123";
+    let role = "driver";
+    let name = "Altaf Hossain";
+    let password = "abc12345";
+    let dob = "1990-01-01";
+    let address = "ABC Road, XYZ, Dhaka";
+    let salary = 3000;
+  
+    let success = -1;
+    let editStaffResponse = "";
+  
+    let errorMessage="";
+  
+    function handleClick() {
+          isShrink = true;
+          setTimeout(() => {
+              isShrink = false;
+          }, 100);
+      }
+  
+    async function editStaff() {
+      // Create a JSON object with the data
+      const staffData = {
+        id: id,
+        phone: phone,
+        password: password,
+        role: role,
+        name: name,
+        // baki jinish o add korte hobe
+      };
+  
+      try {
+        const response = await fetch("http://localhost:3000/api/staff/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(staffData),
+        });
+        console.log(response);
+        console.log(staffData);
+        // fornow = await response.json();
+  
+        if (response.ok) {
+          // Request was successful
+          editStaffResponse = "Staff edited successfully";
+          success = 1;
+        } else {
+          // Request failed
+          editStaffResponse = "Failed to edit staff";
+          success = 0;
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        editStaffResponse = "Error occurred";
+        success = 0;
+      }
+    }
+  </script>
+  
+  
+  {#if $isAuthenticated}
+    <main class="flex min-h-screen min-w-full bg-gradient-to-b from-maroon-500 via-maroon-900 to-black-900">
+      <div>
+        <Navbar />
+      </div>
+  
+      <div class="flex w-full justify-center items-center">
+        <div class="w-1/2 py-5 px-5 my-10 rounded-lg shadow-lg bg-white-700">
+          <h2 class="text-3xl font-bold underline uppercase text-maroon-500">
+            Edit Bus Staff
+          </h2>
+  
+          <div class="flex flex-row">
+            <div class="w-1/2">
+  
+              <!-- username -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="id">Staff ID:</label>
+                <input
+                  readonly
+                  class="w-full px-3 py-2 border rounded-md"
+                  type="text"
+                  bind:value={id}
+                />
+              </div>
+  
+              <!-- name -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="name">Name:</label>
+                <input
+                  required
+                  pattern="[A-Za-z]+"
+                  placeholder="eg: Altaf Hossain"
+                  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  type="text"
+                  bind:value={name}
+                />
+              </div>
+  
+              <!-- phone -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="phone">Phone:</label>
+                <input
+                  required
+                  pattern="[0-9]{11}"
+                  placeholder="eg: 0171*******"
+                  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  type="text"
+                  bind:value={phone}
+                />
+              </div>
+  
+              <!-- DOB -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="dob">Date of Birth:</label>
+                <input 
+                  id="dob"
+                  class="w-full px-3 py-2 border rounded-md {dob === "" ? 'text-gray-400'  : 'text-black-900'}  focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  type="date"
+                  bind:value={dob}
+                />
+              </div>
+  
+              <!-- address -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="address">Address:</label>
+                <input
+                  placeholder="eg: 123, ABC Road, XYZ"
+                  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  type="text"
+                  bind:value={address}
+                />
+              </div>
+            </div>
+  
+            <div class = "w-1/2">
+              <!-- allocate role -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="role">Select Role:</label>
+               <select
+                  required
+                  class="{role===""?'text-gray-400':'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  id="roleDropdown"
+                  bind:value={role}>
+                <option value="" hidden selected>Select Role</option>
+                <option value="helper" class="text-black-900">Helper</option>
+                <option value="driver" class="text-black-900">Driver</option>
+              </select>
+              </div>
+  
+              <!-- salary -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="salary">Salary:</label>
+                <input
+                  placeholder="eg: 25000"
+                  class="{salary===0 ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  type="number"
+                  bind:value={salary}
+                />
+              </div>
+  
+              <!-- password -->
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="password">Password:</label>
+                <input readonly
+                  class="w-full px-3 py-2 border rounded-md"
+                  type="text"
+                  bind:value={password}
+                />
+              </div>
+            </div>
+          </div>
+          <!-- add button -->
+          <div class="flex my-4 pt-4 justify-end pr-8">
+            <button
+              class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full"
+              class:shrink={isShrink}
+              on:click={() => {
+                handleClick();
+                if(name.length<=0){
+                  errorMessage = 'Please enter a valid name';
+                }else if(phone.length!=11){
+                  errorMessage = 'Please enter a valid phone number';
+                } else if(role.length<=0){
+                  errorMessage = 'Please select a role';
+                }else {
+                  editStaff();
+                }
+              }}>Save</button>
+          </div>
+  
+          <!-- error popup -->
+          {#if errorMessage.length>0}
+            <ErrorPopUp errorMessage={errorMessage}
+            on:closeError={()=>(errorMessage="")}/>
+          {/if}
+  
+          {#if success==1}
+            <SuccessfulPopUp successMessage={editStaffResponse}
+            on:closeSuccess={()=>{success=-1;
+            navigate("/busStaffList");}}/>
+          {:else if success==0}
+            <ErrorPopUp errorMessage={editStaffResponse}
+            on:closeError={()=>(success=-1)}/>
+          {/if}
+         
+        </div>
+      </div>
+  </main>
+  {:else}
+    <div>
+      <p class="text-3xl font-extrabold text-maroon-500">Access Denied</p>
+    </div>
+  {/if}
+  
+  <style>
+    .shrink {
+        transform: translateY(2px);
+    }
+  </style>
