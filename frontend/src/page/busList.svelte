@@ -154,7 +154,7 @@
   // Function to save the row
   async function editRow(id) {
     handleClick(id + "edit");
-   //navigate to edit details page
+    navigate(`/editBus?busID=${id}`);
   }
 
   async function gotoAddBus() {
