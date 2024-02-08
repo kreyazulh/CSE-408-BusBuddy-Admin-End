@@ -6,14 +6,26 @@
     import Navbar from "../GlobalComponents/navbar.svelte";
 
     let map;
+    let mapContainer;
     let sidebarOpen = false;
     let selectedTripDetails = null;
 
     let route = [];
     let locations = [];
+    let routes = [];
 
     let tripId = "";
     let intervalId;
+
+    async function fetchRoutes() {
+    try {
+    const response = await fetch('http://localhost:3000/api/route/');
+    routes = await response.json();
+    console.log(routes);
+    } catch (error) {
+    console.error('Error fetching routes:', error);
+    }
+    }
 
     function toggleSidebar() {
         sidebarOpen = !sidebarOpen;
@@ -73,15 +85,20 @@
         tripId = urlParams.get("tripId");
         console.log("tripId:", tripId);
 
-        console.log(selectedTripDetails);
+        fetchRoutes();
+
 
         map = L.map("map").setView([23.769213162447304, 90.36876120662684], 13);
+
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: "© OpenStreetMap contributors",
         }).addTo(map);
         //fetch route data from backend
-        // addRouteToMap();
+
+        console.log("selectedTripDetails:", selectedTripDetails);
+        //addRouteToMap();
+
 
         getcord(tripId);
 
@@ -108,7 +125,9 @@
         <Navbar />
     </div>
 
+
     <div id="map" class="w-full ml-56 z-0" bind:this={map}></div>
+
 
     <!-- sidebar -->
     {#if !sidebarOpen}
