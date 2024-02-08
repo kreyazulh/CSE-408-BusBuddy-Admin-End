@@ -165,30 +165,32 @@
             </div>
 
             <!-- allocate helper -->
-            <div class="my-4 px-5">
-              <label class="block text-gray-600 font-semibold mb-2" for="helper">Allocate Helper:</label>
-              <select
-                class="{helper === "" ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                id="helperDropdown"
-                bind:value={helper}>
-                <option value="" hidden selected>Select Helper</option>
-                <optgroup label="Allocated Helpers" class="text-maroon-500 italic">
-                  {#each allocatedHelpers as helper}
-                    <option value={helper} class="text-black-900 not-italic">{helper}</option>
-                  {/each}
-                </optgroup>
-                <optgroup label="Unallocated Helpers" class="text-maroon-500 italic">
-                  {#each unallocatedHelpers as helper}
-                    <option value={helper} class="text-black-900 not-italic">{helper}</option>
-                  {/each}
-                </optgroup>
-              </select>
-            </div>
+            {#if type!=="micro" && type!=="mini"}
+              <div class="my-4 px-5">
+                <label class="block text-gray-600 font-semibold mb-2" for="helper">Allocate Helper:</label>
+                <select
+                  class="{helper === "" ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                  id="helperDropdown"
+                  bind:value={helper}>
+                  <option value="" hidden selected>Select Helper</option>
+                  <optgroup label="Allocated Helpers" class="text-maroon-500 italic">
+                    {#each allocatedHelpers as helper}
+                      <option value={helper} class="text-black-900 not-italic">{helper}</option>
+                    {/each}
+                  </optgroup>
+                  <optgroup label="Unallocated Helpers" class="text-maroon-500 italic">
+                    {#each unallocatedHelpers as helper}
+                      <option value={helper} class="text-black-900 not-italic">{helper}</option>
+                    {/each}
+                  </optgroup>
+                </select>
+              </div>
+            {/if}
           </div>
         </div>
 
         <!-- add button -->
-        <div class="flex my-4 pt-4 justify-end pr-8">
+        <div class="flex mb-4 justify-end pr-8">
           <button
             class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full"
             class:shrink={isShrink}
