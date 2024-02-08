@@ -6,7 +6,7 @@ import { createEventDispatcher } from "svelte";
 const dispatch = createEventDispatcher();
 
 
-let password = "";
+export let password;
 let showPasswordField = false;
 let passwordScore = 0;
 let charsLength = 0;

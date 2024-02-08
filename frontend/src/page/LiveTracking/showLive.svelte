@@ -90,6 +90,7 @@ try {
         searchRows = liveTrips;
         return true;
        });
+       searchRows = liveTrips;
        totalEntries = searchRows.length;
        handleEntriesPerPage();
       } catch (error) {
@@ -205,7 +206,7 @@ try {
                       {/if}
                       <button class="bg-transparent mx-2" class:shrink={shrinkID === row.id + "trackOff"}
                         on:click={() => trackOff(row.id)}>
-                        <i class="bx bxs-stop-circle text-maroon-500 hover:text-maroon-900 scale-150"></i>
+                        <i class="bx bx-stop-circle text-maroon-500 hover:text-maroon-900 scale-150"></i>
                       </button>
                       <button class="bg-transparent mx-2" class:shrink={shrinkID === row.id + "tripOff"}
                         on:click={() => endTrip(row.id)}>

@@ -16,12 +16,10 @@
             // Filter rows based on the searchQuery
             searchRows = originalRows.filter((row) => {
                 // Check if any value in the row contains the searchQuery as a substring
-                return Object.values(row).some((value) =>
-                    value
-                        .toString()
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()),
-                );
+                return Object.values(row).some((value) => {
+                    return (value !== null && value !== undefined) &&
+                        value.toString().toLowerCase().includes(searchQuery.toLowerCase());       
+                });
             });
         }
         dispatch("searchChanged", searchRows);

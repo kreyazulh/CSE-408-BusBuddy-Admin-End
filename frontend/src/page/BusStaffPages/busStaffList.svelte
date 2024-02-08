@@ -57,6 +57,7 @@
     searchRows = event.detail;
     totalEntries = searchRows.length;
     handleEntriesPerPage();
+    console.log("searchrows",searchRows);
   }
 
   // Function to delete a row
@@ -230,22 +231,6 @@
                   <span class="font-semibold uppercase text-xs text-black-700">Phone No</span>
                 </div>
               </th>
-              <th class=" bg-white-700 w-auto">
-                <div class="py-2 flex items-center justify-center space-x-1 bg-red-70 rounded-full">
-                  <span class="font-semibold uppercase text-xs text-black-700">Allocated Bus</span>
-                </div>
-              </th>
-              <th class="bg-white-700 w-auto">
-                <div class="flex items-center justify-center space-x-1 bg-red-70 rounded-full">
-                  <span class="pl-2 font-semibold uppercase text-xs text-black-700">Allocated Route</span>
-                  <SortingButtons
-                    searchRows={searchRows}
-                    sortColumn="allocated_route"
-                    on:sort={(e) => {
-                      searchRows = e.detail;
-                    }}/>
-                </div>
-              </th>
               {#if showAll}
               <th class="bg-white-700 w-auto">
                 <div class="flex items-center justify-center space-x-1 bg-red-70 rounded-full">
@@ -271,10 +256,6 @@
                   <td class="py-2 pl-2 pr-2 text-center w-auto">{row.name} </td>
                   <td class="py-2 pl-2 pr-2 text-center w-auto">{row.role} </td>
                   <td class="py-2 pl-2 pr-2 text-center w-auto">{row.phone} </td>
-                  <td class="py-2 pl-2 pr-2 text-center w-auto
-                  {row.allocated_bus==='N/A'?'bg-red-500':''}">{row.allocated_bus} </td>
-                  <td class="py-2 pl-2 pr-2 text-center w-auto
-                  {row.allocated_route==='N/A'?'bg-red-500':''}">{row.allocated_route} </td>
                   {#if showAll}
                     <td class="py-2 pl-2 pr-2 text-center w-auto font-semibold text-white-700 border-2 border-white-700
                     {row.status==='Active' ? 'bg-lime-500':'bg-gray-500'}">{row.status} </td>
@@ -285,14 +266,16 @@
                         on:click={() => showDetails(row.id)}>
                         <i class="bx bxs-info-circle text-maroon-500 hover:text-maroon-900 scale-150"></i>
                       </button>
-                      <button class="bg-transparent mx-2" class:shrink={shrinkID === row.id + "edit"}
-                        on:click={() => editRow(row.id)}>
-                        <i class="bx bxs-edit text-maroon-500 hover:text-maroon-900 scale-150"></i>
-                      </button>
-                      <button class="bg-transparent mx-2" class:shrink={shrinkID === row.id + "delete"}
-                        on:click={() => deleteRow(row.id)}>
-                        <i class="bx bxs-trash text-maroon-500 hover:text-maroon-900 scale-150"></i>
-                      </button>
+                      {#if !showAll}
+                        <button class="bg-transparent mx-2" class:shrink={shrinkID === row.id + "edit"}
+                          on:click={() => editRow(row.id)}>
+                          <i class="bx bxs-edit text-maroon-500 hover:text-maroon-900 scale-150"></i>
+                        </button>
+                        <button class="bg-transparent mx-2" class:shrink={shrinkID === row.id + "delete"}
+                          on:click={() => deleteRow(row.id)}>
+                          <i class="bx bxs-trash text-maroon-500 hover:text-maroon-900 scale-150"></i>
+                        </button>
+                      {/if}
                       {#if isDelVisible}
                         <DeletePopUp deleteMessage={rowDelID}
                           on:cancelDelete={() => {isDelVisible = false;

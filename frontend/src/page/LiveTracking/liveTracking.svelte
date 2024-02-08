@@ -1,5 +1,6 @@
 <script>
     import { onMount, onDestroy } from "svelte";
+    import { isAuthenticated } from "../../auth";
     import L from "leaflet";
     import "leaflet/dist/leaflet.css";
     import Navbar from "../GlobalComponents/navbar.svelte";
@@ -33,28 +34,15 @@
     function addRouteToMap() {
     // Create a red polyline from an array of LatLng points with a specific width
     L.polyline(route, { color: 'red', opacity: 0.5, weight: 7 }).addTo(map);
-
-    // Loop through the route array and add blue circle markers to the map
-    route.forEach(point => {
-        L.circleMarker(point, {
-            radius: 5, // the size of the circleMarker
-            fillColor: 'blue',
-            color: 'none', // no border color
-            weight: 0,
-            fillOpacity: 0.8
-        }).addTo(map);
-    });
-
-    map.fitBounds(route);
     }
 
     function addLocationToMap() {
-       L.polyline(locations, { color: 'maroon', opacity: 1, weight: 3 }).addTo(map);
+       L.polyline(locations, { color: 'maroon', opacity: 1, weight: 5 }).addTo(map);
        if (locations.length >= 2) {
            L.marker(locations[0]).addTo(map);
            L.marker(locations[locations.length - 1]).addTo(map);
        }
-       map.fitBounds(locations);
+    //    map.fitBounds(locations);
     }
 
     async function getcord(tripId) {
@@ -100,16 +88,17 @@
         fetchRoutes();
 
 
-        //console.log(selectedTripDetails);
+        map = L.map("map").setView([23.769213162447304, 90.36876120662684], 13);
 
-        map = L.map(mapContainer).setView([23.769213162447304, 90.36876120662684], 15);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
             attribution: "© OpenStreetMap contributors",
         }).addTo(map);
         //fetch route data from backend
+
         console.log("selectedTripDetails:", selectedTripDetails);
         //addRouteToMap();
+
 
         getcord(tripId);
 
@@ -129,12 +118,16 @@
     });
 </script>
 
+
+{#if isAuthenticated}
 <div class="relative max-h-screen max-w-screen flex flex-row">
     <div class="z-10">
         <Navbar />
     </div>
 
-    <div id="map" class="w-full z-0" bind:this={mapContainer}></div>
+
+    <div id="map" class="w-full ml-56 z-0" bind:this={map}></div>
+
 
     <!-- sidebar -->
     {#if !sidebarOpen}
@@ -220,3 +213,9 @@
         </div>
     {/if}
 </div>
+{:else}
+    <div>
+        <p class="text-3xl font-extrabold text-maroon-500">Access Denied</p>
+    </div>
+{/if}
+```
