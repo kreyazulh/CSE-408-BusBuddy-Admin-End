@@ -17,9 +17,9 @@
   let address = "";
   let salary = 0;
 
-  let success = -1;
   let addStaffResponse = "";
 
+  let success = -1;
   let errorMessage="";
 
   function handleClick() {
@@ -27,7 +27,7 @@
         setTimeout(() => {
             isShrink = false;
         }, 100);
-    }
+  }
 
   function handlePasswordChange(event) {
     password = event.detail;
@@ -54,7 +54,6 @@
       });
       console.log(response);
       console.log(staffData);
-      // fornow = await response.json();
 
       if (response.ok) {
         // Request was successful
@@ -212,6 +211,7 @@
           on:closeError={()=>(errorMessage="")}/>
         {/if}
 
+        <!-- success popup -->
         {#if success==1}
           <SuccessfulPopUp successMessage={addStaffResponse}
           on:closeSuccess={()=>{success=-1;
