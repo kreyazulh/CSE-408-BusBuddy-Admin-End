@@ -22,7 +22,6 @@
   import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
   import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
   import UserList from './page/userPages/userList.svelte';
-  import Mubash from './page/mubash.svelte';
 
 
   import { onMount } from 'svelte';
@@ -71,7 +70,6 @@
     <Route path="/feedbackStudent" component={FeedbackStudent} />
     <Route path="/feedbackTeacher" component={FeedbackTeacher} />
     <Route path="/userList" component={UserList} />
-    <Route path="/mubash" component={Mubash} />
   </Router>
 
 </main>

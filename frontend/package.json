@@ -21,7 +21,6 @@
     "@preline/strong-password": "^2.0.2",
     "@sveltejs/kit": "^2.4.1",
     "leaflet": "^1.9.4",
-    "leaflet-routing-machine": "^3.2.12",
     "svelte-select": "^5.8.3",
     "zxcvbn": "^4.4.2"
   }
