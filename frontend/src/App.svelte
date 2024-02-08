@@ -3,8 +3,8 @@
   import Login from './page/adminLogin.svelte';
   import upcomingTrips from './page/upcomingTrips.svelte';
   import pastTrips from './page/pastTrips.svelte';
-  import Navbar from './page/navbar.svelte';
-  import busAdd from './page/busAdd.svelte';
+  import Navbar from './page/GlobalComponents/navbar.svelte';
+  import busAdd from './page/BusPages/busAdd.svelte';
   import BusStaffList from './page/BusStaffPages/busStaffList.svelte';
   import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
   import EditStaff from './page/BusStaffPages/editStaff.svelte';
