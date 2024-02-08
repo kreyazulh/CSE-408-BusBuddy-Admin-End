@@ -10,6 +10,7 @@
   
     let liveTrips = [];
     let searchRows = [];
+    let routes =  [];
 
     let shrinkID = null;
 
@@ -63,6 +64,16 @@
     handleClick(id + "tripOff");
     //end logic
   }
+
+  async function fetchRoutes() {
+try {
+  const response = await fetch('http://localhost:3000/api/route/');
+  routes = await response.json();
+  console.log(routes);
+} catch (error) {
+  console.error('Error fetching routes:', error);
+}
+}
   
   onMount(async () => {
       try {
@@ -76,6 +87,7 @@
         if (row.id === null) {
           return false;
         }
+        searchRows = liveTrips;
         return true;
        });
        searchRows = liveTrips;
