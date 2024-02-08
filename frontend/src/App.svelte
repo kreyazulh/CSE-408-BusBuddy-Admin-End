@@ -22,6 +22,7 @@
   import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
   import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
   import UserList from './page/userPages/userList.svelte';
+  import RequisitionList from './page/userPages/requisitionList.svelte';
 
 
   import { onMount } from 'svelte';
@@ -70,6 +71,7 @@
     <Route path="/feedbackStudent" component={FeedbackStudent} />
     <Route path="/feedbackTeacher" component={FeedbackTeacher} />
     <Route path="/userList" component={UserList} />
+    <Route path="/requisitionList" component={RequisitionList} />
   </Router>
 
 </main>
