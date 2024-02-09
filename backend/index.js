@@ -131,42 +131,50 @@ app.post('/api/proxyGetTripData', async (req, res) => {
 });
 
 
+app.post('/api/proxyBroadcastNotification', async (req, res) => {
+  console.log(req.body);
+
+  try {
+    // Validate input
+    if (!req.body.nTitle || !req.body.nBody) {
+      return res.status(400).json({ message: 'Missing notification title or body' });
+    }
+
+    // Call the external API to broadcast the notification
+    const apiResponse = await fetch('http://3.141.62.8:6969/api/broadcastNotification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nTitle: req.body.nTitle,
+        nBody: req.body.nBody
+      })
+    });
+
+    // Check if the request was successful
+    if (!apiResponse.ok) {
+      throw new Error(`API responded with status ${apiResponse.status}`);
+    }
+
+    // Parse the JSON from the API response
+    const data = await apiResponse.json();
+
+    // Send the data back to the frontend
+    res.json(data);
+  } catch (error) {
+    // Handle any errors that occurred during the process
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
 
 
 module.exports = app;
 
 
-// {
-//   success: true,
-//   id: '1924',
-//   start_timestamp: '2024-01-31T10:58:29.913Z',
-//   route: '2',
-//   time_type: 'morning',
-//   time_list: [
-//     { station: '12', time: null },
-//     { station: '13', time: null },
-//     { station: '14', time: null },
-//     { station: '15', time: null },
-//     { station: '16', time: null },
-//     { station: '70', time: null }
-//   ],
-//   travel_direction: 'to_buet',
-//   bus: 'Ba-22-4326',
-//   is_default: true,
-//   driver: 'rafiqul',
-//   helper: 'jamal7898',
-//   approved_by: null,
-//   end_timestamp: null,
-//   start_location: { latitude: '23.7481383', longitude: '90.3800983' },
-//   end_location: null,
-//   path: [
-//     { latitude: '23.747948333333333', longitude: '90.38021' },
-//     { latitude: '23.74714', longitude: '90.38071' },
-//     { latitude: '23.746336666666668', longitude: '90.381165' },
-//     { latitude: '23.745058333333333', longitude: '90.381905' }
-//   ],
-//   passenger_count: 0
-// }
 
 
 
