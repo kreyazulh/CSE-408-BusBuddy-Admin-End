@@ -125,8 +125,6 @@
         name: row.name,
         role: row.role,
         phone: row.phone,
-        allocated_bus: row.allocated_bus, //dummy data
-        allocated_route: row.allocated_route,
         status: 'Active',
       };
     });
@@ -232,17 +230,17 @@
                 </div>
               </th>
               {#if showAll}
-              <th class="bg-white-700 w-auto">
-                <div class="flex items-center justify-center space-x-1 bg-red-70 rounded-full">
-                  <span class="pl-2 font-semibold uppercase text-xs text-black-700">Status</span>
-                  <SortingButtons
-                    searchRows={searchRows}
-                    sortColumn="status"
-                    on:sort={(e) => {
-                      searchRows = e.detail;
-                    }}/>
-                </div>
-              </th>
+                <th class="bg-white-700 w-auto">
+                  <div class="flex items-center justify-center space-x-1 bg-red-70 rounded-full">
+                    <span class="pl-2 font-semibold uppercase text-xs text-black-700">Status</span>
+                    <SortingButtons
+                      searchRows={searchRows}
+                      sortColumn="status"
+                      on:sort={(e) => {
+                        searchRows = e.detail;
+                      }}/>
+                  </div>
+                </th>
               {/if}
             </tr>
           </thead>
@@ -279,7 +277,7 @@
                       {#if isDelVisible}
                         <DeletePopUp deleteMessage={rowDelID}
                           on:cancelDelete={() => {isDelVisible = false;
-                          rowDelID='';}}
+                            rowDelID='';}}
                           on:confirmDelete={handleDeleteConfirm}/>
                       {/if}
                     </div>
