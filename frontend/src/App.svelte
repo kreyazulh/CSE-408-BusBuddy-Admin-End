@@ -16,7 +16,7 @@
   import EditBus from './page/BusPages/editBus.svelte';
   import RouteList from './page/routeList.svelte';
   import AdminProfile from './page/adminProfile.svelte';
-  import TripDetails from './page/tripDetails.svelte';
+  // import TripDetails from './page/tripDetails.svelte';
   import ShowLive from './page/LiveTracking/showLive.svelte';
   import LiveTrack from './page/LiveTracking/liveTracking.svelte';
   import FeedbackList from './page/userPages/feedbackList.svelte';
@@ -25,6 +25,8 @@
   import UserList from './page/userPages/userList.svelte';
   import RequisitionList from './page/userPages/requisitionList.svelte';
   import Notifications from './page/Notifications/notifications.svelte';
+  import Requisition from './page/userPages/requisition.svelte';
+
 
 
   import { onMount } from 'svelte';
@@ -67,7 +69,7 @@
     <Route path="/routeList" component={RouteList} />
     <Route path="/profile" component={AdminProfile} />
     <Route path="/showLive" component={ShowLive} />
-    <Route path="/tripDetails" component={TripDetails} />
+    <!-- <Route path="/tripDetails" component={TripDetails} /> -->
     <Route path="/liveTrack" component={LiveTrack} />
     <Route path="/addStudent" component={AddStudent} />
     <Route path="/feedbackList" component={FeedbackList} />
@@ -76,6 +78,7 @@
     <Route path="/userList" component={UserList} />
     <Route path="/requisitionList" component={RequisitionList} />
     <Route path="/notifications" component={Notifications} />
+    <Route path="/requisition" component={Requisition} />
   </Router>
 
 </main>
