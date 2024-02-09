@@ -12,7 +12,7 @@
   import AddStudent from './page/userPages/addStudent.svelte';
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
   import ScheduleTrip from './page/scheduleTrip.svelte';
-  import BusList from './page/busList.svelte';
+  import BusList from './page/BusPages/busList.svelte';
   import EditBus from './page/BusPages/editBus.svelte';
   import RouteList from './page/routeList.svelte';
   import AdminProfile from './page/adminProfile.svelte';
