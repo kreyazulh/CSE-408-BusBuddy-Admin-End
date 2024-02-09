@@ -8,6 +8,19 @@
     let id = '';
     let password = '';
     let loginStatus = '';
+
+
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        if (event.target.id === "un1") {
+          // Focus on input2
+          document.getElementById('pw1').focus();
+        } else if (event.target.id === "pw1") {
+          // Click the button
+          document.getElementById('loginbutton').click();
+        }
+      }
+    }
   
     async function handleLoginClick() {
       const response = await fetch('http://localhost:3000/api/auth/login', {
@@ -62,18 +75,22 @@
               </h2>
               <div class="credentials1">
                 <input
+                  id="un1" 
                   type="text"
                   class="username1"
                   placeholder="Username"
+                  on:keydown={handleKeyPress}
                   bind:value={id} 
                   required
                 />
                 <div class="password-rem1">
                   <div class="password-container">
                       <input
+                          id="pw1" 
                           type="password"
                           class="password1"
                           placeholder="Password"
+                          on:keydown={handleKeyPress}
                           bind:value={password}
                           required
                       />
@@ -90,7 +107,7 @@
                   </div>
               </div>
                 <div class="login-bt-fp1">
-                  <button class="login4" on:click={handleLoginClick}>
+                  <button id="loginbutton" class="login4" on:click={handleLoginClick}>
                     <div class="login5">Login</div>
                   </button>
                   <button class="forgot-password1" on:click={handleForgotPasswordClick}>

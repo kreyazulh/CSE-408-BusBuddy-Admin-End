@@ -21,10 +21,10 @@ router.get('/', (req, res) => {
 
   router.get('/:reqId', (req, res) => {
     const client = req.client;
-    const { feedbackId } = req.params;
+    const { reqId } = req.params;
     const query = 'SELECT * FROM requisition WHERE id = $1';
     
-    client.query(query, [feedbackId], (error, results) => {
+    client.query(query, [reqId], (error, results) => {
       if (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
