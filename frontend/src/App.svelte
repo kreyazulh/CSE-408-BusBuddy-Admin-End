@@ -3,8 +3,8 @@
   import Login from './page/adminLogin.svelte';
   import upcomingTrips from './page/upcomingTrips.svelte';
   import pastTrips from './page/pastTrips.svelte';
-  import Navbar from './page/navbar.svelte';
-  import busAdd from './page/busAdd.svelte';
+  import Navbar from './page/GlobalComponents/navbar.svelte';
+  import busAdd from './page/BusPages/busAdd.svelte';
   import BusStaffList from './page/BusStaffPages/busStaffList.svelte';
   import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
   import EditStaff from './page/BusStaffPages/editStaff.svelte';
@@ -13,6 +13,7 @@
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
   import ScheduleTrip from './page/scheduleTrip.svelte';
   import BusList from './page/busList.svelte';
+  import EditBus from './page/BusPages/editBus.svelte';
   import RouteList from './page/routeList.svelte';
   import AdminProfile from './page/adminProfile.svelte';
   import TripDetails from './page/tripDetails.svelte';
@@ -23,6 +24,7 @@
   import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
   import UserList from './page/userPages/userList.svelte';
   import Mubash from './page/mubash.svelte';
+  import RequisitionList from './page/userPages/requisitionList.svelte';
 
 
   import { onMount } from 'svelte';
@@ -58,6 +60,7 @@
     <Route path="/editStaff" component={EditStaff} />
     <Route path="/scheduleTrip" component={ScheduleTrip} />
     <Route path="/busList" component={BusList} />
+    <Route path="/editBus" component={EditBus} />
     <Route path="/upcomingTrips" component={upcomingTrips}/>
     <Route path="/pastTrips" component={pastTrips}/>
     <Route path="/busAdd" component={busAdd} />
@@ -71,7 +74,7 @@
     <Route path="/feedbackStudent" component={FeedbackStudent} />
     <Route path="/feedbackTeacher" component={FeedbackTeacher} />
     <Route path="/userList" component={UserList} />
-    <Route path="/mubash" component={Mubash} />
+    <Route path="/requisitionList" component={RequisitionList} />
   </Router>
 
 </main>
