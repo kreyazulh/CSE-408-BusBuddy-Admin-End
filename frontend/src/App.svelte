@@ -23,6 +23,7 @@
   import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
   import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
   import UserList from './page/userPages/userList.svelte';
+  import Mubash from './page/mubash.svelte';
   import RequisitionList from './page/userPages/requisitionList.svelte';
 
 

@@ -1,56 +1,57 @@
 <script>
-  import { onMount } from 'svelte';
-  import L from 'leaflet';
-  import 'leaflet-routing-machine'; // Import the routing machine plugin
-  import Navbar from './navbar.svelte';
-  import { isAuthenticated } from '../auth';
+    import { onMount } from 'svelte';
+    import L from 'leaflet';
+    import 'leaflet-routing-machine'; // Import the routing machine plugin
+    import Navbar from './navbar.svelte';
+    import { isAuthenticated } from '../auth';
+    
+
+    
+  
+    let mapContainer;
+    let map;
+    let sidebarOpen = false;
+    let selectedTripDetails = null;
+  
+    let locations = [];
+  
+    let tripId = '';
+
+    function toggleSidebar() {
+        sidebarOpen = !sidebarOpen;
+    }
+
+    function addRouteToMap() {
+    // Create a red polyline from an array of LatLng points with a specific width
+
+    }
+
   
 
+    function addLocationToMap() {
+       L.polyline(locations, { color: 'maroon', opacity: 1, weight: 5 }).addTo(map);
+       if (locations.length >= 2) {
+           L.marker(locations[0]).addTo(map);
+           L.marker(locations[locations.length - 1]).addTo(map);
+       }
+    //    map.fitBounds(locations);
+    }
   
-
-  let mapContainer;
-  let map;
-  let sidebarOpen = false;
-  let selectedTripDetails = null;
-
-  let locations = [];
-
-  let tripId = '';
-
-  function toggleSidebar() {
-      sidebarOpen = !sidebarOpen;
-  }
-
-  function addRouteToMap() {
-  // Create a red polyline from an array of LatLng points with a specific width
-
-  }
-
-
-
-  function addLocationToMap() {
-     L.polyline(locations, { color: 'maroon', opacity: 1, weight: 5 }).addTo(map);
-     if (locations.length >= 2) {
-         L.marker(locations[0]).addTo(map);
-         L.marker(locations[locations.length - 1]).addTo(map);
-     }
-  //    map.fitBounds(locations);
-  }
-
-  async function getcord() {
-    // Request for trip id
-    const response = await fetch(`http://localhost:3000/api/trip/tracking?tripId=${tripId}`);
-    const data = await response.json();
-    console.log('data:', data);
-    if (Array.isArray(data) && data.length > 0) {
-      const pathData = data[0].path;
-      if (pathData) {
-        locations = pathData.map(item => [item.x, item.y]);
-
-        // Add markers and polyline after fetching data
-        addLocationToMap();
-      } else {
-        console.error('Path data is undefined');
+    async function getcord() {
+      // Request for trip id
+      const response = await fetch(`http://localhost:3000/api/trip/tracking?tripId=${tripId}`);
+      const data = await response.json();
+      console.log('data:', data);
+      if (Array.isArray(data) && data.length > 0) {
+        const pathData = data[0].path;
+        if (pathData) {
+          locations = pathData.map(item => [item.x, item.y]);
+  
+          // Add markers and polyline after fetching data
+          addLocationToMap();
+        } else {
+          console.error('Path data is undefined');
+        }
       }
     }
   }
@@ -67,36 +68,34 @@
     getcord();
   }
 
-  onMount(() => {
-
-  const urlParams = new URLSearchParams(window.location.search);
-    tripId = urlParams.get('tripId');
-    console.log('tripId:', tripId);
-    fetchTripDetails(tripId);
-    map = L.map("map").setView([23.769213162447304, 90.36876120662684], 13);
+    const urlParams = new URLSearchParams(window.location.search);
+      tripId = urlParams.get('tripId');
+      console.log('tripId:', tripId);
+      fetchTripDetails(tripId);
+      map = L.map("map").setView([23.769213162447304, 90.36876120662684], 13);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  attribution: "© OpenStreetMap contributors",
+    maxZoom: 19,
+    attribution: "© OpenStreetMap contributors",
 }).addTo(map);
 
-  // @ts-ignore
-  L.Routing.control({
-          waypoints: [
-          L.latLng(23.72772109504178,90.39169264466838),
-          L.latLng(23.73909098406254,90.37553336535188),
-          L.latLng(23.744501003619725,90.37244046931268),
-          L.latLng(23.750650301853547, 90.36821656808486),
-          L.latLng(23.757614175962193,90.36241335180047),
-          L.latLng(23.763809074127288,90.36564046785911),
-          ],
-          autoRoute: true,
-          color: 'red', opacity: 0.2, weight: 7
-      }).addTo(map);
-
-  });
+    // // @ts-ignore
+    // L.Routing.control({
+    //         waypoints: [
+    //         L.latLng(23.72772109504178,90.39169264466838),
+    //         L.latLng(23.73909098406254,90.37553336535188),
+    //         L.latLng(23.744501003619725,90.37244046931268),
+    //         L.latLng(23.750650301853547, 90.36821656808486),
+    //         L.latLng(23.757614175962193,90.36241335180047),
+    //         L.latLng(23.763809074127288,90.36564046785911),
+    //         ],
+    //         autoRoute: true,
+    //         color: 'red', opacity: 0.2, weight: 7
+    //     }).addTo(map);
   
-</script>
+    });
+    
+  </script>
 
 {#if isAuthenticated}
 <div class="relative max-h-screen max-w-screen flex flex-row">
