@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import Navbar from "../GlobalComponents/navbar.svelte";
   import { isAuthenticated } from "../../auth";
-  import { navigate } from "svelte-routing";
 
   let username = 'Altaf990';
   let role = 'Driver';

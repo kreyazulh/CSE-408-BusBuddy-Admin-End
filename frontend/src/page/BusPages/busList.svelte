@@ -114,7 +114,7 @@
    // Function to show the details of a row
    function showDetails(id) {
     handleClick(id + "details");
-    // Here you would add your logic to show the details of the row
+    navigate(`/busDetails?busID=${id}`);
   }
 
   // Function to save the row
