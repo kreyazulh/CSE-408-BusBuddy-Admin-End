@@ -4,15 +4,16 @@
   import { onMount } from 'svelte';
   import { navigate } from 'svelte-routing';
 
-  let id = '';
-  let complainer_id = '';
-  let route = '';
-  let subtime = '';
-  let contime = '';
-  let text = '';
-  let trip_id = '';
-  let subject = '';
-  let response = '';
+    let id= '';
+    let req_id= '';
+    let source= '';
+    let dest= '';
+    let subject= '';
+    let text= '';
+    let time= '';
+    let approver= '';
+    let bus= '';
+    let valid= '';
 
   function ordinalSuffix(day) {
     if (day > 3 && day < 21) return day + 'th';
@@ -46,24 +47,30 @@
       
       const wow =  data.map((row) => {
         return {
-          complainer_id : row.complainer_id,
-          route : row.route,
-          subtime : row.submission_timestamp,
-          contime : row.concerned_timestamp,
+            id: row.id,
+          req_id : row.requestor_id,
+          source : row.source,
+          dest : row.destination,
+          subject : row.subject,
           text : row.text,
-          trip_id : row.trip_id,
-          subject : row.subject
+          time : row.timestamp,
+          approver : row.approved_by,
+          bus : row.bus_type,
+          valid : row.valid
         };
       })[0];
       console.log(wow);
-      
-        complainer_id = wow.complainer_id;
-        route = wow.route;
-          subtime = wow.subtime;
-          contime = wow.contime;
-          text = wow.text;
-          trip_id = wow.trip_id;
-          subject = wow.subject;
+
+          id= wow.id,
+          req_id = wow.requestor_id,
+          source = wow.source,
+          dest = wow.destination,
+          subject = wow.subject,
+          text = wow.text,
+          time = wow.timestamp,
+          approver = wow.approved_by,
+          bus = wow.bus_type,
+          valid = wow.valid
 
     }
 
@@ -118,8 +125,31 @@
 
 
     <div class="flex-1 w-full bg-black-900 bg-opacity-60">
-        <p>Hello</p>
-  </div>
+        <div class="flex flex-row w-full">
+            <div class=" w-1/2 h-fit ml-60 mb-5 bg-white-700 rounded-lg shadow-lg">
+                <h1 class=" mt-5 ml-5 text-2xl font-semibold text-maroon-500 underline underline-offset-1">Personal Information</h1> 
+                <div class="flex flex-col ml-10 mt-3 mb-6">
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Id : {id}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Requestor: {req_id}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Source: {source}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Destination: {dest}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Subject: {subject}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Time: {formatDate(time)}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Bus Type: {bus}</p>
+                  <p class="text-lg font-semibold text-gray-700 pb-2">Text:</p><p> {text}</p>
+                </div> 
+                <!-- <div class="my-4 px-5">
+                    <label class="block text-gray-600 font-semibold mb-2" for="input1">Response</label>
+                    <input placeholder="we'll look into it"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={response} />
+                  </div> 
+                  <button type="submit" class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full"
+        on:click={()=>{addFeedback();}}
+        >Respond</button>  -->
+            </div>
+            
+        </div>
+    </div>
   </main>
 {:else}
   <p>Not authenticated</p>
