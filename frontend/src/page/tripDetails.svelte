@@ -69,6 +69,7 @@
   
     onMount(() => {
 
+
     const urlParams = new URLSearchParams(window.location.search);
       tripId = urlParams.get('tripId');
       console.log('tripId:', tripId);
