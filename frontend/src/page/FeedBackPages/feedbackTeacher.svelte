@@ -40,8 +40,8 @@
   }
 
 
-  async function fetchStaffDetails() {
-      const response = await fetch(`http://localhost:3000/api/feedback/student/${id}`);
+  async function fetchFeedBackDetails() {
+      const response = await fetch(`http://localhost:3000/api/feedback/teacher/${id}`);
       const data = await response.json();
       
       const wow =  data.map((row) => {
@@ -59,11 +59,12 @@
       
         complainer_id = wow.complainer_id;
         route = wow.route;
-          subtime = wow.subtime;
-          contime = wow.contime;
-          text = wow.text;
-          trip_id = wow.trip_id;
-          subject = wow.subject;
+        subtime = wow.subtime;
+        contime = wow.contime;
+        text = wow.text;
+        trip_id = wow.trip_id;
+        subject = wow.subject;
+        subject = subject.slice(1,-1).toUpperCase();
 
     }
 
@@ -75,7 +76,7 @@
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/feedback/student/respond', {
+      const response = await fetch('http://localhost:3000/api/feedback/teacher/respond', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -84,66 +85,68 @@
       });
       console.log(response);
       console.log(respData);
-      // fornow = await response.json();
 
       if (response.ok) {
-        // Request was successful
-        // addBusResponse = 'Bus added successfully';
       } else {
-        // Request failed
-        // addBusResponse = 'Failed to add bus';
+        console.log('Error occurred');
       }
       navigate('/feedbackList');
     } catch (error) {
       console.error('Error:', error);
-    //   addBusResponse = 'Error occurred';
     }
   }
-  
-    let feedbackId = '';
   
     onMount(() => {
       const urlParams = new URLSearchParams(window.location.search);
       id = urlParams.get('feedbackId');
-      fetchStaffDetails();
+      fetchFeedBackDetails();
     });
   </script>
   
 
   {#if $isAuthenticated}
-  <main class="flex min-h-screen min-w-full bg-gradient-to-b from-maroon-500 to-maroon-900">
+  <main class="flex min-h-screen min-w-full bg-white-700">
     <div>
         <Navbar />
     </div>
 
-
-    <div class="flex-1 w-full bg-black-900 bg-opacity-60">
-        <div class="flex flex-row w-full">
-            <div class=" w-1/2 h-fit ml-60 mb-5 bg-white-700 rounded-lg shadow-lg">
-                <h1 class=" mt-5 ml-5 text-2xl font-semibold text-maroon-500 underline underline-offset-1">Personal Information</h1> 
-                <div class="flex flex-col ml-10 mt-3 mb-6">
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Id : {id}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Complainer: {complainer_id}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Route: {route}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Submission Time: {formatDate(subtime)}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Concerned Time: {formatDate(contime)}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Text:</p><p> {text}</p>
-                </div> 
-                <div class="my-4 px-5">
-                    <label class="block text-gray-600 font-semibold mb-2" for="input1">Response</label>
-                    <input placeholder="we'll look into it"
-                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={response} />
-                  </div> 
-                  <button type="submit" class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full"
-        on:click={()=>{addFeedback();}}
-        >Respond</button> 
-            </div>
-            
-        </div>
-  </div>
+    <div class="flex flex-col ml-60 w-full h-full">
+      <h2 class="mx-5 my-5 text-3xl font-bold underline uppercase text-maroon-500">Feedback Details</h2>
+      <h3 class="mx-8 mb-8 mt-3 text-2xl font-semibold text-black-900">Subject: {subject}</h3>
+      <p class="mx-8 text-normal font-bold text-gray-700 pb-2">Feedback Id: 
+        <span class="font-semibold">{id}</span>
+      </p>
+      <p class="mx-8 text-normal font-bold text-gray-700 pb-2">Complainer: 
+        <span class="font-semibold">{complainer_id}</span>
+      </p>
+      <p class="mx-8 text-normal font-bold text-gray-700 pb-2">Route: 
+        <span class="font-semibold">{route}</span>
+      </p>
+      <p class="mx-8 text-normal font-bold text-gray-700 pb-2">Submission Time: 
+        <span class="font-semibold">{formatDate(subtime)}</span>
+      </p>
+      <p class="mx-8 text-normal font-bold text-gray-700 pb-2">Concerned Time: 
+        <span class="font-semibold">{formatDate(contime)}</span>
+      </p>
+      <p class="mx-8 text-normal font-bold text-gray-700 pb-2">Text: </p>
+      <textarea class="ml-10 mr-20 text-normal font-normal text-black-900 py-2 px-2 rounded-lg bg-gray-200 h-28 focus:outline-none focus:ring-2 focus:ring-maroon-500" 
+        value={text} readonly />
+      <p class="mx-8 text-normal font-bold text-maroon-500 py-2">Response: </p>
+      <textarea class="ml-10 mr-20 text-normal font-normal text-black-900 py-2 px-2 rounded-lg bg-gray-200 h-28 focus:outline-none focus:ring-2 focus:ring-maroon-500"
+        placeholder="We'll look into it." 
+        value={response}/>
+      <div class="flex flex-row justify-end my-5 mr-5">
+        <button class="bg-maroon-500 hover:bg-maroon-900 py-2 px-5 w-fit text-white-700 font-semibold rounded-full focus:translate-y-2"
+        on:click={addFeedback}>
+          Respond
+        </button>
+      </div>
+    </div>
   </main>
 {:else}
-  <p>Not authenticated</p>
+<div>
+  <p class="text-3xl font-extrabold text-maroon-500">Access Denied</p>
+</div>
 {/if}
 
 
