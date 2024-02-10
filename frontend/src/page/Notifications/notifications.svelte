@@ -46,7 +46,7 @@
     </div>
   
   <div class="container mx-auto px-4 py-8">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow bg-white-700">
       <h2 class="text-2xl font-semibold text-gray-700 mb-4">Send Notification</h2>
   
       <div class="mb-4">
