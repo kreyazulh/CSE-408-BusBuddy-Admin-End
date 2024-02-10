@@ -21,8 +21,8 @@
   import ShowLive from './page/LiveTracking/showLive.svelte';
   import LiveTrack from './page/LiveTracking/liveTracking.svelte';
   import FeedbackList from './page/userPages/feedbackList.svelte';
-  import FeedbackStudent from './page/userPages/feedbackStudent.svelte';
-  import FeedbackTeacher from './page/userPages/feedbackTeacher.svelte';
+  import FeedbackStudent from './page/FeedBackPages/feedbackStudent.svelte';
+  import FeedbackTeacher from './page/FeedBackPages/feedbackTeacher.svelte';
   import UserList from './page/userPages/userList.svelte';
   import RequisitionList from './page/userPages/requisitionList.svelte';
   import Notifications from './page/Notifications/notifications.svelte';
