@@ -151,7 +151,7 @@
   async function rejectReq() {
     const respData = {
       id: id,
-      approver : 'amar moner ki hobe keu jane na',
+      approver : 'reyazul',
       remarks : remarks
     };
 

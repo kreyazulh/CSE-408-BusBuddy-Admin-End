@@ -33,15 +33,17 @@ END;
 $$;
 
 
-CREATE OR REPLACE PROCEDURE alloc_from_req(id1 character varying, start_time1 timestamptz, admin_id1 character varying, 
+--DROP PROCEDURE alloc_from_req(character varying,timestamp with time zone,character varying,character varying,character varying,character varying,character varying);
+CREATE OR REPLACE PROCEDURE alloc_from_req(id1 bigint, start_time1 timestamptz, admin_id1 character varying, 
       bus_id1 character varying, driver1 character varying, collector1 character varying, remarks1 character varying)
 LANGUAGE plpgsql
 AS $$
 DECLARE
+	allocation_id1 INTEGER;
 BEGIN
-    UPDATE requisition SET timestamp = start_time1, approved_by = admin_id1, remarks = remarks1, is_approved=true WHERE id = id1;
     INSERT INTO allocation( start_timestamp, bus,    is_default, driver,    approved_by, helper) 
-                    VALUES (start_time1,      bus_id1, false,      driver1, admin_id1,       collector1);
+                    VALUES (start_time1,      bus_id1, false,      driver1, admin_id1,       collector1) RETURNING id INTO allocation_id1;
+    UPDATE requisition SET timestamp = start_time1, approved_by = admin_id1, remarks = remarks1, is_approved=true, allocation_id=allocation_id1 WHERE id = id1;
 
 END;
 $$;
