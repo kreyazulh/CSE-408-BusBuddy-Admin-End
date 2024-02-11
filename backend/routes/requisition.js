@@ -34,5 +34,37 @@ router.get('/', (req, res) => {
     });
   });
 
+  router.put('/approve', (req, res) => {
+    const client = req.client;
+      console.log(req.body);
+      client.query (
+          "CALL alloc_from_req($1,$2,$3,$4,$5,$6,$7);",
+          [req.body.id, req.body.time, req.body.approver, req.body.bus_id, req.body.driver, req.body.collector, req.body.remarks]
+      ).then(qres => {
+          console.log(qres);
+          if (qres.rowCount === 1) res.send(true);
+          else if (qres.rowCount === 0) res.send(false);
+      }).catch(e => {
+          console.error(e.stack);
+          res.send(false);
+      });
+  });
+
+  router.put('/reject', (req, res) => {
+    const client = req.client;
+      console.log(req.body);
+      // client.query (
+      //     "UPDATE student_feedback SET response = $2 WHERE id=$1;",
+      //     [req.body.id, req.body.response]
+      // ).then(qres => {
+      //     console.log(qres);
+      //     if (qres.rowCount === 1) res.send(true);
+      //     else if (qres.rowCount === 0) res.send(false);
+      // }).catch(e => {
+      //     console.error(e.stack);
+      //     res.send(false);
+      // });
+  });
+
 
 module.exports = router;
