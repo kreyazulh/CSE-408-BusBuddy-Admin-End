@@ -1,5 +1,5 @@
 <script>
-    import Navbar from '../navbar.svelte';
+  import Navbar from '../GlobalComponents/navbar.svelte';
   import { isAuthenticated } from '../../auth';
   import { onMount } from 'svelte';
   import { navigate } from 'svelte-routing';
