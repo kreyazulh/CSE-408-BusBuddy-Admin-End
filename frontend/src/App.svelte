@@ -17,7 +17,7 @@
   import BusDetails from './page/BusPages/busDetails.svelte';
   import RouteList from './page/routeList.svelte';
   import AdminProfile from './page/adminProfile.svelte';
-  // import TripDetails from './page/tripDetails.svelte';
+  import TripDetails from './page/tripDetails.svelte';
   import ShowLive from './page/LiveTracking/showLive.svelte';
   import LiveTrack from './page/LiveTracking/liveTracking.svelte';
   import FeedbackList from './page/FeedBackPages/feedbackList.svelte';
@@ -71,7 +71,7 @@
     <Route path="/routeList" component={RouteList} />
     <Route path="/profile" component={AdminProfile} />
     <Route path="/showLive" component={ShowLive} />
-    <!-- <Route path="/tripDetails" component={TripDetails} /> -->
+    <Route path="/tripDetails" component={TripDetails} />
     <Route path="/liveTrack" component={LiveTrack} />
     <Route path="/addStudent" component={AddStudent} />
     <Route path="/feedbackList" component={FeedbackList} />
