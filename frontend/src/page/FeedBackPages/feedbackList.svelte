@@ -212,15 +212,15 @@
       <!-- Heading -->
     <div class="flex-1 ml-56 w-full px-4 py-8 bg-white-700">
       <div class="flex items-start justify-start h-18">
-        <h1 class="text-3xl font-bold underline uppercase text-maroon-500 p-5">
+        <h1 class="text-3xl font-bold underline uppercase text-maroon-500">
           Feedbacks
         </h1>
       </div>
 
       <!-- Select Role -->
-      <div class="my-5">
+      <div class="mt-4">
         <label>
-          <input type="radio" bind:group={selectedRole} value="student"/>
+          <input type="radio"  bind:group={selectedRole} value="student"/>
           Student
         </label>
         
