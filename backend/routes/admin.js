@@ -68,4 +68,65 @@ router.get('/trips/last7days', async (req, res) => {
   }
 });
 
+router.get('/trips/topYesterday', async (req, res) => {
+  const client = req.client;
+  try {
+    const result = await client.query(`
+      SELECT 
+        r.terminal_point, 
+        t.time_type, 
+        t.passenger_count,
+        b.capacity
+      FROM 
+        trip t
+      INNER JOIN 
+        route r ON t.route = r.id
+      INNER JOIN 
+        bus b ON t.bus = b.reg_id
+      WHERE 
+        t.start_timestamp >= current_date - interval '1 day' AND
+        t.start_timestamp < current_date
+      ORDER BY 
+        t.passenger_count DESC;
+    `);
+
+    // Send the result back to the client
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching top trips:', error);
+    res.status(500).send({ success: false, message: "Error processing request." });
+  }
+});
+
+router.get('/counts', async (req, res) => {
+  const client = req.client;
+
+  try {
+    // Query to count students
+    const studentsResult = await client.query('SELECT COUNT(*) AS student_count FROM student;');
+    const studentCount = studentsResult.rows[0].student_count;
+    console.log(studentCount);
+
+    // Query to count bus staff
+    const busStaffResult = await client.query('SELECT COUNT(*) AS bus_staff_count FROM bus_staff;');
+    const busStaffCount = busStaffResult.rows[0].bus_staff_count;
+    console.log(busStaffCount);
+
+    // Query to count BUET staff
+    const buetStaffResult = await client.query('SELECT COUNT(*) AS buet_staff_count FROM buet_staff;');
+    const buetStaffCount = buetStaffResult.rows[0].buet_staff_count;
+    console.log(buetStaffCount);
+
+    // Send the counts back to the client
+    res.json({
+      studentCount: studentCount,
+      busStaffCount: busStaffCount,
+      buetStaffCount: buetStaffCount
+    });
+  } catch (error) {
+    console.error('Error fetching counts:', error);
+    res.status(500).send({ success: false, message: "Error processing request." });
+  }
+});
+
 module.exports = router;
