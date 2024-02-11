@@ -20,7 +20,7 @@
   // import TripDetails from './page/tripDetails.svelte';
   import ShowLive from './page/LiveTracking/showLive.svelte';
   import LiveTrack from './page/LiveTracking/liveTracking.svelte';
-  import FeedbackList from './page/userPages/feedbackList.svelte';
+  import FeedbackList from './page/FeedBackPages/feedbackList.svelte';
   import FeedbackStudent from './page/FeedBackPages/feedbackStudent.svelte';
   import FeedbackTeacher from './page/FeedBackPages/feedbackTeacher.svelte';
   import UserList from './page/userPages/userList.svelte';
