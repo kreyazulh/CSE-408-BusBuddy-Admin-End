@@ -126,6 +126,62 @@ async function fetchUserCounts() {
     }
 }
 
+let ticketCounts = { tickets: 0 };
+
+async function fetchTicketCounts() {
+    try {
+        const response = await fetch(`http://localhost:3000/api/admin/tickets`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        ticketCounts = await response.json();
+        console.log(ticketCounts);
+    } catch (error) {
+        console.error('Error fetching ticket counts:', error);
+    }
+};
+
+let tripStats = { liveTripsCount: 0, upcomingTripsCount: 0 };
+
+async function fetchTripStats() {
+    try {
+        const response = await fetch(`http://localhost:3000/api/admin/trips/stats`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        tripStats = await response.json();
+        console.log(tripStats);
+    } catch (error) {
+        console.error('Error fetching trip statistics:', error);
+    }
+}
+
+let totalBuses = 0;
+
+async function fetchBuses() {
+  try {
+    const response = await fetch('http://localhost:3000/api/bus'); // Adjust the URL to match your actual endpoint
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    totalBuses = data.length; // Assuming the response is an array of buses
+  } catch (error) {
+    console.error('Error fetching buses:', error);
+  }
+}
+
+
 
 
     async function lastTrips() {
@@ -167,6 +223,9 @@ async function fetchUserCounts() {
         lastTrips(); 
         fetchTopPassengerCounts();
         fetchUserCounts();
+        fetchTicketCounts();
+        fetchTripStats();
+        fetchBuses();
     });
 
     $: if (pastTrips.length > 0) {
@@ -218,14 +277,14 @@ async function fetchUserCounts() {
 
         <!-- Users Today Widget -->
         <div class="bg-white p-4 rounded-lg shadow">
-          <span class="text-gray-500">Users Today</span>
-          <h2 class="text-xl font-bold">2353</h2>
+          <span class="text-gray-500">Tickets Sold</span>
+          <h2 class="text-xl font-bold">{ticketCounts.ticketCount}</h2>
         </div>
 
         <!-- Trips Completed Today Widget -->
         <div class="bg-white p-4 rounded-lg shadow">
-          <span class="text-gray-500">Trips Completed Today</span>
-          <h2 class="text-xl font-bold">21/24</h2>
+          <span class="text-gray-500">Total Buses</span>
+          <h2 class="text-xl font-bold">{totalBuses}</h2>
         </div>
 
         <!-- Duration Dropdown (Placeholder) -->
@@ -233,9 +292,7 @@ async function fetchUserCounts() {
           <label for="duration" class="block mb-2 text-sm font-medium text-gray-900">Duration</label>
           <select id="duration" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
             <option selected>All Time</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year</option>
+            <option value="week">Active</option>
           </select>
         </div>
       </div>
@@ -306,15 +363,19 @@ async function fetchUserCounts() {
       <!-- Live Car Status -->
       <div class="p-4">
         <div class="bg-white p-4 rounded-lg shadow">
-          <h2 class="font-bold mb-2">Live Car Status</h2>
-          <!-- Live Car Status Table -->
-          <!-- ... -->
+          <h2 class="font-bold mb-2">Live Status</h2>
+          <p>Live Trips Count: {tripStats.liveTripsCount}</p>
+          <p>Upcoming Trips Count: {tripStats.upcomingTripsCount}
+            {#if tripStats.upcomingTripsCount === 0}
+              <i class='bx bx-error text-red-500'></i> 
+            {/if}
+          </p>
         </div>
       </div>
 
       <!-- Change Username or Password Button -->
       <div class="p-4">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button class="flex items-center px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded hover:bg-gray-300">
           Change Username or Password
         </button>
       </div>

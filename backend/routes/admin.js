@@ -129,4 +129,55 @@ router.get('/counts', async (req, res) => {
   }
 });
 
+router.get('/tickets', async (req, res) => {
+  const client = req.client;
+
+  try {
+    // Query to count tickets
+    const ticketResult = await client.query('SELECT COUNT(*) AS ticket_count FROM ticket;');
+    const ticketCount = ticketResult.rows[0].ticket_count;
+
+    // Send the counts back to the client
+    res.json({
+      ticketCount: ticketCount,
+    });
+  } catch (error) {
+    console.error('Error fetching counts:', error);
+    res.status(500).send({ success: false, message: "Error processing request." });
+  }
+});
+
+router.get('/trips/stats', async (req, res) => {
+  const client = req.client;
+
+  try {
+    // Query to count live trips
+    const liveTripsResult = await client.query(`
+      SELECT COUNT(*) AS live_trips_count
+      FROM trip
+      WHERE is_live = true;
+    `);
+    const liveTripsCount = parseInt(liveTripsResult.rows[0].live_trips_count, 10);
+
+    // Query to count upcoming trips
+    const upcomingTripsResult = await client.query(`
+      SELECT COUNT(*) AS upcoming_trips_count
+      FROM allocation
+      WHERE start_timestamp > NOW();
+    `);
+    const upcomingTripsCount = parseInt(upcomingTripsResult.rows[0].upcoming_trips_count, 10);
+    console.log(liveTripsCount);
+    console.log(upcomingTripsCount);
+
+    // Send the counts back to the client
+    res.json({
+      liveTripsCount: liveTripsCount,
+      upcomingTripsCount: upcomingTripsCount
+    });
+  } catch (error) {
+    console.error('Error fetching trip stats:', error);
+    res.status(500).send({ success: false, message: "Error processing request." });
+  }
+});
+
 module.exports = router;
