@@ -2,7 +2,6 @@
     import { onMount, onDestroy } from "svelte";
     import { isAuthenticated } from "../../auth";
     import L from "leaflet";
-    import "leaflet/dist/leaflet.css";
     import Navbar from "../GlobalComponents/navbar.svelte";
 
     let map;

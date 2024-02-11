@@ -2,7 +2,6 @@
     import Navbar from "../GlobalComponents/navbar.svelte";
     import { isAuthenticated } from "../../auth";
     import { navigate } from "svelte-routing";
-    import Password from "../GlobalComponents/password.svelte";
     import ErrorPopUp from "../GlobalComponents/PopUps/errorPopUp.svelte";
     import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
   

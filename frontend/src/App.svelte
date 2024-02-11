@@ -11,7 +11,7 @@
   import CreateRoute from './page/createRoute.svelte';
   import AddStudent from './page/userPages/addStudent.svelte';
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
-  import ScheduleTrip from './page/scheduleTrip.svelte';
+  import ScheduleTrip from './page/TripPages/scheduleTrip.svelte';
   import BusList from './page/BusPages/busList.svelte';
   import EditBus from './page/BusPages/editBus.svelte';
   import BusDetails from './page/BusPages/busDetails.svelte';
