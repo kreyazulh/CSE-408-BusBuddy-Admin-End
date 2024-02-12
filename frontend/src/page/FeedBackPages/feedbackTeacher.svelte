@@ -38,16 +38,26 @@
 
     return `${hours}:${minutes} ${ampm}, ${day} ${month}, ${year}`;
   }
-
+let routes = [];
+  async function fetchRoutes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/');
+    routes = await response.json();
+    console.log(routes);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
 
   async function fetchFeedBackDetails() {
       const response = await fetch(`http://localhost:3000/api/feedback/teacher/${id}`);
       const data = await response.json();
       
       const wow =  data.map((row) => {
+        const routeObj = routes.find(route => route.id === row.route);
         return {
           complainer_id : row.complainer_id,
-          route : row.route,
+          route: routeObj ? routeObj.terminal_point : "Not mentioned", // Use terminal_point if found, otherwise "Unknown"
           subtime : row.submission_timestamp,
           contime : row.concerned_timestamp,
           text : row.text,
