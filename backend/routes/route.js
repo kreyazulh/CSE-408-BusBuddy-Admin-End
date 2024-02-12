@@ -13,24 +13,16 @@ function getTomorrowsDate() {
 // usage : createRoute, routeList, upcomingTrips 
 router.get('/', async (req, res) => {
     const client = req.client;
-    const routeQuery = 'SELECT * FROM route ORDER BY id ASC';
-  
-    try {
-      const routeResults = await client.query(routeQuery);
-      const routes = routeResults.rows;
-  
-      // Assuming that `points` is an array of station IDs
-      for (let route of routes) {
-        const pointsQuery = 'SELECT name FROM station WHERE id = ANY($1)';
-        const pointsResult = await client.query(pointsQuery, [route.points]);
-        route.names = pointsResult.rows.map(row => row.name);
+    const query = 'SELECT id, terminal_point, points, valid, predefined_path,ARRAY(SELECT s.name FROM unnest(points) AS sid JOIN station s ON s.id = sid) AS name FROM route';
+    
+    client.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
       }
-  
-      res.json(routes);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+    });
   });
 
 

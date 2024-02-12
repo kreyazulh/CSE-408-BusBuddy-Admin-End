@@ -12,7 +12,7 @@
   let text = '';
   let trip_id = '';
   let subject = '';
-  let response = '';
+  let resp = '';
   let routes = [];
 
   function ordinalSuffix(day) {
@@ -65,7 +65,8 @@
           contime : row.concerned_timestamp,
           text : row.text,
           trip_id : row.trip_id,
-          subject : row.subject
+          subject : row.subject,
+          resp : row.response
         };
       })[0];
       console.log(wow);
@@ -78,13 +79,14 @@
       trip_id = wow.trip_id;
       subject = wow.subject;
       subject = subject.slice(1, -1).toUpperCase();
+      resp = wow.resp;
     }
 
   async function addFeedback() {
     // Create a JSON object with the data
     const respData = {
       id: id,
-      response: response
+      response: resp
     };
 
     try {
@@ -146,7 +148,7 @@
       <p class="mx-8 text-normal font-bold text-maroon-500 py-2">Response: </p>
       <textarea class="ml-10 mr-20 text-normal font-normal text-black-900 py-2 px-2 rounded-lg bg-gray-200 h-28 focus:outline-none focus:ring-2 focus:ring-maroon-500"
         placeholder="We'll look into it." 
-        value={response}/>
+        value={resp}/>
       <div class="flex flex-row justify-end my-5 mr-5">
         <button class="bg-maroon-500 hover:bg-maroon-900 py-2 px-5 w-fit text-white-700 font-semibold rounded-full focus:translate-y-2"
         on:click={addFeedback}>
