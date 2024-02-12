@@ -135,63 +135,79 @@
         navigate(`/feedbackTeacher?feedbackId=${id}`);
       }
     }
+
+    let routes = [];
+
+    async function fetchRoutes() {
+      try {
+        const response = await fetch('http://localhost:3000/api/route/');
+        routes = await response.json();
+        console.log(routes);
+      } catch (error) {
+        console.error('Error fetching routes:', error);
+      }
+    }
   
     async function getFeedbackList() {
-      const response1 = await fetch('http://localhost:3000/api/feedback/student');
-      const data1 = await response1.json();
-      studentFeedbacks = data1.map((row) => {
-        return {
-          id: row.id,
-          complainer_id : row.complainer_id,
-          route : row.route,
-          sub_time : row.submission_timestamp,
-          trip_id : row.trip_id,
-          subject : row.subject,
-          response : true //eta add korte hobe
-        };
-      });
-      console.log(studentFeedbacks);
-      StudentRows = studentFeedbacks;
-      for (let row in StudentRows){
-        for (let key in StudentRows[row]){
-          if (StudentRows[row][key] === null){
-            StudentRows[row][key] = "N/A";
-          }
-        }
-      }
+  // Ensure routes data is fetched first
+  await fetchRoutes();
 
-      const response2 = await fetch('http://localhost:3000/api/feedback/teacher');
-      const data2 = await response2.json();
-      teacherFeedbacks = data2.map((row) => {
-        return {
-          id: row.id,
-          complainer_id : row.complainer_id,
-          route : row.route,
-          sub_time : row.submission_timestamp,
-          trip_id : row.trip_id,
-          subject : row.subject,
-          response : false //eta add korte hobe
-        };
-      });
-      console.log(teacherFeedbacks);
-      TeacherRows = teacherFeedbacks;
-      for (let row in TeacherRows){
-        for (let key in TeacherRows[row]){
-          if (TeacherRows[row][key] === null){
-            TeacherRows[row][key] = "N/A";
-          }
-        }
-      }
+  const response1 = await fetch('http://localhost:3000/api/feedback/student');
+  const data1 = await response1.json();
+  studentFeedbacks = data1.map((row) => {
+    // Find the corresponding route using the route ID
+    const routeObj = routes.find(route => route.id === row.route);
+    return {
+      id: row.id,
+      complainer_id: row.complainer_id,
+      route: routeObj ? routeObj.terminal_point : "Not mentioned", // Use terminal_point if found, otherwise "Unknown"
+      sub_time: row.submission_timestamp,
+      trip_id: row.trip_id,
+      subject: row.subject,
+      response: row.response
+    };
+  });
 
-      totalEntries = StudentRows.length;
-      totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-    }
+  const response2 = await fetch('http://localhost:3000/api/feedback/teacher');
+  const data2 = await response2.json();
+  teacherFeedbacks = data2.map((row) => {
+    // Similar mapping for teacher feedbacks
+    const routeObj = routes.find(route => route.id === row.route);
+    return {
+      id: row.id,
+      complainer_id: row.complainer_id,
+      route: routeObj ? routeObj.terminal_point : "Unknown",
+      sub_time: row.submission_timestamp,
+      trip_id: row.trip_id,
+      subject: row.subject,
+      response: row.response
+    };
+  });
 
-    $: if (selectedRole === 'student') {
-      searchRows = StudentRows;
-    } else {
-      searchRows = TeacherRows;
-    }
+  // Setup initial view
+  if (selectedRole === 'student') {
+    searchRows = studentFeedbacks;
+  } else {
+    searchRows = teacherFeedbacks;
+  }
+
+  totalEntries = searchRows.length;
+  totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+}
+
+
+$: {
+  if (selectedRole === 'student') {
+    totalEntries = studentFeedbacks.length;
+    searchRows = studentFeedbacks;
+  } else {
+    totalEntries = teacherFeedbacks.length;
+    searchRows = teacherFeedbacks;
+  }
+  totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
+  // Reset currentPage to 1 when toggling between roles to ensure we start from the first page
+  currentPage = 1;
+}
   
     onMount(async() => {
       await getFeedbackList();
@@ -310,15 +326,15 @@
                   <td class="py-2 pl-2 pr-2 text-center w-auto">{formatDate(row.sub_time)}</td>
                   <td class="py-2 pl-2 pr-2 text-center w-auto">{row.subject.slice(1, -1)}</td>
                   <td class="py-2 pl-2 pr-2 text-center w-auto">
-                    {#if row.response}
-                      <span class="border border-lime-500 w-fit px-3 py-1 rounded-full text-maroon-500 font-medium">
-                        <i class="bx bxs-check-circle text-lime-500 scale-150 mr-2"></i>
-                        Responded
+                    {#if row.response === null}
+                      <span class="border border-red-500 w-fit px-3 py-1 rounded-full text-red-500 font-medium">
+                        <i class="bx bxs-x-circle text-red-500 scale-150 mr-2"></i>
+                        Pending
                       </span>
                     {:else}
-                    <span class="border border-red-500 w-fit px-3 py-1 rounded-full text-red-500 font-medium">
-                      <i class="bx bxs-x-circle text-red-500 scale-150 mr-2"></i>
-                      Pending
+                    <span class="border border-lime-500 w-fit px-3 py-1 rounded-full text-maroon-500 font-medium">
+                      <i class="bx bxs-check-circle text-lime-500 scale-150 mr-2"></i>
+                      Responded
                     </span>
                     {/if}
                   </td>
@@ -351,11 +367,12 @@
   
       <!-- Pagination -->
       <PaginationFooter
-        totalEntries={totalEntries}
-        entriesPerPage={Number(entriesPerPage)}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        on:pageChanged={(e) => {currentPage = e.detail;}}/>
+  totalEntries={totalEntries}
+  entriesPerPage={Number(entriesPerPage)}
+  currentPage={currentPage}
+  totalPages={totalPages}
+  on:pageChanged={(e) => {currentPage = e.detail;}}
+/>
     </div>
   </main>
 {:else}

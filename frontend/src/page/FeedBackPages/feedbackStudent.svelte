@@ -51,13 +51,16 @@
 }
 
   async function fetchFeedBackDetails() {
+    await fetchRoutes();
       const response = await fetch(`http://localhost:3000/api/feedback/student/${id}`);
       const data = await response.json();
+
       
       const wow =  data.map((row) => {
+        const routeObj = routes.find(route => route.id === row.route);
         return {
           complainer_id : row.complainer_id,
-          route : row.route,
+          route: routeObj ? routeObj.terminal_point : "Not mentioned", // Use terminal_point if found, otherwise "Unknown"
           subtime : row.submission_timestamp,
           contime : row.concerned_timestamp,
           text : row.text,
@@ -108,7 +111,6 @@
     onMount(() => {
       const urlParams = new URLSearchParams(window.location.search);
       id = urlParams.get('feedbackId');
-      fetchRoutes();
       fetchFeedBackDetails();
     });
   </script>
