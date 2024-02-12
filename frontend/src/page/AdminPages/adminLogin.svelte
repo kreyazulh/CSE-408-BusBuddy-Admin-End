@@ -1,9 +1,9 @@
 <script>
-    import '.././app.css';
-    import "../tailwind.css";
+    import '../.././app.css';
+    import "../../tailwind.css";
     import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
-    import { isAuthenticated } from '.././auth';
+    import { isAuthenticated } from '../../auth';
   
     let id = '';
     let password = '';

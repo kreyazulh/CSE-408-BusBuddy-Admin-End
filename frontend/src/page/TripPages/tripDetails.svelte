@@ -1,8 +1,8 @@
 <script>
     import { onMount } from 'svelte';
     import L from 'leaflet';
-    import Navbar from './navbar.svelte';
-    import { isAuthenticated } from '../auth';
+    import Navbar from '../GlobalComponents/navbar.svelte';
+    import { isAuthenticated } from '../../auth';
     
 
     

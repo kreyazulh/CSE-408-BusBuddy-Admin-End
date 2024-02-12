@@ -78,6 +78,9 @@
           bus_type = wow.bus_type;
           valid = wow.valid;
 
+          const formattedBusType = formatBusType(wow.bus_type); // Use this function
+          bus_type = formattedBusType; // Use the formatted string without braces
+
     }
 
     async function getBusList() {
@@ -110,6 +113,18 @@
         name: row.name
       };
     });
+  }
+
+  let showRejectSection = false;
+
+// Toggle function
+function toggleRejectSection() {
+  showRejectSection = !showRejectSection;
+}
+
+  // Function to remove curly braces
+  function formatBusType(busType) {
+    return busType.replace(/[{}]/g, ''); // Removes both { and }
   }
 
   async function approveReq() {
@@ -190,83 +205,83 @@
   
 
   {#if $isAuthenticated}
-  <main class="flex min-h-screen min-w-full bg-gradient-to-b from-maroon-500 to-maroon-900">
-    <div>
-        <Navbar />
-    </div>
 
-
-    <div class="flex-1 w-full bg-black-900 bg-opacity-60">
-        <div class="flex flex-row w-full">
-            <div class=" w-1/2 h-fit ml-60 mb-5 bg-white-700 rounded-lg shadow-lg">
-                <h1 class=" mt-5 ml-5 text-2xl font-semibold text-maroon-500 underline underline-offset-1">Personal Information</h1> 
-                <div class="flex flex-col ml-10 mt-3 mb-6">
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Id : {id}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Requestor: {req_id}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Source: {source}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Destination: {dest}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Subject: {subject}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Time: {formatDate(time)}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Bus Type: {bus_type}</p>
-                  <p class="text-lg font-semibold text-gray-700 pb-2">Text:</p><p> {text}</p>
-                </div> 
-                <div class="my-4 px-5">
-                  <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Select Driver:</label>
-                  <select
-                  class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
-                    bind:value={driver}>
-                    {#each driverNames as driverName}
-                      <option value={driverName.id}>{driverName.name}</option>
-                    {/each}
-                  </select>
-                </div>
-                <div class="my-4 px-5">
-                  <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Select Helper:</label>
-                  <select
-                  class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
-                    bind:value={collector}>
-                    {#each staffNames as staffName}
-                      <option value={staffName.id}>{staffName.name}</option>
-                    {/each}
-                  </select>
-                </div>
-                <div class="my-4 px-5">
-                  <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Select Bus:</label>
-                  <select
-                  class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
-                    bind:value={bus_id}>
-                    {#each busNumbers as busNumber}
-                      <option value={busNumber.id}>{busNumber.id}</option>
-                    {/each}
-                  </select>
-                </div>
-                <div class="my-4 px-5">
-                  <label class="block text-gray-600 font-semibold mb-2" for="input2">Remarks/Reason for rejection:</label>
-                  <input required pattern="[0-9]{3}" placeholder="dimu na bus ki korbi"
-                  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300" type="text"  bind:value={remarks} />
-                </div>
-                <div class="flex flex-row justify-center my-5 gap-4">
-                  <button
-                    class="bg-maroon-500 hover:bg-maroon-900 py-2 px-5 w-1/4 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-maroon-600 focus:ring-opacity-50"
-                    on:click={approveReq}
-                  >
-                    Approve
-                  </button>
-                  
-                  <button
-                    class="bg-maroon-500 hover:bg-maroon-900 py-2 px-5 w-1/4 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-maroon-600 focus:ring-opacity-50"
-                    on:click={rejectReq}
-                  >
-                    Reject
-                  </button>
-                  <p class="text-center text-indigo-500 font-bold">{addAllocationResponse}</p>
-                </div>
-                
-                
-            </div>
-            
+  <main class="flex min-h-screen w-full bg-gradient-to-b from-maroon-500 to-maroon-900">
+    <Navbar />
+    <div class="flex flex-1 flex-col items-center justify-center py-10">
+      <div class="w-full max-w-4xl bg-white-700 rounded-lg shadow-xl p-6">
+        <h2 class="text-2xl font-bold text-maroon-500 mb-4">Requisition Information</h2>
+        <div class="flex flex-col ml-10 mt-3 mb-6">
+          <p class="text-lg font-semibold text-gray-700 pb-2">Id : {id}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Requestor: {req_id}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Source: {source}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Destination: {dest}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Subject: {subject}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Time: {formatDate(time)}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Bus Type: {bus_type}</p>
+          <p class="text-lg font-semibold text-gray-700 pb-2">Text:</p><p> {text}</p>
+        </div> 
+        <div class="my-4 px-5">
+          <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Select Driver:</label>
+          <select
+          class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
+            bind:value={driver}>
+            {#each driverNames as driverName}
+              <option value={driverName.id}>{driverName.name}</option>
+            {/each}
+          </select>
         </div>
-    </div>
+        <div class="my-4 px-5">
+          <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Select Helper:</label>
+          <select
+          class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
+            bind:value={collector}>
+            {#each staffNames as staffName}
+              <option value={staffName.id}>{staffName.name}</option>
+            {/each}
+          </select>
+        </div>
+        <div class="my-4 px-5">
+          <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Select Bus:</label>
+          <select
+          class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
+            bind:value={bus_id}>
+            {#each busNumbers as busNumber}
+              <option value={busNumber.id}>{busNumber.id}</option>
+            {/each}
+          </select>
+        </div>
+        <div class="w-full max-w-4xl bg-white-700 flex justify-between p-6">
+          <button
+            class="bg-green-500 hover:bg-green-900 text-white-700 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out"
+            on:click={approveReq}>
+            Approve
+          </button>
+          <button
+            class="bg-maroon-500 hover:bg-gray-700 text-white-700 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out"
+            on:click={toggleRejectSection}>
+            {showRejectSection ? 'Cancel' : 'Reject'}
+          </button>
+      </div>
+        
+          {#if showRejectSection}
+            <div class="mt-4">
+              <label class="block text-gray-600 font-semibold mb-2" for="input2">Remarks/Reason for rejection:</label>
+              <input
+                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                type="text"
+                bind:value={remarks}
+                placeholder="Provide a reason for rejection" />
+              <button
+                class="bg-red-500 hover:bg-red-700 text-white-700 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out mt-4 float-right"
+                on:click={rejectReq}>
+                Submit Rejection
+              </button>
+            </div>
+          {/if}
+        </div>        
+        <p class="text-center text-indigo-500 font-bold mt-3">{addAllocationResponse}</p>
+      </div>
   </main>
 {:else}
   <p>Not authenticated</p>

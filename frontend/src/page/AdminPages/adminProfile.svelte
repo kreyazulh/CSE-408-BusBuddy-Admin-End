@@ -1,10 +1,10 @@
 <script>
     import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
-    import { isAuthenticated } from '../auth';
-    import Navbar from './navbar.svelte';
-    import BarChart from './GlobalComponents/Charts/BarChart.svelte';
-    import PieChart from './GlobalComponents/Charts/PieChart.svelte';
+    import { isAuthenticated } from '../../auth';
+    import Navbar from '../GlobalComponents/navbar.svelte';
+    import BarChart from '../GlobalComponents/Charts/BarChart.svelte';
+    import PieChart from '../GlobalComponents/Charts/PieChart.svelte';
 
 
     // Import any required components or functions

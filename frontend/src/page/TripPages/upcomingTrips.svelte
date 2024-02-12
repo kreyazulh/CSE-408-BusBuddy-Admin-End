@@ -1,9 +1,9 @@
 <script>
-  import Navbar from "./navbar.svelte";
-  import DeletePopUp from "./GlobalComponents/PopUps/deletePopUp.svelte";
+  import Navbar from "../GlobalComponents/navbar.svelte";
+  import DeletePopUp from "../GlobalComponents/PopUps/deletePopUp.svelte";
   import { navigate } from 'svelte-routing';
   import { onMount } from "svelte";
-  import { isAuthenticated } from "../auth";
+  import { isAuthenticated } from "../../auth";
 
   // Sample data for the table rows
   let rows = [];
