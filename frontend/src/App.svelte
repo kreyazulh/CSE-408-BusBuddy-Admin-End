@@ -1,8 +1,8 @@
 <script>
   import { Router, Route, navigate } from 'svelte-routing';
-  import Login from './page/adminLogin.svelte';
-  import upcomingTrips from './page/upcomingTrips.svelte';
-  import pastTrips from './page/pastTrips.svelte';
+  import Login from './page/AdminPages/adminLogin.svelte';
+  import upcomingTrips from './page/TripPages/upcomingTrips.svelte';
+  import pastTrips from './page/TripPages/pastTrips.svelte';
   import Navbar from './page/GlobalComponents/navbar.svelte';
   import busAdd from './page/BusPages/busAdd.svelte';
   import BusStaffList from './page/BusStaffPages/busStaffList.svelte';
@@ -16,8 +16,8 @@
   import EditBus from './page/BusPages/editBus.svelte';
   import BusDetails from './page/BusPages/busDetails.svelte';
   import RouteList from './page/routeList.svelte';
-  import AdminProfile from './page/adminProfile.svelte';
-  import TripDetails from './page/tripDetails.svelte';
+  import AdminProfile from './page/AdminPages/adminProfile.svelte';
+  import TripDetails from './page/TripPages/tripDetails.svelte';
   import ShowLive from './page/LiveTracking/showLive.svelte';
   import LiveTrack from './page/LiveTracking/liveTracking.svelte';
   import FeedbackList from './page/FeedBackPages/feedbackList.svelte';

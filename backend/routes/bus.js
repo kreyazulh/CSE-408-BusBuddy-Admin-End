@@ -57,6 +57,23 @@ router.delete('/delete', async (req, res) => {
   }
 });
 
+//bus profile
+router.get('/:regID', (req, res) => {
+  const client = req.client;
+  const { regID } = req.params;
+  const query = 'SELECT * FROM bus WHERE reg_id = $1';
+  
+  client.query(query, [regID], (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results.rows);
+      console.log(results.rows);
+    }
+  });
+});
+
 
 module.exports = router;
   
