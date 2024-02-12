@@ -20,7 +20,6 @@
   let unallocatedBuses = [];
 
   let date = null;
-  let tripType = '';
   let route = '';
   let shift = '';
   let bus_id = '';
@@ -184,13 +183,13 @@
     <div class="flex w-full justify-center items-center">
       <div class="w-1/2 py-5 px-5 my-10 rounded-lg shadow-lg bg-white-700">
         <h2 class="text-3xl font-bold underline uppercase text-maroon-500">
-          Schedule Trip
+          Schedule Regular Trips
         </h2>
         <div class="flex justify-end my-5">
-          <button class="shadow-md font-bold text-3xl text-white-700 bg-gradient-to-br from-red-600 to-red-900  w-fit rounded-lg py-3 px-10" 
+          <button class="shadow-md font-bold text-xl text-white-700 bg-gradient-to-br from-red-600 to-red-900 mr-5  w-fit rounded-lg py-3 px-10" 
           class:shrink={isShrink}
           on:click={()=>{ addBulk();}}>
-          <i class="bx bxs-purchase-tag"></i>
+          <i class="bx bxs-hand-right"></i>
           Add Regular Trips for {formattedTomorrow}
           </button>
         </div>
@@ -198,44 +197,19 @@
         <div class="flex flex-row">
           <div class="w-1/2">
 
-            <!-- select trip type -->
-            <div class="my-4 px-5">
-              <label class="block text-gray-600 font-semibold mb-2" for="tripType">Select Trip Type:</label>
-              <select
-                required
-                class= "{tripType === "" ? 'text-gray-400' : 'text-black-900'} w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                id="tripTypeDropdown"
-                bind:value={tripType}>
-                <option value="" hidden selected>Select Trip Type</option>
-                <option value="regular" class="text-black-900">Regular</option>
-                <option value="requisition" class="text-black-900">Requisition</option>
-              </select>
-            </div>
-
             <!-- date -->
             <div class="my-4 px-5">
               <label class="block text-gray-600 font-semibold mb-2" for="date">Date:</label>
               <input 
                 required
                 id="date"
-                class="w-full px-3 py-2 border rounded-md {date === null ? 'text-gray-400'  : 'text-black-900'}  focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                class="w-full px-3 py-2 border rounded-md {date === null ? 'text-gray-400 bg-gray-100'  : 'text-black-900 bg-white-700'}  focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
                 type="date"
                 bind:value={date}
               />
             </div>
 
             <!-- route -->
-            {#if tripType === "requisition"}
-              <div class="my-4 px-5">
-                <label class="block text-gray-600 font-semibold mb-2" for="route"> Input Route:</label>
-                <input
-                  required
-                  class= "text-black-900 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                  id="routeInput"
-                  placeholder="eg: BUET to SUST"
-                  bind:value={route}/>
-              </div>   
-            {:else}
               <div class="my-4 px-5">
                 <label class="block text-gray-600 font-semibold mb-2" for="route">Select Route:</label>
                 <select
@@ -249,20 +223,8 @@
                   {/each}
                 </select>
               </div>
-            {/if}
 
             <!-- shift -->
-            {#if tripType === "requisition"}
-              <div class="my-4 px-5">
-                <label class="block text-gray-600 font-semibold mb-2" for="time"> Input Time:</label>
-                <input
-                  required
-                  class= "text-black-900 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
-                  id="timeInput"
-                  placeholder="eg: 08:00 AM to 06:00 PM"
-                  bind:value={shift}/>
-              </div>
-            {:else}
               <div class="my-4 px-5">
                 <label class="block text-gray-600 font-semibold mb-2" for="shift">Select Shift:</label>
                 <select
@@ -276,7 +238,6 @@
                   <option value="evening" class="text-black-900">Evening</option>
                 </select>
               </div>
-            {/if}
           </div>
 
           <div class = "w-1/2">
@@ -351,9 +312,7 @@
                 class:shrink={isShrink}
                 on:click={() => {
                   handleClick();
-                  if(tripType === ''){
-                    errorMessage = 'Please select a trip type';
-                  }else if(date === null){
+                  if(date === null){
                     errorMessage = 'Please select a date';
                   }else if(route === ''){
                     errorMessage = 'Please select a route';
