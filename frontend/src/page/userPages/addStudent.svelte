@@ -222,7 +222,7 @@
               <!-- password -->
               <div class="my-4 px-5">
                 <label class="block text-gray-600 font-semibold mb-2" for="password">Password:</label>
-                <Password  on:passwordChanged={handlePasswordChange}/>
+                <Password password={password} on:passwordChanged={handlePasswordChange}/>
               </div>
             </div>
           </div>

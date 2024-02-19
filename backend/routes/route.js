@@ -89,16 +89,14 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
-  // usage : upcomingTrips
-  router.get('/allocation', (req, res) => {
+  router.post('/allocation', (req, res) => {
     const client = req.client;
-    const date = req.query.date || getTomorrowsDate();
+    const date = req.body.date || getTomorrowsDate(); // Adjust to use body parser middleware
     console.log(date);
     let query = 'SELECT * FROM allocation';
   
-    // If a date is provided, add a WHERE clause to filter by that date
     if (date) {
-      query += ` WHERE DATE(start_timestamp) = '${date}'`; // Replace 'timestamp_column' with your actual column name
+      query += ` WHERE DATE(start_timestamp) = '${date}'`;
     }
   
     client.query(query, (error, results) => {
@@ -160,7 +158,7 @@ router.delete('/delete/:routeId', async (req, res) => {
     }
   });
 
-  router.post('/allocation', async (req, res) => {
+  router.post('/allocation/edit', async (req, res) => {
     const { id, currentRoute, busNumber, driverName, staffName, shift } = req.body;
     const client = req.client;
   
@@ -212,5 +210,40 @@ router.delete('/delete/:routeId', async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
+
+  router.post('/routeDetails', async (req, res) => {
+    const client = req.client;
+    const { routeId } = req.body; // Assuming the route ID is sent in the request body
+
+    if (!routeId) {
+        return res.status(400).json({ error: 'Route ID is required' });
+    }
+
+    const query = `
+        SELECT 
+            r.id, 
+            r.terminal_point, 
+            r.points, 
+            r.valid, 
+            r.predefined_path,
+            ARRAY(SELECT s.name FROM unnest(r.points) AS sid JOIN station s ON s.id = sid) AS name,
+            ARRAY(SELECT s.coords FROM unnest(r.points) AS sid JOIN station s ON s.id = sid) AS coords
+        FROM route r
+        WHERE r.id = $1;
+    `;
+
+    client.query(query, [routeId], (error, results) => {
+        if (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else if (results.rows.length === 0) {
+            res.status(404).json({ error: 'Route not found' });
+        } else {
+            res.json(results.rows[0]);
+        }
+    });
+});
+
 
   module.exports = router;

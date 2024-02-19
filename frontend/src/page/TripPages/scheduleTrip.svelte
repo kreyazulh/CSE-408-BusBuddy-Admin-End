@@ -7,29 +7,57 @@
   import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
 
   let isShrink = false;
-
   let routeList = [];
+  let allocatedDrivers = [], unallocatedDrivers = [];
+  let allocatedHelpers = [], unallocatedHelpers = [];
+  let allocatedBuses = [], unallocatedBuses = [];
 
-  let allocatedDrivers = [];
-  let unallocatedDrivers = [];
+  let date = null, bulkDate = null;
+  let route = '', shift = '', bus_id = '', driver = '', helper = '';
+  let success = -1, errorMessage = '', addAllocationResponse = '';
 
-  let allocatedHelpers = [];
-  let unallocatedHelpers = [];
+  // Calculate valid range for bulk allocation
+  let validBulkDates = [];
+  let today = new Date();
+  for (let i = 1; i <= 6; i++) { // From tomorrow to the next 6 days
+    let futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + i);
+    validBulkDates.push(futureDate.toISOString().split('T')[0]); // Format YYYY-MM-DD
+  }
 
-  let allocatedBuses = [];
-  let unallocatedBuses = [];
+  // Existing functions...
+  async function addBulk() {
+    handleClick();
+    const bulkData = {
+      date: new Date(bulkDate).toLocaleDateString('en-US'), // Ensure the date format matches your backend expectations
+    };
+    try {
+      const response = await fetch('http://localhost:3000/api/route/allocation/bulk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(bulkData)
+      });
+      console.log(response);
+      console.log(bulkData);
+      // fornow = await response.json();
 
-  let date = null;
-  let route = '';
-  let shift = '';
-  let bus_id = '';
-  let driver = '';
-  let helper = '';
+      if (response.ok) {
+        // Request was successful
+        addAllocationResponse = 'Bulk Trips added successfully';
+      } else {
+        // Request failed
+        addAllocationResponse = 'Failed to add bulk allocation';
+      }
+      // navigate('/upcomingTrips');
+    } catch (error) {
+      console.error('Error:', error);
+      addAllocationResponse = 'Error occurred';
+      // navigate('/upcomingTrips');
+    }
+  }
 
-  let success = -1;
-  let errorMessage = '';
-
-  let addAllocationResponse = '';
 
   function handleClick() {
     isShrink = true;
@@ -124,45 +152,7 @@
     // unallocated kemne anbo jani na
   }
 
-  let tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
-  // Format the date as YYYY-MM-DD
-  let formattedTomorrow = `${tomorrow.getDate().toString().padStart(2, '0')}-${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}-${tomorrow.getFullYear()}`;
-  let americanTomorrow = `${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}-${tomorrow.getFullYear()}`;
-
-  async function addBulk() {
-    handleClick();
-    const bulkData = {
-      date: americanTomorrow,
-    };
-
-    try {
-      const response = await fetch('http://localhost:3000/api/route/allocation/bulk', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(bulkData)
-      });
-      console.log(response);
-      console.log(bulkData);
-      // fornow = await response.json();
-
-      if (response.ok) {
-        // Request was successful
-        addAllocationResponse = 'Bulk Trips added successfully';
-      } else {
-        // Request failed
-        addAllocationResponse = 'Failed to add bulk allocation';
-      }
-      // navigate('/upcomingTrips');
-    } catch (error) {
-      console.error('Error:', error);
-      addAllocationResponse = 'Error occurred';
-      // navigate('/upcomingTrips');
-    }
-  }
+  
 
   onMount(() => {
     getRouteList();
@@ -182,17 +172,27 @@
 
     <div class="flex w-full justify-center items-center">
       <div class="w-1/2 py-5 px-5 my-10 rounded-lg shadow-lg bg-white-700">
-        <h2 class="text-3xl font-bold underline uppercase text-maroon-500">
-          Schedule Regular Trips
-        </h2>
-        <div class="flex justify-end my-5">
-          <button class="shadow-md font-bold text-xl text-white-700 bg-gradient-to-br from-red-600 to-red-900 mr-5  w-fit rounded-lg py-3 px-10" 
-          class:shrink={isShrink}
-          on:click={()=>{ addBulk();}}>
-          <i class="bx bxs-hand-right"></i>
-          Add Regular Trips for {formattedTomorrow}
-          </button>
-        </div>
+                <!-- Date Picker for Bulk Allocation -->
+                <div class="my-4 px-5">
+                  <label class="block text-gray-600 font-semibold mb-2" for="bulkDate">Bulk Allocation Date:</label>
+                  <input 
+                    id="bulkDate"
+                    class="w-full px-3 py-2 border rounded-md text-black-900 bg-white-700 focus:outline-none focus:ring focus:ring-3 focus:ring-maroon-500"
+                    type="date"
+                    bind:value={bulkDate}
+                    min={validBulkDates[0]} max={validBulkDates[validBulkDates.length - 1]}
+                  />
+                </div>
+        
+                <!-- Bulk Creation Button (Visible only if bulkDate is valid) -->
+                {#if bulkDate && validBulkDates.includes(bulkDate)}
+                <div class="flex justify-end my-5">
+                  <button class="shadow-md font-bold text-xl text-white-700 bg-gradient-to-br from-red-600 to-red-900 mr-5  w-fit rounded-lg py-3 px-10" 
+                  on:click={addBulk}>
+                    Add Bulk Trips for {new Date(bulkDate).toLocaleDateString()}
+                  </button>
+                </div>
+                {/if}
 
         <div class="flex flex-row">
           <div class="w-1/2">

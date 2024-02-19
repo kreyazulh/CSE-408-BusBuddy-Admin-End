@@ -248,11 +248,7 @@ $: {
   
        <!-- Search Bar-->
        <div class="flex mb-4 justify-end">
-        {#if selectedRole === "student"}
-          <SearchBar originalRows={StudentRows} on:searchChanged={handleSearch} />
-        {:else}
-          <SearchBar originalRows={TeacherRows} on:searchChanged={handleSearch} />
-        {/if}
+          <SearchBar originalRows={searchRows} on:searchChanged={handleSearch} />
       </div>
   
       <!-- Entries per page -->
