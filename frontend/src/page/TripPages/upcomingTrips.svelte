@@ -197,9 +197,11 @@ async function handleDeleteConfirm() {
           shift: rowData.shift,
         };
 
+        console.log("Payload:", payload);
+
         try {
           const response = await fetch(
-            "http://localhost:3000/api/route/allocation",
+            "http://localhost:3000/api/route/allocation/edit",
             {
               method: "POST", // or 'PUT' if updating an existing allocation
               headers: {
@@ -238,13 +240,41 @@ async function fetchRoutes() {
   }
 }
 
-async function fetchRows() {
+let dates = getNextSevenDays();
+let selectedDate = dates[0]; // Default to today
+
+// Function to call fetchRows with the selected date
+async function onDateChange(event) {
+  const selectedDate = event.target.value;
+  await fetchRows(selectedDate);
+}
+
+// Function to generate an array of the next 7 dates
+function getNextSevenDays() {
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+    dates.push(date.toISOString().split('T')[0]); // Format the date as YYYY-MM-DD
+  }
+  return dates;
+}
+
+async function fetchRows(selectedDate) {
   try {
-    const response = await fetch("http://localhost:3000/api/route/allocation");
+    const url = "http://localhost:3000/api/route/allocation";
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ date: selectedDate }),
+    };
+    const response = await fetch(url, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    let data = await response.json();
+    const data = await response.json(); // Convert the response body to JSON
 
     let rows = data.map(item => ({
       id: item.id,
@@ -254,6 +284,7 @@ async function fetchRows() {
       staffName: item.helper,
       shift: item.time_type,
       currentRoute: routes.find(route => route.id === item.route)?.terminal_point || 'Not Assigned'
+      //currentRoute: item.route
     })).filter(row => !Object.values(row).includes(null));
 
     console.log("Rows:", rows);
@@ -292,28 +323,15 @@ async function fetchRows() {
     }
   }
 
+
   async function gotoAddTrip() {
     navigate('/scheduleTrip');
   }
 
-async function fetchTomorrowsTime() {
-  try {
-    const response = await fetch('http://localhost:3000/api/route/time');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    tomorrowTime = data;
-    console.log('Tomorrow\'s time:', tomorrowTime);
-  } catch (error) {
-    console.error('Error fetching tomorrow\'s time:', error);
-  }
-}
 
 onMount(async () => {
     await fetchRoutes();
-    await fetchRows();
-    await fetchTomorrowsTime();
+    await fetchRows(selectedDate);
   });
 </script>
 
@@ -364,12 +382,21 @@ onMount(async () => {
     </div>
 
     <!--date-->
-    <div class="flex mb-2 justify-start">
-      <span class="h-10 font-bold text-black-700"> Date: </span>
-      {#if tomorrowTime}
-      <span class="h-10 ml-2 font-bold text-black-700">{tomorrowTime.time}</span>
-      {/if}
+    <div class="flex mb-1">
+      <label for="dateSelector" class="text-sm font-semibold text-gray-700 mr-2 mt-2">
+        Select Date:
+      </label>
+      <select
+        id="dateSelector"
+        class="ml-1 bg-gray-300 rounded-full focus:bg-white focus:border-blue-300 focus:ring-blue-200 text-black text-sm font-semibold h-10 p-1.5"
+        on:change={onDateChange}
+      >
+        {#each dates as date}
+          <option value={date}>{date}</option>
+        {/each}
+      </select>
     </div>
+    
    
 
     <!-- Entries per page -->

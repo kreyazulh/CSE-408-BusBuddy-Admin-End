@@ -8,14 +8,14 @@
   import BusStaffList from './page/BusStaffPages/busStaffList.svelte';
   import StaffProfile from './page/BusStaffPages/staffProfile.svelte';
   import EditStaff from './page/BusStaffPages/editStaff.svelte';
-  import CreateRoute from './page/createRoute.svelte';
+  import CreateRoute from './page/RoutePages/createRoute.svelte';
   import AddStudent from './page/userPages/addStudent.svelte';
   import AddStaff from './page/BusStaffPages/addStaff.svelte';
   import ScheduleTrip from './page/TripPages/scheduleTrip.svelte';
   import BusList from './page/BusPages/busList.svelte';
   import EditBus from './page/BusPages/editBus.svelte';
   import BusDetails from './page/BusPages/busDetails.svelte';
-  import RouteList from './page/routeList.svelte';
+  import RouteList from './page/RoutePages/routeList.svelte';
   import AdminProfile from './page/AdminPages/adminProfile.svelte';
   import TripDetails from './page/TripPages/tripDetails.svelte';
   import ShowLive from './page/LiveTracking/showLive.svelte';
@@ -27,6 +27,7 @@
   import RequisitionList from './page/userPages/requisitionList.svelte';
   import Notifications from './page/Notifications/notifications.svelte';
   import Requisition from './page/userPages/requisition.svelte';
+  import RouteDetails from './page/RoutePages/routeDetails.svelte';
 
 
 
@@ -81,6 +82,7 @@
     <Route path="/requisitionList" component={RequisitionList} />
     <Route path="/notifications" component={Notifications} />
     <Route path="/requisition" component={Requisition} />
+    <Route path="/routeDetails" component={RouteDetails} />
   </Router>
 
 </main>
