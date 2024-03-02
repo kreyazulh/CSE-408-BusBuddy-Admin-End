@@ -29,6 +29,8 @@
   import Requisition from './page/userPages/requisition.svelte';
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
   import Bulletine from './page/Notifications/bulletine.svelte';
+  import AssignmentMHB from './page/TripPages/assignmentsmhb.svelte';
+  import AssignmentAdd from './page/TripPages/assignmentsadd.svelte';
 
 
 
@@ -85,6 +87,8 @@
     <Route path="/requisition" component={Requisition} />
     <Route path="/routeDetails" component={RouteDetails} />
     <Route path="/bulletine" component={Bulletine} />
+    <Route path="/assignmentmhb" component={AssignmentMHB} />
+    <Route path="/assignmentadd" component={AssignmentAdd} />
   </Router>
 
 </main>
