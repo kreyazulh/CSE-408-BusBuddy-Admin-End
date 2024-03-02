@@ -1,9 +1,9 @@
 <script>
   import { onMount, afterUpdate } from 'svelte';
-  import Navbar from './navbar.svelte';
-  import "../tailwind.css";
+  import Navbar from '../GlobalComponents/navbar.svelte';
+  import "../../tailwind.css";
   import { navigate} from 'svelte-routing';
-  import { checkSession, isAuthenticated } from '../auth';
+  import { checkSession, isAuthenticated } from '../../auth';
 
   let id = '';
   let terminalPoint = '';

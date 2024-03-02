@@ -38,16 +38,26 @@
 
     return `${hours}:${minutes} ${ampm}, ${day} ${month}, ${year}`;
   }
-
+let routes = [];
+  async function fetchRoutes() {
+  try {
+    const response = await fetch('http://localhost:3000/api/route/');
+    routes = await response.json();
+    console.log(routes);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
 
   async function fetchFeedBackDetails() {
       const response = await fetch(`http://localhost:3000/api/feedback/teacher/${id}`);
       const data = await response.json();
       
       const wow =  data.map((row) => {
+        const routeObj = routes.find(route => route.id === row.route);
         return {
           complainer_id : row.complainer_id,
-          route : row.route,
+          route: routeObj ? routeObj.terminal_point : "Not mentioned", // Use terminal_point if found, otherwise "Unknown"
           subtime : row.submission_timestamp,
           contime : row.concerned_timestamp,
           text : row.text,
@@ -134,7 +144,7 @@
       <p class="mx-8 text-normal font-bold text-maroon-500 py-2">Response: </p>
       <textarea class="ml-10 mr-20 text-normal font-normal text-black-900 py-2 px-2 rounded-lg bg-gray-200 h-28 focus:outline-none focus:ring-2 focus:ring-maroon-500"
         placeholder="We'll look into it." 
-        value={response}/>
+        bind:value={response}/>
       <div class="flex flex-row justify-end my-5 mr-5">
         <button class="bg-maroon-500 hover:bg-maroon-900 py-2 px-5 w-fit text-white-700 font-semibold rounded-full focus:translate-y-2"
         on:click={addFeedback}>

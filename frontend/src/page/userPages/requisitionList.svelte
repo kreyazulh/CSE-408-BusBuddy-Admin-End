@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import Navbar from '../navbar.svelte'; // Assuming you want to use the same Navbar
+    import Navbar from '../GlobalComponents/navbar.svelte';
     import { isAuthenticated } from '../../auth'; // If authentication check is needed
     import { navigate } from 'svelte-routing';
     import DeletePopUp from "../GlobalComponents/PopUps/deletePopUp.svelte";
