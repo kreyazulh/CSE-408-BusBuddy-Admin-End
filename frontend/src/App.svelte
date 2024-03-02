@@ -28,6 +28,7 @@
   import Notifications from './page/Notifications/notifications.svelte';
   import Requisition from './page/userPages/requisition.svelte';
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
+  import Bulletine from './page/Notifications/bulletine.svelte';
 
 
 
@@ -83,6 +84,7 @@
     <Route path="/notifications" component={Notifications} />
     <Route path="/requisition" component={Requisition} />
     <Route path="/routeDetails" component={RouteDetails} />
+    <Route path="/bulletine" component={Bulletine} />
   </Router>
 
 </main>

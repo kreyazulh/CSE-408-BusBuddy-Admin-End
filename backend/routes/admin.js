@@ -4,6 +4,7 @@ const sharedConfig = require('.././sharedId');
 
 
 // Route to get admin data
+// usage : ~
 router.get('/', (req, res) => {
   const client = req.client;
   const query = 'SELECT * FROM admin';
@@ -19,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 
-// usage : adminProfile
+// usage : adminProfile::fetchAdminDetails(), 
 router.get('/profile', async (req, res) => {
   const client = req.client;
   var id = sharedConfig.userId;
@@ -42,6 +43,7 @@ router.get('/profile', async (req, res) => {
   }
 });
 
+// usage : adminProfile::lastTrips()
 router.get('/trips/last7days', async (req, res) => {
   const client = req.client;
   try {
@@ -68,6 +70,7 @@ router.get('/trips/last7days', async (req, res) => {
   }
 });
 
+// usage : adminProfile::fetchTopPassengerCounts(), 
 router.get('/trips/topYesterday', async (req, res) => {
   const client = req.client;
   try {
@@ -98,6 +101,8 @@ router.get('/trips/topYesterday', async (req, res) => {
   }
 });
 
+
+// usage : adminProfile::fetchUserCounts()
 router.get('/counts', async (req, res) => {
   const client = req.client;
 
@@ -129,6 +134,7 @@ router.get('/counts', async (req, res) => {
   }
 });
 
+// usage : adminProfile::fetchTicketCounts()
 router.get('/tickets', async (req, res) => {
   const client = req.client;
 
@@ -147,6 +153,7 @@ router.get('/tickets', async (req, res) => {
   }
 });
 
+// usage : adminProfile::fetchTripStats()
 router.get('/trips/stats', async (req, res) => {
   const client = req.client;
 

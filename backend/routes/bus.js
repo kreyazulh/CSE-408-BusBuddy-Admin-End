@@ -3,7 +3,7 @@ var router = express.Router();
 
 
 // Route to get bus data
-// usage : busList, scheduleTrip
+// usage : adminProfile::fetchBuses(), busList, scheduleTrip
 router.get('/', (req, res) => {
     const client = req.client;
     const query = 'SELECT * FROM bus';
@@ -19,13 +19,13 @@ router.get('/', (req, res) => {
   });
 
 // Route to add bus data
-// usage : busAdd
+// usage : busAdd::addBus() 
 router.post('/add', (req, res) => {
   const client = req.client;
     console.log(req.body);
     client.query (
-        "INSERT INTO bus(reg_id, type, capacity, remarks) values($1, $2, $3, $4)",
-        [req.body.reg_id, req.body.type, req.body.capacity, req.body.remarks]
+        "INSERT INTO bus(reg_id, type, capacity, remarks, is_rented) values($1, $2, $3, $4, $5)",
+        [req.body.reg_id, req.body.type, req.body.capacity, req.body.remarks, req.body.is_rented]
     ).then(qres => {
         console.log(qres);
         if (qres.rowCount === 1) res.send(true);

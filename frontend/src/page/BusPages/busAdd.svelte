@@ -2,6 +2,7 @@
   import Navbar from '../GlobalComponents/navbar.svelte';
   import { isAuthenticated } from '../../auth';
   import { navigate } from 'svelte-routing';
+  import { onMount } from "svelte";
   import ErrorPopUp from '../GlobalComponents/PopUps/errorPopUp.svelte';
   import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
 
@@ -13,11 +14,13 @@
   let remarks = '';
   let driver = '';
   let helper = '';
+  // online 408
+  let rented = 'false';
 
-  let allocatedDrivers = ['a','b','c'];
-  let unallocatedDrivers = ['d','e','f'];
-  let allocatedHelpers = ['p','q','r'];
-  let unallocatedHelpers = ['s','t','u'];
+  let allocatedDrivers = [];
+  let unallocatedDrivers = [];
+  let allocatedHelpers = [];
+  let unallocatedHelpers = [];
 
   let addBusResponse = '';
 
@@ -31,6 +34,26 @@
         }, 100);
   }
 
+  async function fetchDrivers() {
+  try {
+    const response = await fetch('http://localhost:3000/api/staff/driver');
+    unallocatedDrivers = await response.json();
+    console.log(unallocatedDrivers);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
+
+async function fetchHelpers() {
+  try {
+    const response = await fetch('http://localhost:3000/api/staff/collector');
+    unallocatedHelpers = await response.json();
+    console.log(unallocatedHelpers);
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+  }
+}
+
 
   async function addBus() {
     // Create a JSON object with the data
@@ -38,7 +61,8 @@
       reg_id: reg_id,
       capacity: capacity,
       type: type,
-      remarks: remarks
+      remarks: remarks,
+      is_rented : rented
       // baki jinish dite hobe
     };
 
@@ -71,6 +95,13 @@
     }
   }
 
+  $: {
+  ;;;
+}
+onMount(async () => {
+    await fetchDrivers();
+    await fetchHelpers();
+  });
 </script>
 
 {#if $isAuthenticated}
@@ -87,6 +118,19 @@
 
         <div class="flex flex-row">
           <div class="w-1/2">
+
+            <div class="mt-4">
+              <label class="block text-gray-600 font-semibold mb-2" for="capacity">Is the Bus Rented?:</label>
+              <label>
+                <input type="radio"  bind:group={rented} value="true"/>
+                Yes
+              </label>
+              
+              <label>
+                <input type="radio" bind:group={rented} value="false"/>
+                No
+              </label>
+            </div>
 
             <!-- bus no -->
             <div class="my-4 px-5">
@@ -152,13 +196,13 @@
                 bind:value={driver}>
                 <option value="" hidden selected>Select Driver</option>
                 <optgroup label="Allocated Drivers" class="text-maroon-500 italic">
-                  {#each allocatedDrivers as driver}
-                    <option value={driver} class="text-black-900 not-italic">{driver}</option>
+                  {#each allocatedDrivers as drivers}
+                    <option value={drivers.name} class="text-black-900 not-italic">{drivers.name}</option>
                   {/each}
                 </optgroup>
                 <optgroup label="Unallocated Drivers" class="text-maroon-500 italic">
-                  {#each unallocatedDrivers as driver}
-                    <option value={driver} class="text-black-900 not-italic">{driver}</option>
+                  {#each unallocatedDrivers as drivers}
+                    <option value={drivers.name} class="text-black-900 not-italic">{drivers.name}</option>
                   {/each}
                 </optgroup>
               </select>
@@ -174,13 +218,13 @@
                   bind:value={helper}>
                   <option value="" hidden selected>Select Helper</option>
                   <optgroup label="Allocated Helpers" class="text-maroon-500 italic">
-                    {#each allocatedHelpers as helper}
-                      <option value={helper} class="text-black-900 not-italic">{helper}</option>
+                    {#each allocatedHelpers as helpers}
+                      <option value={helpers.name} class="text-black-900 not-italic">{helpers.name}</option>
                     {/each}
                   </optgroup>
                   <optgroup label="Unallocated Helpers" class="text-maroon-500 italic">
-                    {#each unallocatedHelpers as helper}
-                      <option value={helper} class="text-black-900 not-italic">{helper}</option>
+                    {#each unallocatedHelpers as helpers}
+                      <option value={helpers.name} class="text-black-900 not-italic">{helpers.name}</option>
                     {/each}
                   </optgroup>
                 </select>
