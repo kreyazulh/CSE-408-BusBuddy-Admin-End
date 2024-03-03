@@ -47,3 +47,138 @@ BEGIN
 
 END;
 $$;
+
+CREATE OR REPLACE PROCEDURE update_allocation(on_day DATE, admin_id CHARACTER VARYING)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    assignment_record RECORD;
+    schedule_id INT;
+BEGIN
+    FOR assignment_record IN SELECT * FROM assignment WHERE end_time IS NULL LOOP
+        -- Find the corresponding schedule ID
+        SELECT id INTO schedule_id FROM schedule 
+        WHERE route = assignment_record.route AND time_type = assignment_record.shift;
+
+        -- Check if a schedule record exists
+        IF FOUND THEN
+            -- Call the create_allocation procedure for each relevant assignment record
+            CALL create_allocation(schedule_id, on_day, assignment_record.bus, assignment_record.driver, assignment_record.helper, admin_id);
+        END IF;
+    END LOOP;
+
+
+
+
+
+
+
+CREATE OR REPLACE PROCEDURE random_assignment(admin_id character varying)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    n INTEGER;
+    drivers character varying[];
+    helpers character varying[];
+    buses character varying[];
+    i INTEGER;
+    curr TIMESTAMP := CURRENT_TIMESTAMP;
+    sched_record RECORD;
+BEGIN
+    -- Count the number of rows in the 'schedule' table
+    SELECT COUNT(*) INTO n FROM schedule;
+
+    -- Populate the drivers array with n IDs from 'staff' table where role is 'driver'
+    SELECT ARRAY(SELECT id FROM bus_staff WHERE role = 'driver' ORDER BY random()) INTO drivers LIMIT n;
+
+    -- Populate the helpers array with n IDs from 'staff' table where role is 'helper'
+    SELECT ARRAY(SELECT id FROM bus_staff WHERE role = 'collector' ORDER BY random()) INTO helpers LIMIT n;
+
+    -- Populate the buses array with n IDs from 'bus' table where capacity is greater than or equal to 50
+    SELECT ARRAY(SELECT reg_id FROM bus WHERE capacity >= 30 ORDER BY random()) INTO buses LIMIT n;
+
+    -- Update all records in 'assignment' table where end_time is null to current timestamp
+    UPDATE assignment SET end_time = curr WHERE end_time IS NULL;
+
+    i := 1;
+
+    -- Iterate over all records in the 'schedule' table
+    FOR sched_record IN SELECT * FROM schedule LOOP
+        -- Find the schedule ID corresponding to the route and shift of the current iteration
+        DECLARE
+            schedule_id INTEGER;
+        BEGIN
+            schedule_id := sched_record.id;
+            -- SELECT id INTO schedule_id FROM schedule WHERE route = (SELECT route FROM assignment WHERE id = i) AND shift = (SELECT shift FROM assignment WHERE id = i);
+
+            -- Insert a new record into the 'assignment' table
+            INSERT INTO assignment (route, shift, bus, driver, helper, start_time) 
+            VALUES ((SELECT route FROM schedule WHERE id = schedule_id), 
+                    (SELECT time_type FROM schedule WHERE id = schedule_id), 
+                    buses[i], drivers[i], helpers[i], curr);
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                -- Handle the case where no corresponding schedule record is found
+                RAISE NOTICE 'No schedule record found for route % and shift %', (SELECT route FROM assignment WHERE id = schedule_id), 
+                (SELECT shift FROM assignment WHERE id = schedule_id);
+        END;
+        i := i+1;
+    END LOOP;
+END;
+$$;
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PROCEDURE rotate_assignment(admin_id character varying)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    curr TIMESTAMP := CURRENT_TIMESTAMP;
+    min_route_id INTEGER;
+    new_route_id INTEGER;
+    route_id_count INTEGER;
+BEGIN
+    -- Find the minimum route id being used in the 'assignment' table
+    SELECT MIN(route) INTO min_route_id FROM assignment;
+
+    LOOP
+        -- Get the count of distinct route ids in the 'assignment' table
+        SELECT COUNT(DISTINCT route) INTO route_id_count FROM assignment;
+
+        -- If there are no records with end_time null, exit the loop
+        IF NOT EXISTS (SELECT 1 FROM assignment WHERE end_time IS NULL) THEN
+            EXIT;
+        END IF;
+
+        -- Find the next route id, considering the minimum route id
+        IF min_route_id IS NOT NULL THEN
+            SELECT COALESCE(MIN(route), min_route_id) INTO new_route_id FROM assignment WHERE end_time IS NULL AND route > min_route_id;
+        ELSE
+            SELECT MIN(route) INTO new_route_id FROM assignment WHERE end_time IS NULL;
+        END IF;
+
+        -- If no next route id found, set the new route id to the minimum route id
+        IF new_route_id IS NULL THEN
+            new_route_id := min_route_id;
+        END IF;
+
+        -- Add a new row with the same details as the one having end_time null, but with updated start_time
+        INSERT INTO assignment (route, shift, bus, driver, helper, start_time, end_time)
+        SELECT route, shift, bus, driver, helper, curr, NULL
+        FROM assignment
+        WHERE end_time IS NULL AND route = new_route_id;
+
+        -- Update the end_time of the old row to the current timestamp
+        UPDATE assignment SET end_time = curr WHERE end_time IS NULL AND route = new_route_id;
+
+        -- Set the minimum route id to the new route id for the next iteration
+        min_route_id := new_route_id;
+    END LOOP;
+END;
+$$;

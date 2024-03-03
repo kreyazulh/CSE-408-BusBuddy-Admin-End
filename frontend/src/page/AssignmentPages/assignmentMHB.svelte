@@ -127,17 +127,16 @@
       navigate('/assignmentadd');
     }
   
-    async function getBusList() {
+    async function getAssgns() {
       const response = await fetch('http://localhost:3000/api/assignment/');
       const data = await response.json();
       assignments = data.map((row) => {
         return {
           route: row.route,
-          bus: row.bus,
-          shift: row.shift,
-          start_time: row.start_time,
-          driver: row.driver, //dummy data
-          helper: row.helper,
+          bus: row.default_bus,
+          shift: row.time_type,
+          driver: row.default_driver, //dummy data
+          helper: row.default_helper,
           status: 'Active',
         };
       });
@@ -162,7 +161,7 @@
     }
   
     onMount(async() => {
-      await getBusList();
+      await getAssgns();
     });
   </script>
   
