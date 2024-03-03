@@ -1,5 +1,5 @@
 <script>
-    import Navbar from "../GlobalComponents/navbar.svelte";
+    import Navbar from '../GlobalComponents/navbar.svelte';
     import { isAuthenticated } from '../../auth';
     import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
@@ -9,6 +9,7 @@
     let routeList = [];
     let allocatedDrivers = [];
     let unallocatedDrivers = [];
+    //allocated
     let allocatedHelpers = [];
     let unallocatedHelpers = [];
     let allocatedBuses = [];
