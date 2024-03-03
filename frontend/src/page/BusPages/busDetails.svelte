@@ -74,11 +74,7 @@
       regID = urlParams.get('busID');
       console.log('busID:', regID);
       fetchBusDetails();
-    });
-
-
-  
-   
+    });   
   </script>
   
   

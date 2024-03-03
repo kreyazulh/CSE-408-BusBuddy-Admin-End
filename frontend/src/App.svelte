@@ -28,9 +28,8 @@
   import Notifications from './page/Notifications/notifications.svelte';
   import Requisition from './page/userPages/requisition.svelte';
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
+  import RouteAllocation from './page/RouteAllocation/routeAllocation.svelte';
   import Bulletine from './page/Notifications/bulletine.svelte';
-
-
 
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
@@ -84,6 +83,7 @@
     <Route path="/notifications" component={Notifications} />
     <Route path="/requisition" component={Requisition} />
     <Route path="/routeDetails" component={RouteDetails} />
+    <Route path="/routeAllocation" component={RouteAllocation} />
     <Route path="/bulletine" component={Bulletine} />
   </Router>
 
