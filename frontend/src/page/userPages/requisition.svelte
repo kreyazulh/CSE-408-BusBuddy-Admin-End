@@ -18,6 +18,7 @@
   let collector = '';
   let remarks = '';
   let addAllocationResponse = '';
+  let payment = 0;
 
     let busNumbers = [];
   let driverNames = [];
@@ -55,7 +56,7 @@
       
       const wow =  data.map((row) => {
         return {
-            id: row.id,
+          id: row.id,
           req_id : row.requestor_id,
           source : row.source,
           dest : row.destination,
@@ -152,16 +153,22 @@ function toggleRejectSection() {
     return busType.replace(/[{}]/g, ''); // Removes both { and }
   }
 
+  console.log("req_id", req_id);
+
   async function approveReq() {
     const respData = {
       id: id,
       time : time,
-      approver : 'mashroor',
+      approver : 'reyazul',
       bus_id : bus_id,
       driver : driver,
       collector : collector,
-      remarks : remarks
+      remarks : remarks,
+      payment : payment,
+      req_id : req_id
     };
+
+    console.log(respData);
 
     try {
       const response = await fetch('http://localhost:3000/api/requisition/approve', {
@@ -274,6 +281,16 @@ function toggleRejectSection() {
             {#each busNumbers as busNumber}
               <option value={busNumber.id}>{busNumber.id}</option>
             {/each}
+          </select>
+        </div>
+        <div class="my-4 px-5">
+          <label class="block text-gray-600 font-semibold mb-2" for="dropdown">Payment:</label>
+          <select
+          class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
+            bind:value={payment}>
+              <option value=1000>1000</option>
+              <option value=1000>1500</option>
+              <option value=1000>2000</option>
           </select>
         </div>
         <div class="w-full max-w-4xl bg-white-700 flex justify-between p-6">

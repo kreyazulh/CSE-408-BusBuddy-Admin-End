@@ -159,7 +159,8 @@
           time : row.timestamp,
           approver : row.approved_by,
           bus : row.bus_type,
-          valid : row.valid
+          valid : row.valid,
+          is_approved : row.is_approved,
         };
       });
       console.log(requisitions);
@@ -306,6 +307,22 @@
                 </td>
                 <td class="my-2 mx-2 w-auto">
                   <div class="flex justify-center w-full">
+                    <td class="py-2 pl-2 pr-2 text-center w-auto">
+                      {#if row.is_approved === true}
+                        <button class="bg-transparent mx-2">
+                          <i class="bx bxs-check-square text-green-500 hover:text-maroon-900 scale-150"></i>
+                        </button>
+                      {:else if row.is_approved === false}
+                        <button class="bg-transparent mx-2">
+                          <i class="bx bxs-x-square text-red-500 hover:text-maroon-900 scale-150"></i>
+                        </button>
+                      {:else}
+                        <button class="bg-transparent mx-2">
+                          <i class="bx bxs-hourglass text-yellow-500 hover:text-maroon-900 scale-150"></i>
+                        </button>
+                      {/if}
+                    </td>
+
                     <button
                       class="bg-transparent mx-2"
                       class:shrink={shrinkID === row.id + "details"}
