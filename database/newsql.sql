@@ -52,20 +52,13 @@ CREATE OR REPLACE PROCEDURE update_allocation(on_day DATE, admin_id CHARACTER VA
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    assignment_record RECORD;
-    schedule_id INT;
+    schedule_record RECORD;
 BEGIN
-    FOR assignment_record IN SELECT * FROM assignment WHERE end_time IS NULL LOOP
-        -- Find the corresponding schedule ID
-        SELECT id INTO schedule_id FROM schedule 
-        WHERE route = assignment_record.route AND time_type = assignment_record.shift;
-
-        -- Check if a schedule record exists
-        IF FOUND THEN
-            -- Call the create_allocation procedure for each relevant assignment record
-            CALL create_allocation(schedule_id, on_day, assignment_record.bus, assignment_record.driver, assignment_record.helper, admin_id);
-        END IF;
+    FOR schedule_record IN SELECT * FROM schedule LOOP
+		CALL create_allocation(schedule_record.id, on_day, schedule_record.default_bus, schedule_record.default_driver, schedule_record.default_helper, admin_id);
     END LOOP;
+END;
+$$;
 
 
 
