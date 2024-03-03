@@ -28,8 +28,12 @@
   import Notifications from './page/Notifications/notifications.svelte';
   import Requisition from './page/userPages/requisition.svelte';
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
+  import Bulletine from './page/Notifications/bulletine.svelte';
+  import AssignmentMHB from './page/AssignmentPages/assignmentMHB.svelte';
+  import AssignmentAdd from './page/AssignmentPages/assignmentAdd.svelte';
   import NoticeList from './page/NoticePages/noticeList.svelte';
   import Unavailability from './page/BusStaffPages/unavailability.svelte';
+
 
 
 
@@ -86,10 +90,12 @@
     <Route path="/notifications" component={Notifications} />
     <Route path="/requisition" component={Requisition} />
     <Route path="/routeDetails" component={RouteDetails} />
+    <Route path="/bulletine" component={Bulletine} />
+    <Route path="/assignmentmhb" component={AssignmentMHB} />
+    <Route path="/assignmentadd" component={AssignmentAdd} />
     <Route path="/noticeList" component={NoticeList} />
     <Route path="/staff/unavailability" component={Unavailability} />
 
   </Router>
 
 </main>
-

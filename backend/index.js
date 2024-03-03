@@ -76,7 +76,9 @@ var audit = require('./routes/admin');
 var user = require('./routes/user');
 var feedback = require('./routes/feedback');
 var requisition = require('./routes/requisition');
+var assignment = require('./routes/assignment');
 var notice = require('./routes/notice');
+
 
 app.use('/api/auth', auth);
 app.use('/api/route', route);
@@ -88,7 +90,9 @@ app.use('/api/admin', audit);
 app.use('/api/user', user);
 app.use('/api/feedback', feedback);
 app.use('/api/requisition', requisition);
+app.use('/api/assignment', assignment);
 app.use('/api/notice', notice);
+
 
 
 
@@ -216,7 +220,6 @@ app.post('/api/proxyPersonalNotification', async (req, res) => {
 
 
 module.exports = app;
-
 
 
 
