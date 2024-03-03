@@ -245,6 +245,7 @@ async function handleDeleteConfirm() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        nTitle: "Trip Assigned", 
         userId: rowData.driverName, // Assuming the 'id' can be used to identify the user for the notification
         message: notificationMessage,
       }),

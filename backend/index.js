@@ -78,6 +78,7 @@ var feedback = require('./routes/feedback');
 var requisition = require('./routes/requisition');
 var assignment = require('./routes/assignment');
 var notice = require('./routes/notice');
+var billing = require('./routes/billing');
 
 
 app.use('/api/auth', auth);
@@ -92,6 +93,7 @@ app.use('/api/feedback', feedback);
 app.use('/api/requisition', requisition);
 app.use('/api/assignment', assignment);
 app.use('/api/notice', notice);
+app.use('/api/billing', billing);
 
 
 
@@ -192,7 +194,7 @@ app.post('/api/proxyPersonalNotification', async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        nTitle: "New Trip Allocation",
+        nTitle: req.body.nTitle,
         nBody: req.body.message,
         user_id: req.body.userId // Include the user ID in the request body
       })
