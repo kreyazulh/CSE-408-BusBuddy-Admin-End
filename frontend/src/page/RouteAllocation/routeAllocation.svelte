@@ -289,7 +289,7 @@
                 let temp = allocations[index1].bus;
                 let temp2 = allocations[index1].driver;
                 let temp3 = allocations[index1].staff;
-                for(let j=index1; j<index2; j++){
+                for(let j=index1; j<index2;j++){
                     allocations[j].bus = allocations[j+1].bus;
                     allocations[j].driver = allocations[j+1].driver;
                     allocations[j].staff = allocations[j+1].staff;
@@ -509,7 +509,7 @@
                 </svg>
           </button>
         </div>
-        <div class="absolute top-0 bottom-0 right-0 z-10 w-96 bg-gradient-to-b from-maroon-500  to-maroon-900">
+        <div class="absolute top-0 bottom-0 right-0 z-10 w-96 h-screen bg-gradient-to-b from-maroon-500  to-maroon-900">
             <div class="flex items-start justify-start h-18">
                 <h1 class="text-xl font-semibold underline uppercase text-white-700 my-3 mx-3">Available</h1>
             </div>
