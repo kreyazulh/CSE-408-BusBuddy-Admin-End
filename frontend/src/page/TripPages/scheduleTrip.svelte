@@ -118,64 +118,39 @@
     });
   }
   async function getBusList() {
-      const response = await fetch('http://localhost:3000/api/assignment/allocatedBuses');
-      const data = await response.json();
-      allocatedBuses = data.map((row) => {
-        return {
-          id: row.reg_id,
-          type: row.type,
-          capacity: row.capacity,
-        };
-      });
-      //unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedBuses');
-      const data2 = await response2.json();
-      unallocatedBuses = data2.map((row) => {
-        return {
-          id: row.reg_id,
-          type: row.type,
-          capacity: row.capacity,
-        };
-      });
-    }
-    async function getDriverList() {
-      const response = await fetch('http://localhost:3000/api/assignment/allocatedDrivers');
-      const data = await response.json();
-      allocatedDrivers = data.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-      // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
-      const data2 = await response2.json();
-      unallocatedDrivers = data2.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-    }
-    async function getHelperList() {
-        const response = await fetch('http://localhost:3000/api/assignment/allocatedHelpers');
-      const data = await response.json();
-      allocatedHelpers = data.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-      // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
-      const data2 = await response2.json();
-      unallocatedHelpers = data2.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-    }
+    const response = await fetch('http://localhost:3000/api/bus/');
+    const data = await response.json();
+    allocatedBuses = data.map((row) => {
+      return {
+        id: row.reg_id,
+        type: row.type,
+        capacity: row.capacity,
+      };
+    });
+    //unallocated kemne anbo jani na
+  }
+  async function getDriverList() {
+    const response = await fetch('http://localhost:3000/api/staff/driver');
+    const data = await response.json();
+    allocatedDrivers = data.map((row) => {
+      return {
+        id: row.id,
+        name: row.name
+      };
+    });
+    // unallocated kemne anbo jani na
+  }
+  async function getHelperList() {
+    const response = await fetch('http://localhost:3000/api/staff/collector');
+    const data = await response.json();
+    allocatedHelpers = data.map((row) => {
+      return {
+        id: row.id,
+        name: row.name
+      };
+    });
+    // unallocated kemne anbo jani na
+  }
 
   
 

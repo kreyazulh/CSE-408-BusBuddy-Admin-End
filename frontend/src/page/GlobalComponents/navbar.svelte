@@ -1,5 +1,5 @@
 <script>
-  import {Link, link, navigate } from 'svelte-routing';
+  import {Link, navigate } from 'svelte-routing';
   import { isAuthenticated, checkSession } from '../../auth';
   import { onMount } from 'svelte';
 
@@ -151,7 +151,7 @@ function toggleDropDown(action) {
         </Link>
       </li>
       <li>
-        <Link to="/billingHistory" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-300 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
+        <Link to="/billingList" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-300 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bx-dollar"></i></span>
           <span class="text-xs font-medium">Billing history</span>
         </Link>
@@ -161,12 +161,6 @@ function toggleDropDown(action) {
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-cart-alt"></i></span>
           <span class="text-xs font-medium">Inventory</span>
           <span class="ml-auto mr-6 text-xs bg-red-100 rounded-full px-3 py-px text-black-900">2</span>
-        </Link>
-      </li>
-      <li>
-        <Link to="/assignmentmhb" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-300 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
-          <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-cart-alt"></i></span>
-          <span class="text-xs font-medium">Assignment</span>
         </Link>
       </li>
       <li>
