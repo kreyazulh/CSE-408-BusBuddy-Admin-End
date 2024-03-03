@@ -43,9 +43,9 @@
                         {id:14,route:"Mirpur",shift:"morning",bus:"Dhaka Metro",driver:"Mr. X",staff:"Mr. Y"},
                         {id:15,route:"Mohammadpur",shift:"morning",bus:"Dhaka Metro",driver:"Mr. X",staff:"Mr. Y"},]
 
-    let bus = ['BA-01-1111','BA-01-2222','BA-01-3333','BA-01-4444','BA-01-5555','BA-01-6666','BA-01-7777','BA-01-8888','BA-01-9999','BA-01-0000'];
-    let driver = ['Mr. X','Mr. Y','Mr. Z','Mr. A','Mr. B','Mr. C','Mr. D','Mr. E','Mr. F','Mr. G'];
-    let staff = ['Mr. P','Mr. Q','Mr. R','Mr. S','Mr. T','Mr. U','Mr. V','Mr. W','Mr. X','Mr. Y'];
+    let bus = [];//['BA-01-1111','BA-01-2222','BA-01-3333','BA-01-4444','BA-01-5555','BA-01-6666','BA-01-7777','BA-01-8888','BA-01-9999','BA-01-0000'];
+    let driver = [];// ['Mr. X','Mr. Y','Mr. Z','Mr. A','Mr. B','Mr. C','Mr. D','Mr. E','Mr. F','Mr. G'];
+    let staff = [];//['Mr. P','Mr. Q','Mr. R','Mr. S','Mr. T','Mr. U','Mr. V','Mr. W','Mr. X','Mr. Y'];
 
     function handleClick(name) {
     shrinkID = name;
@@ -304,8 +304,30 @@
         }
     }
 
-    function saveChanges(){
+    async function saveChanges(){
         handleClick("save");
+
+        try {
+            const response = await fetch('http://localhost:3000/api/assignment/save/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ allocations })
+            });
+            
+            if (response.ok) {
+                console.log('Allocations sent successfully');
+            } else {
+                console.error('Failed to send allocations');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+
+
+
         selectionID = "";
         selectionID2 = "";
         selectionRowID.length = 0;
@@ -324,6 +346,19 @@
 
     async function getAllocations() {
         //backend theke data ante hobe
+        
+        const response2 = await fetch('http://localhost:3000/api/assignment/');
+        const data2 = await response2.json();
+        allocations = data2.map((row) => {
+            return {
+            id : row.id,
+            route : row.route,
+            shift: row.time_type,
+            bus: row.default_bus,
+            driver: row.default_driver,
+            staff: row.default_helper
+            };
+        });
         for (let row in allocations){
             for (let key in allocations[row]){
                 if (allocations[row][key] === null){
@@ -331,9 +366,34 @@
             }
             }
         }
+
+    }
+
+    async function getBusList() {
+      //unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedBuses');
+      const data2 = await response2.json();
+      bus = data2.map((row) => row.reg_id);
+      console.log(bus);
+    }
+    async function getDriverList() {
+      // unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
+      const data2 = await response2.json();
+      driver = data2.map((row) => row.id);
+    }
+    async function getHelperList() {
+      // unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
+      const data2 = await response2.json();
+      staff = data2.map((row) => row.id);
+      console.log(staff);
     }
 
     onMount(async () => {
+        getBusList();
+        getDriverList();
+        getHelperList();
         await getAllocations();
     });
 
