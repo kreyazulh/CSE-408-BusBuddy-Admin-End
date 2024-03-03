@@ -164,7 +164,7 @@ function toggleDropDown(action) {
         </Link>
       </li>
       <li>
-        <Link to="/noticeList" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-300 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
+        <Link to="/bulletine" class="Link flex flex-row items-center h-10 transform hover:translate-x-2 transition-transform ease-in duration-200 text-gray-300 hover:text-white-700 focus:shadow focus:text-white-700 focus:translate-y-0.5 ">
           <span class="inline-flex items-center justify-center h-10 w-12 text-lg focus:text-white-700"><i class="bx bxs-receipt"></i></span>
           <span class="text-xs font-medium">Notice</span>
         </Link>
