@@ -1,6 +1,7 @@
 <script>
     import Navbar from '../GlobalComponents/navbar.svelte';
     import { isAuthenticated } from '../../auth';
+    import { onMount } from 'svelte';
     import { navigate } from 'svelte-routing';
     import ErrorPopUp from '../GlobalComponents/PopUps/errorPopUp.svelte';
     import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
@@ -14,10 +15,10 @@
     let driver = 'a';
     let helper = 'p';
   
-    let allocatedDrivers = ['a','b','c'];
-    let unallocatedDrivers = ['d','e','f'];
-    let allocatedHelpers = ['p','q','r'];
-    let unallocatedHelpers = ['s','t','u'];
+    let allocatedDrivers = [];
+    let unallocatedDrivers = [];
+    let allocatedHelpers = [];
+    let unallocatedHelpers = [];
   
     let addBusResponse = '';
   
@@ -70,6 +71,52 @@
         success = 0;
       }
     }
+    
+    async function getDriverList() {
+      const response = await fetch('http://localhost:3000/api/assignment/allocatedDrivers');
+      const data = await response.json();
+      allocatedDrivers = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      // unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
+      const data2 = await response2.json();
+      unallocatedDrivers = data2.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+    }
+    async function getHelperList() {
+        const response = await fetch('http://localhost:3000/api/assignment/allocatedHelpers');
+      const data = await response.json();
+      allocatedHelpers = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      // unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
+      const data2 = await response2.json();
+      unallocatedHelpers = data2.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+    }
+
+
+
+    onMount(() => {
+      getDriverList();
+      getHelperList();
+  });
   
   </script>
   
@@ -150,13 +197,13 @@
                   bind:value={driver}>
                   <option value="" hidden selected>Select Driver</option>
                   <optgroup label="Allocated Drivers" class="text-maroon-500 italic">
-                    {#each allocatedDrivers as driver}
-                      <option value={driver} class="text-black-900 not-italic">{driver}</option>
+                    {#each allocatedDrivers as driveri}
+                      <option value={driveri.id} class="text-black-900 not-italic">{driveri.name}</option>
                     {/each}
                   </optgroup>
                   <optgroup label="Unallocated Drivers" class="text-maroon-500 italic">
-                    {#each unallocatedDrivers as driver}
-                      <option value={driver} class="text-black-900 not-italic">{driver}</option>
+                    {#each unallocatedDrivers as driveri}
+                      <option value={driveri.id} class="text-black-900 not-italic">{driveri.name}</option>
                     {/each}
                   </optgroup>
                 </select>
@@ -172,13 +219,13 @@
                     bind:value={helper}>
                     <option value="" hidden selected>Select Helper</option>
                     <optgroup label="Allocated Helpers" class="text-maroon-500 italic">
-                        {#each allocatedHelpers as helper}
-                        <option value={helper} class="text-black-900 not-italic">{helper}</option>
+                        {#each allocatedHelpers as helperi}
+                        <option value={helperi.id} class="text-black-900 not-italic">{helperi.name}</option>
                         {/each}
                     </optgroup>
                     <optgroup label="Unallocated Helpers" class="text-maroon-500 italic">
-                        {#each unallocatedHelpers as helper}
-                        <option value={helper} class="text-black-900 not-italic">{helper}</option>
+                        {#each unallocatedHelpers as helperi}
+                        <option value={helperi.id} class="text-black-900 not-italic">{helperi.name}</option>
                         {/each}
                     </optgroup>
                     </select>
