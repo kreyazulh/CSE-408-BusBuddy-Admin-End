@@ -288,6 +288,7 @@ function toggleRejectSection() {
           <select
           class="w-full px-3 py-2 text-nowrap text-ellipsis border rounded-md focus:outline-none focus:ring focus:border-blue-300 text-black-700 text-sm"
             bind:value={payment}>
+            <option value=0>0</option>
               <option value=1000>1000</option>
               <option value=1000>1500</option>
               <option value=1000>2000</option>
