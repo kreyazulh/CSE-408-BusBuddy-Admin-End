@@ -73,6 +73,7 @@ router.get('/', (req, res) => {
   const query = 'SELECT * FROM notice';
   
   client.query(query, (error, results) => {
+
     if (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -88,6 +89,7 @@ router.post('/add', (req, res) => {
     client.query (
         "INSERT INTO notice(text) values($1)",
         [req.body.text]
+
     ).then(qres => {
         console.log(qres);
         if (qres.rowCount === 1) res.send(true);
