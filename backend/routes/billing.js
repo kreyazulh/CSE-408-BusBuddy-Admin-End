@@ -12,6 +12,18 @@ router.get('/buet_staff', async (req, res) => {
       res.status(500).send('Server error');
     }
   });
+
+
+router.get('/inventory', async (req, res) => {
+  try {
+      const client = req.client;
+    const result = await client.query('SELECT * FROM inventory');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
   
 
 module.exports = router;
