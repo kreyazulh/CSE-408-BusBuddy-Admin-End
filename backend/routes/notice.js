@@ -7,6 +7,7 @@ router.get('/', (req, res) => {
   const query = 'SELECT * FROM notice';
 
   client.query(query, (error, results) => {
+
     if (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -19,6 +20,7 @@ router.get('/', (req, res) => {
 // Post a notice
 router.post('/', (req, res) => {
   const client = req.client;
+
   const { date, title, body } = req.body; // Ensure you validate and sanitize input
   const query = 'INSERT INTO notice (date, title, body) VALUES ($1, $2, $3) RETURNING *';
 
@@ -66,6 +68,20 @@ router.put('/:id', (req, res) => {
     }
     res.json(results.rows[0]);
   });
+
+    console.log(req.body);
+    client.query (
+        "INSERT INTO notice(text) values($1)",
+        [req.body.text]
+
+    ).then(qres => {
+        console.log(qres);
+        if (qres.rowCount === 1) res.send(true);
+        else if (qres.rowCount === 0) res.send(false);
+    }).catch(e => {
+        console.error(e.stack);
+        res.send(false);
+    });
 });
 
 module.exports = router;

@@ -33,6 +33,7 @@
 
 
 
+
   import { onMount } from 'svelte';
   import { isAuthenticated, checkSession } from './auth';
 
@@ -87,6 +88,7 @@
     <Route path="/routeDetails" component={RouteDetails} />
     <Route path="/noticeList" component={NoticeList} />
     <Route path="/staff/unavailability" component={Unavailability} />
+
   </Router>
 
 </main>
