@@ -3,7 +3,7 @@ var router = express.Router();
 
 
 // Route to get bus data
-// usage : adminProfile::fetchBuses(), busList, scheduleTrip
+// usage : busList, scheduleTrip
 router.get('/', (req, res) => {
     const client = req.client;
     const query = 'SELECT * FROM bus';
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
   });
 
 // Route to add bus data
-// usage : busAdd::addBus() 
+// usage : busAdd
 router.post('/add', (req, res) => {
   const client = req.client;
     console.log(req.body);
