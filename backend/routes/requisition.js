@@ -38,8 +38,8 @@ router.get('/', (req, res) => {
     const client = req.client;
       console.log(req.body);
       client.query (
-          "CALL alloc_from_req($1,$2,$3,$4,$5,$6,$7);",
-          [req.body.id, req.body.time, req.body.approver, req.body.bus_id, req.body.driver, req.body.collector, req.body.remarks]
+          "CALL alloc_from_req($1,$2,$3,$4,$5,$6,$7,$8,$9);",
+          [req.body.id, req.body.time, req.body.approver, req.body.bus_id, req.body.driver, req.body.collector, req.body.remarks, req.body.payment, req.body.req_id]
       ).then(qres => {
           console.log(qres);
           if (qres.rowCount === 1) res.send(true);

@@ -35,7 +35,8 @@
           residence: staff.residence || "N/A",
           phone: staff.phone,
           designation: staff.designation,
-          pending: staff.pending , // Assuming 'pending' is a boolean
+          pending: staff.pending ,
+          service: staff.service ? "On" : "Off", // Convert boolean to "On"/"Off"
         }));
         searchRows = staffList;
         totalEntries = searchRows.length;
@@ -44,6 +45,26 @@
         console.error("Failed to fetch staff list");
       }
     }
+
+    async function startNewMonth() {
+    try {
+        const response = await fetch('http://localhost:3000/api/billing/startNewMonth', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        if (response.ok) {
+            console.log("Successfully started a new month.");
+            await getStaffList(); // Refresh the list to show updated pending values
+        } else {
+            console.error("Failed to start a new month.");
+        }
+    } catch (error) {
+        console.error("Error starting a new month:", error);
+    }
+}
 
     async function sendBulkNotifications() {
     const pendingStaff = staffList.filter(staff => staff.pending > 0);
@@ -96,15 +117,21 @@
     <!-- Heading -->
     <div class="flex-1 ml-56 w-full px-4 py-8 bg-white-700">
 
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold underline uppercase text-maroon-500">BUET Staff List</h1>
+        <div class="flex justify-end items-center mb-4">
+            <button 
+              on:click={startNewMonth} 
+              class="py-2 px-4 bg-maroon-900 hover:bg-green-700 text-white-700 font-bold rounded"
+            >
+              Start New Month
+            </button>
             <button 
               on:click={sendBulkNotifications} 
-              class="py-2 px-4 bg-maroon-900 hover:bg-green-700 text-white-700 font-bold rounded"
+              class="py-2 px-4 ml-2 bg-maroon-900 hover:bg-green-700 text-white-700 font-bold rounded"
             >
               Send Bulk Notifications
             </button>
           </div>
+          
     <table class="w-full table-auto">
       <!-- Table header -->
       <thead>
@@ -115,6 +142,7 @@
           <th class="bg-white-700 w-auto">Phone</th>
           <th class="bg-white-700 w-auto">Designation</th>
           <th class="bg-white-700 w-auto">Pending</th>
+          <th class="bg-white-700 w-auto">Service</th>
         </tr>
       </thead>
       <tbody>
@@ -129,6 +157,7 @@
               <td class="py-2 pl-2 pr-2 text-center w-auto">{row.phone}</td>
               <td class="py-2 pl-2 pr-2 text-center w-auto">{row.designation}</td>
               <td class="py-2 pl-2 pr-2 text-center w-auto">{row.pending}</td>
+              <td class="py-2 pl-2 pr-2 text-center w-auto {row.service === 'On' ? 'service-on' : 'service-off'}">{row.service}</td>
               {#if row.pending > 0}
               <td>
                 <button on:click={() => sendNotification(row.id, row.name)} class="py-2 px-4 bg-blue-500 hover:bg-lime-500 text-white font-bold rounded">
@@ -145,5 +174,17 @@
     </table>
   </div>
 </main>
+
+<style>
+    .service-on {
+      background-color: #4CAF50; /* Softer green */
+      color: #f0f0f0; /* Soft white for readability */
+    }
+    .service-off {
+      background-color: #f44336; /* Softer red */
+      color: #f0f0f0; /* Soft white for readability */
+    }
+  </style>
+  
 
   
