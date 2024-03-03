@@ -34,13 +34,13 @@
     async function addAssgn() {
       const bulkData = {
         route : route, 
-        bus : bus_id, 
+        shift : shift,
         driver : driver,
         helper : helper,
-        shift : shift
+        bus : bus_id
       };
       try {
-        const response = await fetch('http://localhost:3000/api/assignment/add', {
+        const response = await fetch('http://localhost:3000/api/assignment/update', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
