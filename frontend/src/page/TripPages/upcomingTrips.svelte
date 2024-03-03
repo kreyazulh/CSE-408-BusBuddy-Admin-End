@@ -9,11 +9,15 @@
   let rows = [];
   let busNumbers = [];
   let driverNames = [];
+  let tempDriverNames = [];
   let staffNames = [];
+  let tempStaffNames = [];
   let routes = [];
   let tomorrowTime = {time: ''};
 
   let date = null;
+
+  let warningMessages = [];
 
 
 
@@ -214,6 +218,7 @@ async function handleDeleteConfirm() {
           const result = await response.json();
           if (response.ok) {
             console.log("Row saved successfully:", result);
+            await sendNotification(rowData);
             // Additional logic after successful save (e.g., update UI, clear fields)
           } else {
             console.error("Failed to save row:", result);
@@ -227,7 +232,54 @@ async function handleDeleteConfirm() {
       // Remove the id from changedRows after saving
       changedRows = changedRows.filter((r) => r !== id);
     }
+    await fetchRows(selectedDate);
   }
+
+  async function sendNotification(rowData) {
+  const notificationMessage = `You have been assigned a trip with bus ${rowData.busNumber}, shift ${rowData.shift} on ${selectedDate}. Staffs ${rowData.driverName} and ${rowData.staffName}.`;
+  // Assuming you have an endpoint or method to send a notification
+  try {
+    const notificationResponse = await fetch('http://localhost:3000/api/proxyPersonalNotification', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: rowData.driverName, // Assuming the 'id' can be used to identify the user for the notification
+        message: notificationMessage,
+      }),
+    });
+
+    if (notificationResponse.ok) {
+      console.log("Notification sent successfully");
+    } else {
+      console.error("Failed to send notification");
+    }
+  } catch (error) {
+    console.error("Error sending notification:", error);
+  }
+
+  try {
+    const notificationResponse = await fetch('http://localhost:3000/api/proxyPersonalNotification', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: rowData.staffName, // Assuming the 'id' can be used to identify the user for the notification
+        message: notificationMessage,
+      }),
+    });
+
+    if (notificationResponse.ok) {
+      console.log("Notification sent successfully");
+    } else {
+      console.error("Failed to send notification");
+    }
+  } catch (error) {
+    console.error("Error sending notification:", error);
+  }
+}
 
 
 async function fetchRoutes() {
@@ -237,6 +289,39 @@ async function fetchRoutes() {
     console.log(routes);
   } catch (error) {
     console.error('Error fetching routes:', error);
+  }
+}
+
+async function fetchHelper(time) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/staff/collector_with_time?time=${encodeURIComponent(time)}`);
+  const data = await response.json();
+    staffNames = data.map(item => item.id);
+  } catch (error) {
+    console.error('Error fetching helpers:', error);
+  }
+}
+
+async function fetchDriver(time) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/staff/driver_with_time?time=${encodeURIComponent(time)}`);
+  const data = await response.json();
+    console.log(data);
+    driverNames = data.map(item => item.id);
+    console.log(driverNames);
+  } catch (error) {
+    console.error('Error fetching drivers:', error);
+  }
+}
+
+async function fetchBus() {
+  try {
+    const response = await fetch('http://localhost:3000/api/bus/');
+    let data = await response.json();
+    console.log(data);
+    busNumbers = data.map(item => item.reg_id);
+  } catch (error) {
+    console.error('Error fetching buses:', error);
   }
 }
 
@@ -261,6 +346,7 @@ function getNextSevenDays() {
 }
 
 async function fetchRows(selectedDate) {
+  warningMessages = [];
   try {
     const url = "http://localhost:3000/api/route/allocation";
     const requestOptions = {
@@ -287,6 +373,7 @@ async function fetchRows(selectedDate) {
       //currentRoute: item.route
     })).filter(row => !Object.values(row).includes(null));
 
+
     console.log("Rows:", rows);
       console.log("Rows:", rows);
       rows = rows.filter((row) => {
@@ -299,18 +386,57 @@ async function fetchRows(selectedDate) {
       });
 
       searchRows = rows;
-      for (let i = 0; i < rows.length; i++) {
-        busNumbers.push(rows[i].busNumber);
+
+          // Track occurrences of driver+shift and helper+shift combinations
+    let driverShiftCounts = {};
+    let helperShiftCounts = {};
+
+    rows.forEach(row => {
+      const driverShiftKey = `${row.driverName}_${row.shift}`;
+      const helperShiftKey = `${row.staffName}_${row.shift}`;
+
+      // Increment count for each combination
+      driverShiftCounts[driverShiftKey] = (driverShiftCounts[driverShiftKey] || 0) + 1;
+      helperShiftCounts[helperShiftKey] = (helperShiftCounts[helperShiftKey] || 0) + 1;
+    });
+
+    // Check for any counts greater than 1 and add warnings
+    Object.keys(driverShiftCounts).forEach(key => {
+      if (driverShiftCounts[key] > 1) {
+        const [driverName, shift] = key.split('_');
+        warningMessages.push(`Driver ${driverName} is assigned to multiple routes for shift ${shift}.`);
       }
-      busNumbers = Array.from(new Set(busNumbers));
-      for (let i = 0; i < rows.length; i++) {
-        driverNames.push(rows[i].driverName);
+    });
+
+    Object.keys(helperShiftCounts).forEach(key => {
+      if (helperShiftCounts[key] > 1) {
+        const [helperName, shift] = key.split('_');
+        warningMessages.push(`Helper ${helperName} is assigned to multiple routes for shift ${shift}.`);
       }
+    });
+      // for (let i = 0; i < rows.length; i++) {
+      //   busNumbers.push(rows[i].busNumber);
+      // }
+      // busNumbers = Array.from(new Set(busNumbers));
+      // for (let i = 0; i < rows.length; i++) {
+      //   driverNames.push(rows[i].driverName);
+      // }
       driverNames = Array.from(new Set(driverNames));
-      for (let i = 0; i < rows.length; i++) {
-        staffNames.push(rows[i].staffName);
-      }
+      // for (let i = 0; i < rows.length; i++) {
+      //   staffNames.push(rows[i].staffName);
+      // }
       staffNames = Array.from(new Set(staffNames));
+
+          // Check each row for missing driver or helper in the lists
+      rows.forEach(row => {
+      if (!driverNames.includes(row.driverName)) {
+        warningMessages.push(`Valid driver unassigned for route ${row.currentRoute}, shift ${row.shift}`);
+      }
+      if (!staffNames.includes(row.staffName)) {
+        warningMessages.push(`Valid helper unassigned for route ${row.currentRoute}, shift ${row.shift}`);
+      }
+    });
+    console.log("Warning messages:", warningMessages);
       totalEntries = rows.length;
       totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
 
@@ -331,6 +457,9 @@ async function fetchRows(selectedDate) {
 
 onMount(async () => {
     await fetchRoutes();
+    await fetchDriver(selectedDate);
+    await fetchHelper(selectedDate);
+    await fetchBus();
     await fetchRows(selectedDate);
   });
 </script>
@@ -397,6 +526,7 @@ onMount(async () => {
       </select>
     </div>
     
+    
    
 
     <!-- Entries per page -->
@@ -416,6 +546,15 @@ onMount(async () => {
       </select>
       <span class="text-sm font-semibold text-gray-700">entries</span>
     </div>
+
+    <!-- Warning Messages -->
+{#if warningMessages.length > 0}
+<div class="mb-4">
+  {#each warningMessages as message}
+    <p class="text-xs font-semibold text-red-500">{message}</p>
+  {/each}
+</div>
+{/if}
 
     <!-- Table -->
     <div class="bg-white-700 shadow-md my-3 overflow-x-auto">

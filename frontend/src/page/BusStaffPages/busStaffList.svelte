@@ -38,6 +38,10 @@
     totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
   }
 
+  function gotoUnavailability() {
+    navigate('/staff/unavailability');
+}
+
   // Function to show all the rows
   function showStatus() {
     handleClick("showAll");
@@ -167,17 +171,21 @@
         <h1 class="text-3xl font-bold underline uppercase text-maroon-500">Bus Staff List</h1>
       </div>
 
-      <!-- Search Bar & Add Button-->
-      <div class="flex mb-4 justify-end">
-        <button class="{showAll ? 'bg-lime-600 hover:bg-lime-700':'bg-cyan-600 hover:bg-cyan-700'} text-white-700 font-semibold py-2 px-4 rounded-full"
-          class:shrink={shrinkID === "showAll"}
-          on:click={showStatus}>{showAll ? "Show Active" : "Show All"}
-        </button>
-        <button class="mx-3 bg-indigo-700 hover:bg-indigo-900 text-white-700 font-semibold py-2 px-4 rounded-full focus:translate-y-1.5"
-          on:click={gotoAddStaff}>Add Bus Staff
-        </button>
-        <SearchBar originalRows={bus_staffs} on:searchChanged={handleSearch} />
-      </div>
+<!-- Search Bar & Add Button-->
+<div class="flex mb-4 justify-end">
+  <button class="{showAll ? 'bg-lime-600 hover:bg-lime-700':'bg-cyan-600 hover:bg-cyan-700'} text-white-700 font-semibold py-2 px-4 rounded-full"
+      class:shrink={shrinkID === "showAll"}
+      on:click={showStatus}>{showAll ? "Show Active" : "Show All"}
+  </button>
+  <button class="mx-3 bg-indigo-700 hover:bg-indigo-900 text-white-700 font-semibold py-2 px-4 rounded-full focus:translate-y-1.5"
+      on:click={gotoAddStaff}>Add Bus Staff
+  </button>
+  <!-- Unavailability Button -->
+  <button class="bg-red-600 hover:bg-red-700 text-white-700 font-semibold py-2 px-4 rounded-full mr-4"
+      on:click={gotoUnavailability}>Unavailability
+  </button>
+  <SearchBar originalRows={bus_staffs} on:searchChanged={handleSearch} />
+</div>
 
       <!-- Entries per page -->
       <EntriesPerPageDropdown

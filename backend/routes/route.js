@@ -13,7 +13,7 @@ function getTomorrowsDate() {
 // usage : createRoute, routeList, upcomingTrips 
 router.get('/', async (req, res) => {
     const client = req.client;
-    const query = 'SELECT id, terminal_point, points, valid, predefined_path,ARRAY(SELECT s.name FROM unnest(points) AS sid JOIN station s ON s.id = sid) AS name FROM route';
+    const query = 'SELECT id, terminal_point, points, valid, predefined_path,ARRAY(SELECT s.name FROM unnest(points) WITH ORDINALITY AS u(sid, ord) JOIN station s ON s.id = u.sid ORDER BY u.ord) AS name FROM route;';
     
     client.query(query, (error, results) => {
       if (error) {
@@ -212,38 +212,51 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
 
-  router.post('/routeDetails', async (req, res) => {
+  router.post('/routeDetails/:routeId', async (req, res) => {
     const client = req.client;
-    const { routeId } = req.body; // Assuming the route ID is sent in the request body
+    const { routeId } = req.params; // Extracting routeId from URL parameters
 
+    // Check if routeId is provided
     if (!routeId) {
-        return res.status(400).json({ error: 'Route ID is required' });
+        return res.status(400).json({ error: 'Route ID is required.' });
     }
 
+    // Query to fetch details for a specific route by ID, including station names and coords
     const query = `
         SELECT 
-            r.id, 
-            r.terminal_point, 
-            r.points, 
-            r.valid, 
-            r.predefined_path,
-            ARRAY(SELECT s.name FROM unnest(r.points) AS sid JOIN station s ON s.id = sid) AS name,
-            ARRAY(SELECT s.coords FROM unnest(r.points) AS sid JOIN station s ON s.id = sid) AS coords
-        FROM route r
-        WHERE r.id = $1;
+            id, 
+            terminal_point, 
+            points, 
+            valid, 
+            predefined_path,
+            ARRAY(
+                SELECT json_build_object('name', s.name, 'coords', s.coords) 
+                FROM unnest(points) WITH ORDINALITY AS u(sid, ord) 
+                JOIN station s ON s.id = u.sid 
+                ORDER BY u.ord
+            ) AS stations
+        FROM route 
+        WHERE id = $1;
     `;
 
+    // Execute the query with routeId as the parameter
     client.query(query, [routeId], (error, results) => {
         if (error) {
-            console.error(error);
+            console.error('Error executing query:', error);
             res.status(500).json({ error: 'Internal Server Error' });
-        } else if (results.rows.length === 0) {
-            res.status(404).json({ error: 'Route not found' });
         } else {
-            res.json(results.rows[0]);
+            // Check if the route exists
+            if (results.rows.length > 0) {
+                // Return the details of the route, including station names and coords
+                res.json(results.rows[0]);
+            } else {
+                res.status(404).json({ error: 'Route not found' });
+            }
         }
     });
 });
+
+
 
 
   module.exports = router;

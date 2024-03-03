@@ -28,6 +28,8 @@
   import Notifications from './page/Notifications/notifications.svelte';
   import Requisition from './page/userPages/requisition.svelte';
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
+  import NoticeList from './page/NoticePages/noticeList.svelte';
+  import Unavailability from './page/BusStaffPages/unavailability.svelte';
 
 
 
@@ -83,6 +85,8 @@
     <Route path="/notifications" component={Notifications} />
     <Route path="/requisition" component={Requisition} />
     <Route path="/routeDetails" component={RouteDetails} />
+    <Route path="/noticeList" component={NoticeList} />
+    <Route path="/staff/unavailability" component={Unavailability} />
   </Router>
 
 </main>

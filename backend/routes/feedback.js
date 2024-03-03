@@ -5,10 +5,34 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-router.get('/student', (req, res) => {
-    const client = req.client;
-    const query = 'SELECT * FROM student_feedback';
+// router.get('/student', (req, res) => {
+//     const client = req.client;
+//     const query = 'SELECT * FROM student_feedback';
     
+//     client.query(query, (error, results) => {
+//       if (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//       } else {
+//         res.json(results.rows);
+//       }
+//     });
+//   });
+
+  router.post('/student', (req, res) => {
+    const client = req.client;
+    let query = 'SELECT * FROM student_feedback';
+
+    console.log(req.body);
+  
+    const selectType = req.body.statusType;
+    console.log(selectType);
+    if (selectType === 'pending') {
+      query += ' WHERE response IS NULL';
+    } else if (selectType === 'responded') {
+      query += ' WHERE response IS NOT NULL';
+    }
+  
     client.query(query, (error, results) => {
       if (error) {
         console.error(error);
@@ -50,10 +74,31 @@ router.get('/student', (req, res) => {
       });
   });
 
-  router.get('/teacher', (req, res) => {
-    const client = req.client;
-    const query = 'SELECT * FROM buet_staff_feedback';
+  // router.get('/teacher', (req, res) => {
+  //   const client = req.client;
+  //   const query = 'SELECT * FROM buet_staff_feedback';
     
+  //   client.query(query, (error, results) => {
+  //     if (error) {
+  //       console.error(error);
+  //       res.status(500).json({ error: 'Internal Server Error' });
+  //     } else {
+  //       res.json(results.rows);
+  //     }
+  //   });
+  // });
+
+  router.post('/teacher', (req, res) => {
+    const client = req.client;
+    let query = 'SELECT * FROM buet_staff_feedback';
+  
+    const selectType = req.body.statusType;
+    if (selectType === 'pending') {
+      query += ' WHERE response IS NULL';
+    } else if (selectType === 'responded') {
+      query += ' WHERE response IS NOT NULL';
+    }
+  
     client.query(query, (error, results) => {
       if (error) {
         console.error(error);

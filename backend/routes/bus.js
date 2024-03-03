@@ -24,8 +24,8 @@ router.post('/add', (req, res) => {
   const client = req.client;
     console.log(req.body);
     client.query (
-        "INSERT INTO bus(reg_id, type, capacity, remarks) values($1, $2, $3, $4)",
-        [req.body.reg_id, req.body.type, req.body.capacity, req.body.remarks]
+        "INSERT INTO bus(reg_id, type, capacity, remarks, is_rented) values($1, $2, $3, $4, $5)",
+        [req.body.reg_id, req.body.type, req.body.capacity, req.body.remarks, req.body.is_rented]
     ).then(qres => {
         console.log(qres);
         if (qres.rowCount === 1) res.send(true);

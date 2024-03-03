@@ -13,6 +13,7 @@
   let remarks = '';
   let driver = '';
   let helper = '';
+  let is_rented = false;
 
   let allocatedDrivers = ['a','b','c'];
   let unallocatedDrivers = ['d','e','f'];
@@ -31,6 +32,11 @@
         }, 100);
   }
 
+  function toggleIsRented() {
+    is_rented = !is_rented;
+  }
+
+
 
   async function addBus() {
     // Create a JSON object with the data
@@ -38,7 +44,8 @@
       reg_id: reg_id,
       capacity: capacity,
       type: type,
-      remarks: remarks
+      remarks: remarks,
+      is_rented: is_rented
       // baki jinish dite hobe
     };
 
@@ -70,6 +77,7 @@
       success = 0;
     }
   }
+
 
 </script>
 
@@ -188,6 +196,16 @@
             {/if}
           </div>
         </div>
+
+        <div class="my-4 px-5">
+          <label for="isRentedButton" class="flex items-center cursor-pointer">
+            <div class="mr-3 font-semibold text-gray-600">Is Rented:</div>
+            <button id="isRentedButton" class="px-4 py-2 bg-maroon-500 text-white-700 rounded hover:bg-blue-700 transition duration-300" on:click={toggleIsRented}>
+              {is_rented ? 'Yes' : 'No'}
+            </button>
+          </label>
+        </div>
+    
 
         <!-- add button -->
         <div class="flex mb-4 justify-end pr-8">
