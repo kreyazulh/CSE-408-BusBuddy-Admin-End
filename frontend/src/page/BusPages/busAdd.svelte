@@ -2,7 +2,6 @@
   import Navbar from '../GlobalComponents/navbar.svelte';
   import { isAuthenticated } from '../../auth';
   import { navigate } from 'svelte-routing';
-  import { onMount } from "svelte";
   import ErrorPopUp from '../GlobalComponents/PopUps/errorPopUp.svelte';
   import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
 
@@ -14,13 +13,12 @@
   let remarks = '';
   let driver = '';
   let helper = '';
-  // online 408
-  let rented = 'false';
+  let is_rented = false;
 
-  let allocatedDrivers = [];
-  let unallocatedDrivers = [];
-  let allocatedHelpers = [];
-  let unallocatedHelpers = [];
+  let allocatedDrivers = ['a','b','c'];
+  let unallocatedDrivers = ['d','e','f'];
+  let allocatedHelpers = ['p','q','r'];
+  let unallocatedHelpers = ['s','t','u'];
 
   let addBusResponse = '';
 
@@ -34,44 +32,10 @@
         }, 100);
   }
 
-  async function fetchDrivers() {
-      const response = await fetch('http://localhost:3000/api/assignment/allocatedDrivers');
-      const data = await response.json();
-      allocatedDrivers = data.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-      // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
-      const data2 = await response2.json();
-      unallocatedDrivers = data2.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-    }
-    async function fetchHelpers() {
-        const response = await fetch('http://localhost:3000/api/assignment/allocatedHelpers');
-      const data = await response.json();
-      allocatedHelpers = data.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-      // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
-      const data2 = await response2.json();
-      unallocatedHelpers = data2.map((row) => {
-        return {
-          id: row.id,
-          name: row.name
-        };
-      });
-    }
+  function toggleIsRented() {
+    is_rented = !is_rented;
+  }
+
 
 
   async function addBus() {
@@ -81,7 +45,7 @@
       capacity: capacity,
       type: type,
       remarks: remarks,
-      is_rented : rented
+      is_rented: is_rented
       // baki jinish dite hobe
     };
 
@@ -114,13 +78,7 @@
     }
   }
 
-  $: {
-  ;;;
-}
-onMount(async () => {
-    await fetchDrivers();
-    await fetchHelpers();
-  });
+
 </script>
 
 {#if $isAuthenticated}
@@ -137,19 +95,6 @@ onMount(async () => {
 
         <div class="flex flex-row">
           <div class="w-1/2">
-
-            <div class="mt-4">
-              <label class="block text-gray-600 font-semibold mb-2" for="capacity">Is the Bus Rented?:</label>
-              <label>
-                <input type="radio"  bind:group={rented} value="true"/>
-                Yes
-              </label>
-              
-              <label>
-                <input type="radio" bind:group={rented} value="false"/>
-                No
-              </label>
-            </div>
 
             <!-- bus no -->
             <div class="my-4 px-5">
@@ -215,13 +160,13 @@ onMount(async () => {
                 bind:value={driver}>
                 <option value="" hidden selected>Select Driver</option>
                 <optgroup label="Allocated Drivers" class="text-maroon-500 italic">
-                  {#each allocatedDrivers as drivers}
-                    <option value={drivers.name} class="text-black-900 not-italic">{drivers.name}</option>
+                  {#each allocatedDrivers as driver}
+                    <option value={driver} class="text-black-900 not-italic">{driver}</option>
                   {/each}
                 </optgroup>
                 <optgroup label="Unallocated Drivers" class="text-maroon-500 italic">
-                  {#each unallocatedDrivers as drivers}
-                    <option value={drivers.name} class="text-black-900 not-italic">{drivers.name}</option>
+                  {#each unallocatedDrivers as driver}
+                    <option value={driver} class="text-black-900 not-italic">{driver}</option>
                   {/each}
                 </optgroup>
               </select>
@@ -237,13 +182,13 @@ onMount(async () => {
                   bind:value={helper}>
                   <option value="" hidden selected>Select Helper</option>
                   <optgroup label="Allocated Helpers" class="text-maroon-500 italic">
-                    {#each allocatedHelpers as helpers}
-                      <option value={helpers.name} class="text-black-900 not-italic">{helpers.name}</option>
+                    {#each allocatedHelpers as helper}
+                      <option value={helper} class="text-black-900 not-italic">{helper}</option>
                     {/each}
                   </optgroup>
                   <optgroup label="Unallocated Helpers" class="text-maroon-500 italic">
-                    {#each unallocatedHelpers as helpers}
-                      <option value={helpers.name} class="text-black-900 not-italic">{helpers.name}</option>
+                    {#each unallocatedHelpers as helper}
+                      <option value={helper} class="text-black-900 not-italic">{helper}</option>
                     {/each}
                   </optgroup>
                 </select>
@@ -251,6 +196,16 @@ onMount(async () => {
             {/if}
           </div>
         </div>
+
+        <div class="my-4 px-5">
+          <label for="isRentedButton" class="flex items-center cursor-pointer">
+            <div class="mr-3 font-semibold text-gray-600">Is Rented:</div>
+            <button id="isRentedButton" class="px-4 py-2 bg-maroon-500 text-white-700 rounded hover:bg-blue-700 transition duration-300" on:click={toggleIsRented}>
+              {is_rented ? 'Yes' : 'No'}
+            </button>
+          </label>
+        </div>
+    
 
         <!-- add button -->
         <div class="flex mb-4 justify-end pr-8">
