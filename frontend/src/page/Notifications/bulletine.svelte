@@ -12,7 +12,7 @@
     let success = 0;
 
     async function getNoticeList() {
-    const response = await fetch('http://localhost:3000/api/feedback/notice/');
+    const response = await fetch('http://localhost:3000/api/notice/');
     const data = await response.json();
     notices = data.map((row) => {
       return {
@@ -31,7 +31,7 @@
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/feedback/notice/add', {
+      const response = await fetch('http://localhost:3000/api/notice/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
