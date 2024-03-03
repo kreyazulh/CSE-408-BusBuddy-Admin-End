@@ -33,6 +33,7 @@
   import AssignmentAdd from './page/AssignmentPages/assignmentAdd.svelte';
   import NoticeList from './page/NoticePages/noticeList.svelte';
   import Unavailability from './page/BusStaffPages/unavailability.svelte';
+  import BillingList from './page/BillingPages/billingList.svelte';
 
 
 
@@ -95,6 +96,7 @@
     <Route path="/assignmentadd" component={AssignmentAdd} />
     <Route path="/noticeList" component={NoticeList} />
     <Route path="/staff/unavailability" component={Unavailability} />
+    <Route path="/billingList" component={BillingList} />
 
   </Router>
 
