@@ -77,6 +77,8 @@ var user = require('./routes/user');
 var feedback = require('./routes/feedback');
 var requisition = require('./routes/requisition');
 var assignment = require('./routes/assignment');
+var notice = require('./routes/notice');
+
 
 app.use('/api/auth', auth);
 app.use('/api/route', route);
@@ -89,6 +91,8 @@ app.use('/api/user', user);
 app.use('/api/feedback', feedback);
 app.use('/api/requisition', requisition);
 app.use('/api/assignment', assignment);
+app.use('/api/notice', notice);
+
 
 
 
@@ -161,6 +165,47 @@ app.post('/api/proxyBroadcastNotification', async (req, res) => {
 
     // Parse the JSON from the API response
     const data = await apiResponse.json();
+
+    // Send the data back to the frontend
+    res.json(data);
+  } catch (error) {
+    // Handle any errors that occurred during the process
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+app.post('/api/proxyPersonalNotification', async (req, res) => {
+  console.log(req.body);
+
+  try {
+    // Validate input
+    // if (!req.body.nTitle || !req.body.nBody || !req.body.user_id) {
+    //   return res.status(400).json({ message: 'Missing notification title, body, or user ID' });
+    // }
+
+    // Call the external API to send the personal notification
+    const apiResponse = await fetch('http://3.141.62.8:6969/api/personalNotification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nTitle: "New Trip Allocation",
+        nBody: req.body.message,
+        user_id: req.body.userId // Include the user ID in the request body
+      })
+    });
+
+    // Check if the request was successful
+    if (!apiResponse.ok) {
+      throw new Error(`API responded with status ${apiResponse.status}`);
+    }
+
+    // Parse the JSON from the API response
+    const data = await apiResponse.json();
+    console.log(data);
 
     // Send the data back to the frontend
     res.json(data);

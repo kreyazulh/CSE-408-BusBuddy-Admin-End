@@ -80,6 +80,8 @@
 
           const formattedBusType = formatBusType(wow.bus_type); // Use this function
           bus_type = formattedBusType; // Use the formatted string without braces
+          getDriverList(wow.time);
+          getStaffList(wow.time);
 
     }
 
@@ -94,26 +96,49 @@
       };
     });
   }
-  async function getDriverList() {
-    const response = await fetch('http://localhost:3000/api/staff/driver');
-    const data = await response.json();
-    driverNames = data.map((row) => {
-      return {
-        id: row.id,
-        name: row.name
-      };
-    });
-  }
-  async function getStaffList() {
-    const response = await fetch('http://localhost:3000/api/staff/collector');
-    const data = await response.json();
-    staffNames = data.map((row) => {
-      return {
-        id: row.id,
-        name: row.name
-      };
-    });
-  }
+  // async function getDriverList() {
+  //   const response = await fetch('http://localhost:3000/api/staff/driver');
+  //   const data = await response.json();
+  //   driverNames = data.map((row) => {
+  //     return {
+  //       id: row.id,
+  //       name: row.name
+  //     };
+  //   });
+  // }
+  // async function getStaffList() {
+  //   const response = await fetch('http://localhost:3000/api/staff/collector');
+  //   const data = await response.json();
+  //   staffNames = data.map((row) => {
+  //     return {
+  //       id: row.id,
+  //       name: row.name
+  //     };
+  //   });
+  // }
+
+  // Frontend modification to include time in the request
+async function getDriverList(time) {
+  const response = await fetch(`http://localhost:3000/api/staff/driver_with_time?time=${encodeURIComponent(time)}`);
+  const data = await response.json();
+  driverNames = data.map((row) => {
+    return {
+      id: row.id,
+      name: row.name
+    };
+  });
+}
+
+async function getStaffList(time) {
+  const response = await fetch(`http://localhost:3000/api/staff/collector_with_time?time=${encodeURIComponent(time)}`);
+  const data = await response.json();
+  staffNames = data.map((row) => {
+    return {
+      id: row.id,
+      name: row.name
+    };
+  });
+}
 
   let showRejectSection = false;
 
@@ -198,8 +223,8 @@ function toggleRejectSection() {
       id = urlParams.get('reqId');
       fetchReqDetails();
       getBusList();
-      getDriverList();
-      getStaffList();
+      // getDriverList();
+      // getStaffList();
     });
   </script>
   

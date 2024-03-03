@@ -5,10 +5,34 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-router.get('/student', (req, res) => {
-    const client = req.client;
-    const query = 'SELECT * FROM student_feedback';
+// router.get('/student', (req, res) => {
+//     const client = req.client;
+//     const query = 'SELECT * FROM student_feedback';
     
+//     client.query(query, (error, results) => {
+//       if (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//       } else {
+//         res.json(results.rows);
+//       }
+//     });
+//   });
+
+  router.post('/student', (req, res) => {
+    const client = req.client;
+    let query = 'SELECT * FROM student_feedback';
+
+    console.log(req.body);
+  
+    const selectType = req.body.statusType;
+    console.log(selectType);
+    if (selectType === 'pending') {
+      query += ' WHERE response IS NULL';
+    } else if (selectType === 'responded') {
+      query += ' WHERE response IS NOT NULL';
+    }
+  
     client.query(query, (error, results) => {
       if (error) {
         console.error(error);
@@ -18,81 +42,6 @@ router.get('/student', (req, res) => {
       }
     });
   });
-
-  router.get('/teacher', (req, res) => {
-    const client = req.client;
-    const query = 'SELECT * FROM buet_staff_feedback';
-    
-    client.query(query, (error, results) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(results.rows);
-      }
-    });
-  });
-
-
-
-router.get('/student/pending', (req, res) => {
-  const client = req.client;
-  const query = 'SELECT * FROM student_feedback WHERE response IS NULL';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
-
-router.get('/teacher/pending', (req, res) => {
-  const client = req.client;
-  const query = 'SELECT * FROM buet_staff_feedback WHERE response IS NULL';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
-
-
-
-
-router.get('/student/responded', (req, res) => {
-  const client = req.client;
-  const query = 'SELECT * FROM student_feedback WHERE response IS NOT NULL';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
-
-router.get('/teacher/responded', (req, res) => {
-  const client = req.client;
-  const query = 'SELECT * FROM buet_staff_feedback WHERE response IS NOT NULL';
-  
-  client.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(results.rows);
-    }
-  });
-});
 
   router.get('/student/:feedbackId', (req, res) => {
     const client = req.client;
@@ -125,7 +74,40 @@ router.get('/teacher/responded', (req, res) => {
       });
   });
 
+  // router.get('/teacher', (req, res) => {
+  //   const client = req.client;
+  //   const query = 'SELECT * FROM buet_staff_feedback';
+    
+  //   client.query(query, (error, results) => {
+  //     if (error) {
+  //       console.error(error);
+  //       res.status(500).json({ error: 'Internal Server Error' });
+  //     } else {
+  //       res.json(results.rows);
+  //     }
+  //   });
+  // });
 
+  router.post('/teacher', (req, res) => {
+    const client = req.client;
+    let query = 'SELECT * FROM buet_staff_feedback';
+  
+    const selectType = req.body.statusType;
+    if (selectType === 'pending') {
+      query += ' WHERE response IS NULL';
+    } else if (selectType === 'responded') {
+      query += ' WHERE response IS NOT NULL';
+    }
+  
+    client.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(results.rows);
+      }
+    });
+  });
 
   router.get('/teacher/:feedbackId', (req, res) => {
     const client = req.client;
@@ -158,35 +140,5 @@ router.get('/teacher/responded', (req, res) => {
       });
   });
 
-
-  router.get('/notice', (req, res) => {
-    const client = req.client;
-    const query = 'SELECT * FROM notice';
-    
-    client.query(query, (error, results) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json(results.rows);
-      }
-    });
-  });
-
-  router.post('/notice/add', (req, res) => {
-    const client = req.client;
-      console.log(req.body);
-      client.query (
-          "INSERT INTO notice(text) values($1)",
-          [req.body.text]
-      ).then(qres => {
-          console.log(qres);
-          if (qres.rowCount === 1) res.send(true);
-          else if (qres.rowCount === 0) res.send(false);
-      }).catch(e => {
-          console.error(e.stack);
-          res.send(false);
-      });
-  });
 
 module.exports = router;

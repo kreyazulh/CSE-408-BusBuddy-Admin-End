@@ -142,7 +142,6 @@
       getBusList();
       getDriverList();
       getHelperList();
-      getAssignments();
   });
   </script>
   

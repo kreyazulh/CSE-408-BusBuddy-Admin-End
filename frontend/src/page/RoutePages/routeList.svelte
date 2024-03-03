@@ -13,6 +13,7 @@
       const response = await fetch('http://localhost:3000/api/route/');
       if (response.ok) {
         routes = await response.json();
+        console.log('routes:', routes);
       } else {
         console.error('Failed to fetch routes:', response.statusText);
       }
@@ -50,7 +51,7 @@
 
    // Function to navigate to the route details page
    function goToRouteDetails(routeId) {
-    navigate(`/routeDetails/${routeId}`);
+    navigate(`/routeDetails?routeId=${routeId}`);
   }
 
   // Fetch routes when the component mounts

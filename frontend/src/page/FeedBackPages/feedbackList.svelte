@@ -10,6 +10,7 @@
   import DeletePopUp from "../GlobalComponents/PopUps/deletePopUp.svelte";
 
   let selectedRole = 'student';
+  let selectedType = 'all';
 
   let studentFeedbacks = [];
   let teacherFeedbacks = [];
@@ -48,6 +49,8 @@ function handleSearch(event) {
   handleEntriesPerPage();
   console.log("searchrows",searchRows);
 }
+
+
 
   function ordinalSuffix(day) {
   if (day > 3 && day < 21) return day + 'th';
@@ -148,30 +151,32 @@ function formatDate(dateString) {
     }
   }
 
-  async function getFeedbackList() {
-// Ensure routes data is fetched first
+
+
+var feedbacks = [];
+
+async function getFeedbackList() {
 await fetchRoutes();
 
-const response1 = await fetch('http://localhost:3000/api/feedback/student');
-const data1 = await response1.json();
-studentFeedbacks = data1.map((row) => {
-  // Find the corresponding route using the route ID
-  const routeObj = routes.find(route => route.id === row.route);
-  return {
-    id: row.id,
-    complainer_id: row.complainer_id,
-    route: routeObj ? routeObj.terminal_point : "Not mentioned", // Use terminal_point if found, otherwise "Unknown"
-    sub_time: row.submission_timestamp,
-    trip_id: row.trip_id,
-    subject: row.subject,
-    response: row.response
-  };
-});
+// Define the request payload
+const payload = { statusType: selectedType }; // Assuming `selectType` holds the value of the select dropdown
 
-const response2 = await fetch('http://localhost:3000/api/feedback/teacher');
-const data2 = await response2.json();
-teacherFeedbacks = data2.map((row) => {
-  // Similar mapping for teacher feedbacks
+// Define the fetch options for POST request
+const fetchOptions = {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload)
+};
+
+// Adjust the URL based on selectedRole
+const url = selectedRole === 'student' ? 'http://localhost:3000/api/feedback/student' : 'http://localhost:3000/api/feedback/teacher';
+
+const response = await fetch(url, fetchOptions);
+const data = await response.json();
+
+console.log(data);
+
+feedbacks = data.map(row => {
   const routeObj = routes.find(route => route.id === row.route);
   return {
     id: row.id,
@@ -184,30 +189,17 @@ teacherFeedbacks = data2.map((row) => {
   };
 });
 
-// Setup initial view
-if (selectedRole === 'student') {
-  searchRows = studentFeedbacks;
-} else {
-  searchRows = teacherFeedbacks;
-}
+console.log(feedbacks);
 
+// Use the feedbacks data as needed for your UI
+searchRows = feedbacks;
 totalEntries = searchRows.length;
 totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
 }
 
 
-$: {
-if (selectedRole === 'student') {
-  totalEntries = studentFeedbacks.length;
-  searchRows = studentFeedbacks;
-} else {
-  totalEntries = teacherFeedbacks.length;
-  searchRows = teacherFeedbacks;
-}
-totalPages = Math.ceil(totalEntries / Number(entriesPerPage));
-// Reset currentPage to 1 when toggling between roles to ensure we start from the first page
-currentPage = 1;
-}
+$: selectedType, selectedRole, getFeedbackList();
+
 
   onMount(async() => {
     await getFeedbackList();
@@ -244,6 +236,15 @@ currentPage = 1;
         <input type="radio" bind:group={selectedRole} value="teacher"/>
         Teacher
       </label>
+    </div>
+
+    <div class="mt-4">
+      <label for="feedbackFilter">Feedback Status:</label>
+      <select id="feedbackFilter" bind:value={selectedType}>
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="responded">Responded</option>
+      </select>
     </div>
 
      <!-- Search Bar-->

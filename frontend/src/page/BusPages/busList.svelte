@@ -130,6 +130,7 @@
   async function getBusList() {
     const response = await fetch('http://localhost:3000/api/bus/');
     const data = await response.json();
+    console.log(data);
     buses = data.map((row) => {
       return {
         reg_id: row.reg_id,

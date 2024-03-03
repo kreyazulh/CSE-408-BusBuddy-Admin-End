@@ -31,6 +31,9 @@
   import Bulletine from './page/Notifications/bulletine.svelte';
   import AssignmentMHB from './page/TripPages/assignmentsmhb.svelte';
   import AssignmentAdd from './page/TripPages/assignmentsadd.svelte';
+  import NoticeList from './page/NoticePages/noticeList.svelte';
+  import Unavailability from './page/BusStaffPages/unavailability.svelte';
+
 
 
 
@@ -89,6 +92,8 @@
     <Route path="/bulletine" component={Bulletine} />
     <Route path="/assignmentmhb" component={AssignmentMHB} />
     <Route path="/assignmentadd" component={AssignmentAdd} />
+    <Route path="/noticeList" component={NoticeList} />
+    <Route path="/staff/unavailability" component={Unavailability} />
   </Router>
 
 </main>

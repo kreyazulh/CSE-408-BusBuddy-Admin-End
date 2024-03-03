@@ -17,6 +17,26 @@ router.get('/', (req, res) => {
     });
   });
 
+  router.get('/unavailableStaff', (req, res) => {
+    const client = req.client;
+    console.log("here");
+    
+    // Query to select staff with non-null start_date and end_date
+    const query = 'SELECT id, name, start_date, end_date FROM bus_staff WHERE start_date IS NOT NULL AND end_date IS NOT NULL';
+  
+    client.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        console.log("ran");
+        // Send the results back to the client
+        res.json(results.rows);
+        console.log(results.rows);
+      }
+    });
+  });
+
 // usage : scheduleTrip
   router.get('/driver', (req, res) => {
     const client = req.client;
@@ -46,6 +66,52 @@ router.get('/', (req, res) => {
       }
     });
   });
+
+
+
+  // Backend modification for drivers
+router.get('/driver_with_time', (req, res) => {
+  const client = req.client;
+  const { time } = req.query; // Assuming 'time' is passed as a query parameter in the GET request
+  console.log(time);
+  const query = `
+    SELECT * FROM bus_staff 
+    WHERE role=$1 
+    AND (start_date IS NULL OR end_date IS NULL OR $2::timestamp NOT BETWEEN start_date AND end_date)
+  `;
+  
+  client.query(query, ['driver', time], (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results.rows);
+      console.log(results.rows);
+    }
+  });
+});
+
+// Backend modification for collectors
+router.get('/collector_with_time', (req, res) => {
+  const client = req.client;
+  const { time } = req.query; // Assuming 'time' is passed as a query parameter in the GET request
+  const query = `
+    SELECT * FROM bus_staff 
+    WHERE role=$1 
+    AND (start_date IS NULL OR end_date IS NULL OR $2::timestamp NOT BETWEEN start_date AND end_date)
+  `;
+  
+  client.query(query, ['collector', time], (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      res.json(results.rows);
+      console.log(results.rows);
+    }
+  });
+});
+
 
 // usage : staffProfile
   router.get('/:staffId', (req, res) => {
@@ -94,5 +160,34 @@ router.delete('/delete', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+router.post('/unavailability', (req, res) => {
+  const client = req.client;
+  const { staffId, startDate, endDate } = req.body;
+
+  // Assuming there's a column in your table to store unavailability start and end dates.
+  // You might need to adjust the table and column names based on your schema.
+  const query = `
+    UPDATE bus_staff
+    SET start_date = $1, end_date = $2
+    WHERE id = $3
+  `;
+
+  client.query(query, [startDate, endDate, staffId], (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // Assuming you want to return the updated row; adjust as necessary.
+      if (results.rowCount === 0) {
+        // No rows were updated, which means the staff ID was not found.
+        res.status(404).json({ error: 'Staff not found' });
+      } else {
+        res.json({ message: 'Staff unavailability updated successfully' });
+      }
+    }
+  });
+});
+
 
 module.exports = router;

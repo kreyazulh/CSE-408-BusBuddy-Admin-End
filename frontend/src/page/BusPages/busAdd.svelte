@@ -35,24 +35,43 @@
   }
 
   async function fetchDrivers() {
-  try {
-    const response = await fetch('http://localhost:3000/api/staff/driver');
-    unallocatedDrivers = await response.json();
-    console.log(unallocatedDrivers);
-  } catch (error) {
-    console.error('Error fetching routes:', error);
-  }
-}
-
-async function fetchHelpers() {
-  try {
-    const response = await fetch('http://localhost:3000/api/staff/collector');
-    unallocatedHelpers = await response.json();
-    console.log(unallocatedHelpers);
-  } catch (error) {
-    console.error('Error fetching routes:', error);
-  }
-}
+      const response = await fetch('http://localhost:3000/api/assignment/allocatedDrivers');
+      const data = await response.json();
+      allocatedDrivers = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      // unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
+      const data2 = await response2.json();
+      unallocatedDrivers = data2.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+    }
+    async function fetchHelpers() {
+        const response = await fetch('http://localhost:3000/api/assignment/allocatedHelpers');
+      const data = await response.json();
+      allocatedHelpers = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      // unallocated kemne anbo jani na
+      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
+      const data2 = await response2.json();
+      unallocatedHelpers = data2.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+    }
 
 
   async function addBus() {
