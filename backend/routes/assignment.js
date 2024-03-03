@@ -34,9 +34,39 @@ router.get('/', (req, res) => {
       });
   });
 
+  router.post('/save', (req, res) => {
+    const client = req.client;
+    const allocations = req.body.allocations;
+    let updatePromises = [];
+
+    // Iterate over the allocations array and execute update query for each element
+    allocations.forEach((allocation) => {
+        let queryText = "UPDATE schedule SET default_driver = $3, default_helper = $4, default_bus = $5 WHERE route = $1 AND time_type = $2";
+        let queryParams = [allocation.route, allocation.shift, allocation.driver, allocation.staff, allocation.bus];
+        updatePromises.push(client.query(queryText, queryParams));
+    });
+
+    // Wait for all the update promises to resolve
+    Promise.all(updatePromises).then(results => {
+        // Check if all updates were successful
+        const allUpdated = results.every(result => result.rowCount === 1);
+        if (allUpdated) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    }).catch(e => {
+        console.error(e.stack);
+        res.send(false);
+    });
+});
+
+      
+  
+
   router.get('/allocatedBuses', (req, res) => {
     const client = req.client;
-    let query = 'SELECT * FROM bus WHERE reg_id IN (SELECT default_bus FROM schedule);';
+    let query = 'SELECT * FROM bus WHERE reg_id IN (SELECT default_bus FROM schedule  WHERE default_bus IS NOT NULL);';
 
   
     client.query(query, (error, results) => {
@@ -51,7 +81,7 @@ router.get('/', (req, res) => {
 
   router.get('/unallocatedBuses', (req, res) => {
     const client = req.client;
-    let query = 'SELECT * FROM bus WHERE reg_id NOT IN (SELECT default_bus FROM schedule);';
+    let query = 'SELECT * FROM bus WHERE reg_id NOT IN (SELECT default_bus FROM schedule WHERE default_bus IS NOT NULL);';
 
   
     client.query(query, (error, results) => {
@@ -66,7 +96,7 @@ router.get('/', (req, res) => {
 
   router.get('/allocatedDrivers', (req, res) => {
     const client = req.client;
-    let query = `SELECT * FROM bus_staff WHERE id IN (SELECT default_driver FROM schedule) AND role = 'driver'`;
+    let query = `SELECT * FROM bus_staff WHERE id IN (SELECT default_driver FROM schedule WHERE default_driver IS NOT NULL) AND role = 'driver'`;
 
   
     client.query(query, (error, results) => {
@@ -81,7 +111,7 @@ router.get('/', (req, res) => {
 
   router.get('/unallocatedDrivers', (req, res) => {
     const client = req.client;
-    let query = `SELECT * FROM bus_staff WHERE id NOT IN (SELECT default_driver FROM schedule) AND role = 'driver'`;
+    let query = `SELECT * FROM bus_staff WHERE id NOT IN (SELECT default_driver FROM schedule WHERE default_driver IS NOT NULL) AND role = 'driver'`;
 
   
     client.query(query, (error, results) => {
@@ -96,7 +126,7 @@ router.get('/', (req, res) => {
 
   router.get('/allocatedHelpers', (req, res) => {
     const client = req.client;
-    let query = `SELECT * FROM bus_staff WHERE id IN (SELECT default_helper FROM schedule) AND role = 'collector'`;
+    let query = `SELECT * FROM bus_staff WHERE id IN (SELECT default_helper FROM schedule WHERE default_helper IS NOT NULL) AND role = 'collector'`;
 
   
     client.query(query, (error, results) => {
@@ -111,7 +141,7 @@ router.get('/', (req, res) => {
 
   router.get('/unallocatedHelpers', (req, res) => {
     const client = req.client;
-    let query = `SELECT * FROM bus_staff WHERE id NOT IN (SELECT default_helper FROM schedule) AND role = 'collector'`;
+    let query = `SELECT * FROM bus_staff WHERE id NOT IN (SELECT default_helper FROM schedule WHERE default_helper IS NOT NULL) AND role = 'collector'`;
 
   
     client.query(query, (error, results) => {
@@ -119,6 +149,7 @@ router.get('/', (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
       } else {
+        console.log(results);
         res.json(results.rows);
       }
     });
