@@ -1,5 +1,6 @@
 <script>
     import Navbar from "../GlobalComponents/navbar.svelte";
+    import { onMount } from "svelte";
     import { isAuthenticated } from "../../auth";
 
     let mode = 0;
@@ -314,7 +315,27 @@
         busAdd = false;
         driverAdd = false;
         staffAdd = false;
+        //backend e data pathate hobe
+        changesAllocation.length = 0;
+        changesBus.length = 0;
+        changesDriver.length = 0;
+        changesStaff.length = 0;
     }
+
+    async function getAllocations() {
+        //backend theke data ante hobe
+        for (let row in allocations){
+            for (let key in allocations[row]){
+                if (allocations[row][key] === null){
+                    allocations[row][key] = "N/A";
+            }
+            }
+        }
+    }
+
+    onMount(async () => {
+        await getAllocations();
+    });
 
 </script>
 
