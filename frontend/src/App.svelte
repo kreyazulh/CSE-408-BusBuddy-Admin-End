@@ -33,8 +33,10 @@
   import AssignmentMHB from './page/AssignmentPages/assignmentMHB.svelte';
   import AssignmentAdd from './page/AssignmentPages/assignmentAdd.svelte';
   import Unavailability from './page/BusStaffPages/unavailability.svelte';
-  import InventoryList from './page/BusPages/inventoryList.svelte';
+  import InventoryList from './page/InventoryPages/inventoryList.svelte';
   import BillingList from './page/BillingPages/billingList.svelte';
+  import RepairRequestList from './page/InventoryPages/repairRequestList.svelte';
+  import RequestDetails from './page/InventoryPages/requestDetails.svelte';
 
 
 
@@ -97,6 +99,8 @@
     <Route path="/staff/unavailability" component={Unavailability} />
     <Route path="/billingList" component={BillingList} />
     <Route path="/inventory" component={InventoryList} />
+    <Route path="/repairRequestList" component={RepairRequestList} />
+    <Route path="/requestDetails" component={RequestDetails} />
 
   </Router>
 

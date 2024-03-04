@@ -59,6 +59,18 @@
       handleEntriesPerPage();
       console.log("searchrows",searchRows);
     }
+
+    let repairRequestsCount = 0;
+
+async function fetchRepairRequestsCount() {
+    const response = await fetch('http://localhost:3000/api/billing/repairRequestsCount');
+    if (response.ok) {
+        const data = await response.json();
+        repairRequestsCount = data;
+    } else {
+        console.error("Failed to fetch repair requests count");
+    }
+}
   
      // Function to delete a row
      function deleteRow(id) {
@@ -114,13 +126,13 @@
      // Function to show the details of a row
      function showDetails(id) {
       handleClick(id + "details");
-      navigate(`/busDetails?busID=${id}`);
+      //navigate(`/busDetails?busID=${id}`);
     }
   
     // Function to save the row
     async function editRow(id) {
       handleClick(id + "edit");
-      navigate(`/editBus?busID=${id}`);
+      //navigate(`/editBus?busID=${id}`);
     }
   
     async function getInventory() {
@@ -157,6 +169,7 @@
   
     onMount(async() => {
       await getInventory();
+      await fetchRepairRequestsCount();
     });
   </script>
   
@@ -176,10 +189,12 @@
   
        <!-- Search Bar & Add Button-->
       <div class="flex mb-4 justify-end">
-        <button class="{showAll ? 'bg-lime-600 hover:bg-lime-700':'bg-cyan-600 hover:bg-cyan-700'} text-white-700 font-semibold py-2 px-4 rounded-full"
-          class:shrink={shrinkID === "showAll"}
-          on:click={showStatus}>{showAll ? "Show Active" : "Show All"}
-        </button>
+        <button
+  class="bg-cyan-600 hover:bg-cyan-700 mr-4 text-white font-semibold py-2 px-4 rounded-full"
+  on:click={() => navigate('/repairRequestList')}
+>
+  Repair Requests <span class="bg-red-500 text-white rounded-full px-2 py-1 text-xs font-bold">{repairRequestsCount}</span>
+</button>
         <SearchBar originalRows={inventory} on:searchChanged={handleSearch} />
       </div>
   
