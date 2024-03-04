@@ -18,8 +18,8 @@
     let remarks = 'good';
     let completedTrips = 100;
     let milage = '10km/L';
-    let driver = 'masud84';
-    let helper = 'farid99';
+    let driver = 'Khondker Ibrahim';
+    let helper = 'Mohammad Ali';
     let fuelType = 'diesel';
     let fuelCapacity = '100L';
     let fuelConsumption = '5km/L';
