@@ -29,11 +29,12 @@
   import Requisition from './page/userPages/requisition.svelte';
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
   import RouteAllocation from './page/RouteAllocation/routeAllocation.svelte';
-  import Bulletine from './page/Notifications/bulletine.svelte';
-  import NoticeList from './page/NoticePages/noticeList.svelte';
+  import NoticeList from './page/Notifications/noticeList.svelte';
   import Unavailability from './page/BusStaffPages/unavailability.svelte';
-  import InventoryList from './page/BusPages/inventoryList.svelte';
+  import InventoryList from './page/InventoryPages/inventoryList.svelte';
   import BillingList from './page/BillingPages/billingList.svelte';
+  import RepairRequestList from './page/InventoryPages/repairRequestList.svelte';
+  import RequestDetails from './page/InventoryPages/requestDetails.svelte';
 
 
 
@@ -90,11 +91,13 @@
     <Route path="/requisition" component={Requisition} />
     <Route path="/routeDetails" component={RouteDetails} />
     <Route path="/routeAllocation" component={RouteAllocation} />
-    <Route path="/bulletine" component={Bulletine} />
     <Route path="/noticeList" component={NoticeList} />
+
     <Route path="/staff/unavailability" component={Unavailability} />
     <Route path="/billingList" component={BillingList} />
     <Route path="/inventory" component={InventoryList} />
+    <Route path="/repairRequestList" component={RepairRequestList} />
+    <Route path="/requestDetails" component={RequestDetails} />
 
   </Router>
 
