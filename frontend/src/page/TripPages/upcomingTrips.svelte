@@ -219,6 +219,8 @@ async function handleDeleteConfirm() {
           if (response.ok) {
             console.log("Row saved successfully:", result);
             await sendNotification(rowData);
+            changedRows = [];
+            location.reload();
             // Additional logic after successful save (e.g., update UI, clear fields)
           } else {
             console.error("Failed to save row:", result);
@@ -228,9 +230,8 @@ async function handleDeleteConfirm() {
           console.error("Error saving row:", error);
           // Handle error case
         }
+         // Remove the id from changedRows after saving
       }
-      // Remove the id from changedRows after saving
-      changedRows = changedRows.filter((r) => r !== id);
     }
     await fetchRows(selectedDate);
   }

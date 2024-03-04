@@ -50,11 +50,11 @@
         // Request failed
         addAllocationResponse = 'Failed to add bulk allocation';
       }
-      // navigate('/upcomingTrips');
+      navigate('/upcomingTrips');
     } catch (error) {
       console.error('Error:', error);
       addAllocationResponse = 'Error occurred';
-      // navigate('/upcomingTrips');
+      navigate('/upcomingTrips');
     }
   }
 

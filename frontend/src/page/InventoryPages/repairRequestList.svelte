@@ -51,13 +51,14 @@
       <div class="bg-white-700 shadow-md my-3 overflow-x-auto">
         <table class="w-full table-auto">
           <thead>
-            <tr class="text-white-700 bg-maroon-500 rounded-lg text-center">
+            <tr class="text-white-700 bg-maroon-500 rounded-lg text-left w-full">
               <th class="p-2">Requestor</th>
               <th class="p-2">Bus</th>
               <th class="p-2">Parts</th>
               <th class="p-2">Timestamp</th>
               <th class="p-2">Is Repaired</th>
               <th class="p-2">Items Missing</th>
+              <th class="p-2"></th>
             </tr>
           </thead>
           <tbody>
