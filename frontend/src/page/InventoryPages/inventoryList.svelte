@@ -233,27 +233,27 @@ async function fetchRepairRequestsCount() {
                   <td class="my-2 mx-2 w-auto">
                     <div class="flex justify-center w-full">
                       {#if inStockID.includes(row.id)}
-                      <span class="inline-flex items-center justify-center text-lg">
+                      <span class="inline-flex items-center justify-center h-10 w-10 text-lg">
                         <i class="bx bxs-check-square text-lime-500 scale-150"></i>
                       </span>
                       {/if}
                       {#if lowStockID.includes(row.id)}
-                      <span class="inline-flex items-center justify-center text-lg">
+                      <span class="inline-flex items-center justify-center h-10 w-10 text-lg">
                         <i class="bx bxs-error text-yellow-500 scale-150"></i>
                       </span>
                       {/if}
                       {#if outOfStockID.includes(row.id)}
-                      <span class="inline-flex items-center justify-center text-lg">
+                      <span class="inline-flex items-center justify-center h-10 w-10 text-lg">
                         <i class="bx bxs-x-square text-red-500 scale-150"></i>
                       </span>
                       {/if}
                       {#if updatingStockID.includes(row.id)}
-                      <span class="inline-flex items-center justify-center text-lg">
+                      <span class="inline-flex items-center justify-center h-10 w-10 text-lg">
                         <i class="bx bxs-cart-download text-cyan-500 scale-150"></i>
                       </span>
                       {/if}
                       {#if repairRequestedID.includes(row.id)}
-                      <span class="inline-flex items-center justify-center text-lg">
+                      <span class="inline-flex items-center justify-center h-10 w-10 text-lg">
                         <i class="bx bxs-car-mechanic text-red-300 scale-150"></i>
                       </span>
                       {/if}
