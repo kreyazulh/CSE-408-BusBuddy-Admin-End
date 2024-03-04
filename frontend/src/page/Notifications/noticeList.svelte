@@ -83,7 +83,8 @@
       notices[idx].text = updatedText;
       addNoticeResponse = "Notice updated successfully";
       success = 1;
-      navigate('/noticeList');
+      // navigate('/noticeList');
+      location.reload();
     } else {
       // If the update failed, handle it accordingly
       addNoticeResponse = "Failed to update notice";
@@ -113,7 +114,8 @@
     if (response.ok) {
       // If the deletion was successful, remove the notice from the client-side list as well
       notices.splice(idx, 1);
-      navigate('/noticeList');
+      // navigate('/noticeList');
+      location.reload();
     } else {
       console.error('Failed to delete the notice');
     }
