@@ -34,4 +34,49 @@ router.post('/add', (req, res) => {
     });
 });
 
+router.post('/delete/:id', (req, res) => {
+  const client = req.client;
+  const noticeId = req.params.id; // Get the ID from the request parameters
+
+  client.query(
+    "DELETE FROM notice WHERE id = $1", 
+    [noticeId]
+  ).then(qres => {
+    console.log(qres);
+    if (qres.rowCount === 1) {
+      // If one row was affected, the deletion was successful
+      res.status(200).json({ success: true, message: "Notice deleted successfully." });
+    } else {
+      // If no rows were affected, the notice with the given ID doesn't exist
+      res.status(404).json({ success: false, message: "Notice not found." });
+    }
+  }).catch(e => {
+    console.error(e.stack);
+    res.status(500).json({ success: false, message: "An error occurred during deletion." });
+  });
+});
+
+router.post('/update/:id', (req, res) => {
+  const client = req.client;
+  const noticeId = req.params.id; // Get the ID of the notice to be updated from the URL
+  const { text } = req.body; // Get the updated text from the request body
+
+  client.query(
+    "UPDATE notice SET text = $1 WHERE id = $2",
+    [text, noticeId]
+  ).then(qres => {
+    console.log(qres);
+    if (qres.rowCount === 1) {
+      res.status(200).json({ success: true, message: "Notice updated successfully." });
+    } else {
+      res.status(404).json({ success: false, message: "Notice not found." });
+    }
+  }).catch(e => {
+    console.error(e.stack);
+    res.status(500).json({ success: false, message: "An error occurred during the update." });
+  });
+});
+
+
+
 module.exports = router;
