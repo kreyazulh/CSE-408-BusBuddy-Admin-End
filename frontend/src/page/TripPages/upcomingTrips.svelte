@@ -218,9 +218,9 @@ async function handleDeleteConfirm() {
           const result = await response.json();
           if (response.ok) {
             console.log("Row saved successfully:", result);
-            await sendNotification(rowData);
-            changedRows = [];
-            location.reload();
+            changedRows = changedRows.filter((r) => r !== id);
+            await sendNotification(rowData); 
+            // location.reload();
             // Additional logic after successful save (e.g., update UI, clear fields)
           } else {
             console.error("Failed to save row:", result);
