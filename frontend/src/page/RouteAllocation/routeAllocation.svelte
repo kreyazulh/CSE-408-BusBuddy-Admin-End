@@ -47,6 +47,7 @@
     let driver = [];// ['Mr. X','Mr. Y','Mr. Z','Mr. A','Mr. B','Mr. C','Mr. D','Mr. E','Mr. F','Mr. G'];
     let staff = [];//['Mr. P','Mr. Q','Mr. R','Mr. S','Mr. T','Mr. U','Mr. V','Mr. W','Mr. X','Mr. Y'];
 
+    let allRoute = [];
     let allDriver = [];
     let allStaff = [];
 
@@ -371,6 +372,18 @@
         }
 
     }
+    function getRouteNameById(idAsString) {
+        const driver = allRoute.find(driver => driver.id === idAsString);
+        return driver ? driver.name : null;
+    }
+    function getDriverNameById(idAsString) {
+        const driver = allDriver.find(driver => driver.id === idAsString);
+        return driver ? driver.name : null;
+    }
+    function getStaffNameById(idAsString) {
+        const driver = allStaff.find(driver => driver.id === idAsString);
+        return driver ? driver.name : null;
+    }
 
     async function getBusList() {
       //unallocated kemne anbo jani na
@@ -378,6 +391,17 @@
       const data2 = await response2.json();
       bus = data2.map((row) => row.reg_id);
       console.log(bus);
+    }
+    async function getRouteList() {
+
+        const response = await fetch('http://localhost:3000/api/route/');
+      const data = await response.json();
+      allRoute = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.terminal_point
+        };
+      });
     }
     async function getDriverList() {
 
@@ -389,7 +413,6 @@
           name: row.name
         };
       });
-      console.log(allDriver);
       // unallocated kemne anbo jani na
       const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
       const data2 = await response2.json();
@@ -404,7 +427,6 @@
           name: row.name
         };
       });
-      console.log(allStaff);
       // unallocated kemne anbo jani na
       const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
       const data2 = await response2.json();
@@ -414,6 +436,7 @@
 
     onMount(async () => {
         getBusList();
+        getRouteList();
         getDriverList();
         getHelperList();
         await getAllocations();
@@ -561,7 +584,7 @@
                         <h1 class="text-white-700 text-s font-semibol underline mb-1">Driver</h1>
                         {#each driver as item,idx}
                         {#if selectedRows[0] == null}
-                                <p class="text-white-700 text-s">{item}</p>
+                                <p class="text-white-700 text-s">{getDriverNameById(item)}</p>
                             {:else}
                                 {#if driverAdd}
                                     <button class="flex flex-row focus:outline-none"
@@ -570,10 +593,10 @@
                                         <svg class="w-6 h-6 text-white-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                         </svg>
-                                        <p class="text-white-700 text-s">{item}</p>
+                                        <p class="text-white-700 text-s">{getStaffNameById(item)}</p>
                                     </button>
                                 {:else}
-                                    <p class="text-gray-400 text-s">{item}</p>
+                                    <p class="text-gray-400 text-s">{getStaffNameById(item)}</p>
                                 {/if}
                             {/if}
                         {/each}
@@ -582,7 +605,7 @@
                         <h1 class="text-white-700 text-s font-semibol underline mb-1">Staff</h1>
                         {#each staff as item,idx}
                         {#if selectedRows[0] == null}
-                                <p class="text-white-700 text-s">{item}</p>
+                                <p class="text-white-700 text-s">{getStaffNameById(item)}</p>
                             {:else}
                                 {#if staffAdd}
                                     <button class="flex flex-row focus:outline-none"
@@ -591,10 +614,10 @@
                                         <svg class="w-6 h-6 text-white-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                         </svg>
-                                        <p class="text-white-700 text-s">{item}</p>
+                                        <p class="text-white-700 text-s">{getStaffNameById(item)}</p>
                                     </button>
                                 {:else}
-                                    <p class="text-gray-400 text-s">{item}</p>
+                                    <p class="text-gray-400 text-s">{getStaffNameById(item)}</p>
                                 {/if}
                             {/if}
                         {/each}
@@ -648,7 +671,7 @@
                         <tr class="bg-white-700 pt-3" on:keypress={deselect}>
                             <td class="py-2 pl-2 pr-2 text-center w-auto border-2 border-gray-300 hover:bg-gray-200">{row.id}</td>
                             {#if index%3==0}
-                                <td class="py-2 pl-2 pr-2 text-center w-auto border-2 border-gray-300 hover:bg-gray-200" rowspan="3">{row.route}</td>
+                                <td class="py-2 pl-2 pr-2 text-center w-auto border-2 border-gray-300 hover:bg-gray-200" rowspan="3">{getRouteNameById(row.route)}</td>
                             {/if}
                             <td class="py-2 pl-2 pr-2 text-center w-auto border-2 border-gray-300 hover:bg-gray-200">{row.shift}</td>
                             <td class="w-auto border-2 border-gray-300 hover:bg-maroon-500 hover:text-white-700">
@@ -659,12 +682,12 @@
                             <td class="w-auto border-2 border-gray-300 hover:bg-maroon-500 hover:text-white-700">
                                 <button class="w-full h-full py-2 pl-2 pr-2 text-center focus:outline-none" 
                                      class:selected={selectionID === index+'driver' || selectionID2 === index+'driver' || selectionRowID.includes(index+'driver') || selectionRowID2.includes(index+'driver')}
-                                    on:dblclick={() => select(index,'driver')}>{row.driver}</button>
+                                    on:dblclick={() => select(index,'driver')}>{getDriverNameById(row.driver)}</button>
                             </td>
                             <td class="w-auto border-2 border-gray-300 hover:bg-maroon-500 hover:text-white-700">
                                 <button class="w-full h-full py-2 pl-2 pr-2 text-center focus:outline-none" 
                                      class:selected={selectionID === index+'staff' || selectionID2 === index+'staff' || selectionRowID.includes(index+'staff') || selectionRowID2.includes(index+'staff')}
-                                    on:dblclick={() => select(index,'staff')}>{row.staff}</button>
+                                    on:dblclick={() => select(index,'staff')}>{getStaffNameById(row.staff)}</button>
                             </td>
                         </tr>
                     {/each}
