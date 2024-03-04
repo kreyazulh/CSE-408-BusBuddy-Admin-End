@@ -10,6 +10,9 @@
   import DeletePopUp from "../GlobalComponents/PopUps/deletePopUp.svelte";
 
   let buses = [];
+  let allocations = [];
+  let allDriver = [];
+  let allStaff = [];
   let searchRows = [];
 
   let shrinkID = null;
@@ -57,7 +60,7 @@
     searchRows = event.detail;
     totalEntries = searchRows.length;
     handleEntriesPerPage();
-    console.log("searchrows",searchRows);
+    // console.log("searchrows",searchRows);
   }
 
    // Function to delete a row
@@ -82,10 +85,10 @@
       });
 
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
 
       if (response.ok) {
-        console.log("Row deleted successfully:", result);
+        // console.log("Row deleted successfully:", result);
 
         // Remove the row from the UI
         searchRows.splice(rowIndex, 1);
@@ -127,21 +130,83 @@
     navigate('/busAdd');
   }
 
+  function getDriverIdFromAlloc(idAsString) {
+    console.log('Function called with ID:', idAsString);
+    const allocation = allocations.find(allocation => allocation.bus === idAsString);
+    console.log('Matching allocation:', allocation);
+    // Return the default driver ID if found, otherwise return null
+    return allocation ? allocation.driver : null;
+  }
+    function getStaffIdFromAlloc(idAsString) {
+      console.log('Function called with ID:', idAsString);
+      const allocation = allocations.find(allocation => allocation.bus === idAsString);
+      console.log('Matching allocation:', allocation);
+      // Return the default driver ID if found, otherwise return null
+      return allocation ? allocation.staff : null;
+    }
+
+  function getDriverNameById(idAsString) {
+        if(!idAsString) return 'N/A';
+        const driver = allDriver.find(driver => driver.id === idAsString);
+        return driver.name ? driver.name : null;
+    }
+    function getStaffNameById(idAsString) {
+        if(!idAsString) return 'N/A';
+        const driver = allStaff.find(driver => driver.id === idAsString);
+        return driver.name ? driver.name : null;
+    }
+
+  async function getAllocations() {
+        //backend theke data ante hobe
+        
+        const response2 = await fetch('http://localhost:3000/api/assignment/');
+        const data2 = await response2.json();
+        allocations = data2.map((row) => {
+            return {
+            bus: row.default_bus,
+            driver: row.default_driver,
+            staff: row.default_helper
+            };
+        });
+        // console.log(getDriverNameById(getDriverIdFromAlloc('Ba-48-5757')));
+    }
+
+    async function getDriverList() {
+
+        const response = await fetch('http://localhost:3000/api/staff/driver/');
+      const data = await response.json();
+      allDriver = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      // console.log(getDriverNameById('aminhaque'));
+    }
+    async function getHelperList() {
+        const response = await fetch('http://localhost:3000/api/staff/collector');
+      const data = await response.json();
+      allStaff = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+    }
+
   async function getBusList() {
     const response = await fetch('http://localhost:3000/api/bus/');
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     buses = data.map((row) => {
       return {
         reg_id: row.reg_id,
         type: row.type,
         capacity: row.capacity,
-        driver: row.driver, //dummy data
-        helper: row.helper,
         status: 'Active',
       };
     });
-    console.log(buses);
+    // console.log(buses);
     buses = buses.filter((row) => {
       if (row.reg_id === null) {
         return false;
@@ -155,13 +220,16 @@
         }
       }
     }
-    console.log(buses);
+    // console.log(buses);
     searchRows = buses.filter((row) => row.status === "Active");
     totalEntries = searchRows.length;
     handleEntriesPerPage();
   }
 
   onMount(async() => {
+    getDriverList();
+    getHelperList();
+    getAllocations();
     await getBusList();
   });
 </script>
@@ -283,8 +351,8 @@
                 <td class="py-2 pl-2 pr-2 text-center w-auto">{row.reg_id}</td>
                 <td class="py-2 pl-2 pr-2 text-center w-auto">{row.type}</td>
                 <td class="py-2 pl-2 pr-2 text-center w-auto">{row.capacity}</td>
-                <td class="py-2 pl-2 pr-2 text-center w-auto">{row.driver}</td>
-                <td class="py-2 pl-2 pr-2 text-center w-auto">{row.helper}</td>
+                <td class="py-2 pl-2 pr-2 text-center w-auto">{getDriverNameById(getDriverIdFromAlloc(row.reg_id))}</td>
+                <td class="py-2 pl-2 pr-2 text-center w-auto">{getStaffNameById(getStaffIdFromAlloc(row.reg_id))}</td>
                 {#if showAll}
                   <td class="py-2 pl-2 pr-2 text-center w-auto font-semibold text-white-700 border-2 border-white-700
                   {row.status==='Active' ? 'bg-lime-500':'bg-gray-500'}">{row.status} </td>
