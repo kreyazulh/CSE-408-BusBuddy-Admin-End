@@ -156,6 +156,9 @@
         let allocationIndex = selectedRows[0].index;
         let temp = allocations[allocationIndex].bus;
         allocations[allocationIndex].bus = bus[idx];
+        if(temp === "N/A"){
+            temp = null;
+        }
         bus[idx] = temp;
         changesAllocation.push(allocationIndex);
         changesBus.push(idx);
@@ -167,6 +170,9 @@
         let allocationIndex = selectedRows[0].index;
         let temp = allocations[allocationIndex].driver;
         allocations[allocationIndex].driver = driver[idx];
+        if(temp === "N/A"){
+            temp = null;
+        }
         driver[idx] = temp;
         changesAllocation.push(allocationIndex);
         changesDriver.push(idx);
@@ -178,6 +184,9 @@
         let allocationIndex = selectedRows[0].index;
         let temp = allocations[allocationIndex].staff;
         allocations[allocationIndex].staff = staff[idx];
+        if(temp === "N/A"){
+            temp = null;
+        }
         staff[idx] = temp;
         changesAllocation.push(allocationIndex);
         changesStaff.push(idx);
@@ -324,9 +333,6 @@
         } catch (error) {
             console.error('Error:', error);
         }
-
-
-
 
         selectionID = "";
         selectionID2 = "";
@@ -648,12 +654,14 @@
                     {/each}
             </tbody>
         </table>
-        <div class="flex justify-end my-3">
-            <button
-            class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full w-fit"
-            class:shrink={shrinkID === "save"} on:click={saveChanges}>
-            Save</button>
-        </div> 
+        {#if changesAllocation.length > 0}
+            <div class="flex justify-end my-3">
+                <button
+                class=" bg-maroon-500 hover:bg-maroon-900 py-3 px-8 text-white-700 font-semibold rounded-full w-fit"
+                class:shrink={shrinkID === "save"} on:click={saveChanges}>
+                Save</button>
+            </div> 
+        {/if}
     </div>
     </div>
 </main>
