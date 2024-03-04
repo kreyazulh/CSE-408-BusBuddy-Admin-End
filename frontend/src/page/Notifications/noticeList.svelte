@@ -4,6 +4,7 @@
   import { isAuthenticated } from "../../auth";
   import ErrorPopUp from "../GlobalComponents/PopUps/errorPopUp.svelte";
   import SuccessfulPopUp from "../GlobalComponents/PopUps/successfulPopUp.svelte";
+  import DeletePopUp from "../GlobalComponents/PopUps/deletePopUp.svelte";
   import { navigate } from "svelte-routing";
 
   let notices = [];
