@@ -47,6 +47,9 @@
     let driver = [];// ['Mr. X','Mr. Y','Mr. Z','Mr. A','Mr. B','Mr. C','Mr. D','Mr. E','Mr. F','Mr. G'];
     let staff = [];//['Mr. P','Mr. Q','Mr. R','Mr. S','Mr. T','Mr. U','Mr. V','Mr. W','Mr. X','Mr. Y'];
 
+    let allDriver = [];
+    let allStaff = [];
+
     function handleClick(name) {
     shrinkID = name;
     setTimeout(() => {
@@ -377,12 +380,31 @@
       console.log(bus);
     }
     async function getDriverList() {
+
+        const response = await fetch('http://localhost:3000/api/staff/driver/');
+      const data = await response.json();
+      allDriver = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      console.log(allDriver);
       // unallocated kemne anbo jani na
       const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
       const data2 = await response2.json();
       driver = data2.map((row) => row.id);
     }
     async function getHelperList() {
+        const response = await fetch('http://localhost:3000/api/staff/collector');
+      const data = await response.json();
+      allStaff = data.map((row) => {
+        return {
+          id: row.id,
+          name: row.name
+        };
+      });
+      console.log(allStaff);
       // unallocated kemne anbo jani na
       const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
       const data2 = await response2.json();
