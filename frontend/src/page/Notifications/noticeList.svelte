@@ -27,7 +27,7 @@
   async function addNotice() {
     // Create a JSON object with the data
     let today = new Date();
-    let tod = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + today.getTimezoneOffset();
+    let tod = today.toISOString();
   
     const noticeData = {
       date: tod,
@@ -64,17 +64,62 @@
     }
   }
 
-  function editNoticeBody(idx) {
-    notices[idx].text = editText;
-    editText = "";
-    editID = "";
-    //update the notice
+  async function editNoticeBody(idx) {
+  const noticeId = notices[idx].id; // Retrieve the ID of the notice to be updated
+  const updatedText = editText; // Retrieve the updated text from the bound variable
+
+  try {
+    const response = await fetch(`http://localhost:3000/api/notice/update/${noticeId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: updatedText }), // Send the updated text in the request body
+    });
+
+    if (response.ok) {
+      // If the update was successful, reflect the changes on the client side
+      notices[idx].text = updatedText;
+      addNoticeResponse = "Notice updated successfully";
+      success = 1;
+      navigate('/noticeList');
+    } else {
+      // If the update failed, handle it accordingly
+      addNoticeResponse = "Failed to update notice";
+      success = 0;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    addNoticeResponse = "Error occurred while updating";
+    success = 0;
   }
 
+  // Reset the edit state
+  editText = "";
+  editID = "";
+}
+
+
   async function deleteNotice(idx) {
-    notices.splice(idx, 1);
-    //remove the notice
+    console.log("Deleting notice with index:", idx);
+    console.log("Deleting notice with id:", notices[idx].id);
+  const noticeId = notices[idx].id; // Assuming each notice has a unique 'id'
+  console.log(noticeId);
+  try {
+    const response = await fetch(`http://localhost:3000/api/notice/delete/${noticeId}`, {
+      method: 'POST',
+    });
+    if (response.ok) {
+      // If the deletion was successful, remove the notice from the client-side list as well
+      notices.splice(idx, 1);
+      navigate('/noticeList');
+    } else {
+      console.error('Failed to delete the notice');
+    }
+  } catch (error) {
+    console.error('Error:', error);
   }
+}
 
   function changeToEditMode(idx) {
     editID = notices[idx].id;
@@ -181,7 +226,7 @@
           {#if success==1}
           <SuccessfulPopUp successMessage={addNoticeResponse}
           on:closeSuccess={()=>{success=-1;
-          navigate("/busList");}}/>
+          }}/>
         {:else if success==0}
           <ErrorPopUp errorMessage={addNoticeResponse}
           on:closeError={()=>(success=-1)}/>

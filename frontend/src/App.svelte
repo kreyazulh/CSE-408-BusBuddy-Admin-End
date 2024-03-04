@@ -30,8 +30,6 @@
   import RouteDetails from './page/RoutePages/routeDetails.svelte';
   import RouteAllocation from './page/RouteAllocation/routeAllocation.svelte';
   import NoticeList from './page/Notifications/noticeList.svelte';
-  import AssignmentMHB from './page/AssignmentPages/assignmentMHB.svelte';
-  import AssignmentAdd from './page/AssignmentPages/assignmentAdd.svelte';
   import Unavailability from './page/BusStaffPages/unavailability.svelte';
   import InventoryList from './page/InventoryPages/inventoryList.svelte';
   import BillingList from './page/BillingPages/billingList.svelte';
@@ -94,8 +92,7 @@
     <Route path="/routeDetails" component={RouteDetails} />
     <Route path="/routeAllocation" component={RouteAllocation} />
     <Route path="/noticeList" component={NoticeList} />
-    <Route path="/assignmentmhb" component={AssignmentMHB} />
-    <Route path="/assignmentadd" component={AssignmentAdd} />
+
     <Route path="/staff/unavailability" component={Unavailability} />
     <Route path="/billingList" component={BillingList} />
     <Route path="/inventory" component={InventoryList} />
