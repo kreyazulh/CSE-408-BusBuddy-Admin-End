@@ -218,6 +218,7 @@ async function handleDeleteConfirm() {
           const result = await response.json();
           if (response.ok) {
             console.log("Row saved successfully:", result);
+            changedRows = changedRows.filter((r) => r !== id);
             await sendNotification(rowData);
             // Additional logic after successful save (e.g., update UI, clear fields)
           } else {
@@ -230,7 +231,6 @@ async function handleDeleteConfirm() {
         }
       }
       // Remove the id from changedRows after saving
-      changedRows = changedRows.filter((r) => r !== id);
     }
     await fetchRows(selectedDate);
   }
