@@ -77,7 +77,7 @@
 
     if (rowIndex !== -1) {
       try {
-        const response = await fetch("http://localhost:3000/api/staff/delete", {
+        const response = await fetch("/api/staff/delete", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -121,7 +121,7 @@
   }
 
   async function getBusStaffList() {
-    const response = await fetch("http://localhost:3000/api/staff/");
+    const response = await fetch("/api/staff/");
     const data = await response.json();
     bus_staffs = data.map((row) => {
       return {

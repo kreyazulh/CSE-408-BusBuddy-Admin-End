@@ -5,6 +5,12 @@ var router = express.Router();
 // Route to get bus data
 // usage : busList, scheduleTrip
 router.get('/', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const query = 'SELECT * FROM bus';
     
@@ -21,6 +27,12 @@ router.get('/', (req, res) => {
 // Route to add bus data
 // usage : busAdd
 router.post('/add', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
     console.log(req.body);
     client.query (
@@ -38,6 +50,12 @@ router.post('/add', (req, res) => {
 
 // usage : busList
 router.delete('/delete', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const { id } = req.body; // Get the ID of the bus record to delete
   const client = req.client;
   console.log(req.body);
@@ -59,6 +77,12 @@ router.delete('/delete', async (req, res) => {
 
 //bus profile
 router.get('/:regID', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const { regID } = req.params;
   const query = 'SELECT * FROM bus WHERE reg_id = $1';

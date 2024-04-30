@@ -20,6 +20,12 @@ const saltRounds = 10;
 //   });
 
   router.post('/student', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = 'SELECT * FROM student_feedback';
 
@@ -44,6 +50,12 @@ const saltRounds = 10;
   });
 
   router.get('/student/:feedbackId', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { feedbackId } = req.params;
     const query = 'SELECT * FROM student_feedback WHERE id = $1';
@@ -59,6 +71,12 @@ const saltRounds = 10;
   });
 
   router.put('/student/respond', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
       console.log(req.body);
       client.query (
@@ -89,6 +107,12 @@ const saltRounds = 10;
   // });
 
   router.post('/teacher', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = 'SELECT * FROM buet_staff_feedback';
   
@@ -110,6 +134,12 @@ const saltRounds = 10;
   });
 
   router.get('/teacher/:feedbackId', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { feedbackId } = req.params;
     const query = 'SELECT * FROM buet_staff_feedback WHERE id = $1';
@@ -125,6 +155,12 @@ const saltRounds = 10;
   });
 
   router.put('/teacher/respond', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
       console.log(req.body);
       client.query (

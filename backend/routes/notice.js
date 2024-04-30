@@ -3,6 +3,12 @@ const router = express.Router();
 
 // GET /notice
 router.get('/', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const query = 'SELECT * FROM notice';
   
@@ -18,6 +24,12 @@ router.get('/', (req, res) => {
 });
 
 router.post('/add', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
     console.log(req.body);
     client.query (
@@ -35,6 +47,12 @@ router.post('/add', (req, res) => {
 });
 
 router.post('/delete/:id', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const noticeId = req.params.id; // Get the ID from the request parameters
 
@@ -57,6 +75,12 @@ router.post('/delete/:id', (req, res) => {
 });
 
 router.post('/update/:id', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const noticeId = req.params.id; // Get the ID of the notice to be updated from the URL
   const { text } = req.body; // Get the updated text from the request body

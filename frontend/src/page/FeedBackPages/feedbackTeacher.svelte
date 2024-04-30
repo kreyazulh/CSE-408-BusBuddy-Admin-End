@@ -41,7 +41,7 @@
 let routes = [];
   async function fetchRoutes() {
   try {
-    const response = await fetch('http://localhost:3000/api/route/');
+    const response = await fetch('/api/route/');
     routes = await response.json();
     console.log(routes);
   } catch (error) {
@@ -50,7 +50,7 @@ let routes = [];
 }
 
   async function fetchFeedBackDetails() {
-      const response = await fetch(`http://localhost:3000/api/feedback/teacher/${id}`);
+      const response = await fetch(`/api/feedback/teacher/${id}`);
       const data = await response.json();
       
       const wow =  data.map((row) => {
@@ -86,7 +86,7 @@ let routes = [];
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/feedback/teacher/respond', {
+      const response = await fetch('/api/feedback/teacher/respond', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

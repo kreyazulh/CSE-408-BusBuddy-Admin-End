@@ -26,7 +26,7 @@
     // Other variables and functions remain unchanged...
   
     async function getStaffList() {
-      const response = await fetch('http://localhost:3000/api/billing/buet_staff');
+      const response = await fetch('/api/billing/buet_staff');
       if (response.ok) {
         const data = await response.json();
         staffList = data.map((staff) => ({
@@ -48,7 +48,7 @@
 
     async function startNewMonth() {
     try {
-        const response = await fetch('http://localhost:3000/api/billing/startNewMonth', {
+        const response = await fetch('/api/billing/startNewMonth', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +79,7 @@
     async function sendNotification(staffId, staffName) {
   const notificationMessage = `Reminder: You have pending payment. Please check your dashboard.`;
   try {
-    const notificationResponse = await fetch('http://localhost:3000/api/proxyPersonalNotification', {
+    const notificationResponse = await fetch('/api/proxyPersonalNotification', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

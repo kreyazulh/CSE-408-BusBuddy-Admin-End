@@ -76,7 +76,7 @@
 
   if (rowIndex !== -1) {
     try {
-      const response = await fetch("http://localhost:3000/api/bus/delete", {
+      const response = await fetch("/api/bus/delete", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +159,7 @@
   async function getAllocations() {
         //backend theke data ante hobe
         
-        const response2 = await fetch('http://localhost:3000/api/assignment/');
+        const response2 = await fetch('/api/assignment/');
         const data2 = await response2.json();
         allocations = data2.map((row) => {
             return {
@@ -173,7 +173,7 @@
 
     async function getDriverList() {
 
-        const response = await fetch('http://localhost:3000/api/staff/driver/');
+        const response = await fetch('/api/staff/driver/');
       const data = await response.json();
       allDriver = data.map((row) => {
         return {
@@ -184,7 +184,7 @@
       // console.log(getDriverNameById('aminhaque'));
     }
     async function getHelperList() {
-        const response = await fetch('http://localhost:3000/api/staff/collector');
+        const response = await fetch('/api/staff/collector');
       const data = await response.json();
       allStaff = data.map((row) => {
         return {
@@ -195,7 +195,7 @@
     }
 
   async function getBusList() {
-    const response = await fetch('http://localhost:3000/api/bus/');
+    const response = await fetch('/api/bus/');
     const data = await response.json();
     // console.log(data);
     buses = data.map((row) => {

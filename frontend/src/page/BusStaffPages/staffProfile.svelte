@@ -40,7 +40,7 @@
   let allocatedBus = 'BA-01-2468';
 
   async function fetchStaffDetails() {
-      const response = await fetch(`http://localhost:3000/api/staff/${username}`);
+      const response = await fetch(`/api/staff/${username}`);
       const data = await response.json();
       // phone = data.phone;
 

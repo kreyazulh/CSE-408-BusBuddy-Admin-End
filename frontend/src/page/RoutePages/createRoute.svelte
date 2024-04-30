@@ -24,7 +24,7 @@
 
 async function fetchRoutes() {
 try {
-  const response = await fetch('http://localhost:3000/api/route/');
+  const response = await fetch('/api/route/');
   routes = await response.json();
   console.log(routes);
 } catch (error) {
@@ -35,7 +35,7 @@ try {
 
   const fetchStationNames = async () => {
       try {
-          const response = await fetch('http://localhost:3000/api/station/name', {
+          const response = await fetch('/api/station/name', {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ try {
 
   const createRoute = async () => {
       try {
-          const response = await fetch('http://localhost:3000/api/route/create', {
+          const response = await fetch('/api/route/create', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ try {
 
 const deleteRoute = async (routeId) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/route/delete/${routeId}`, {
+    const response = await fetch(`/api/route/delete/${routeId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

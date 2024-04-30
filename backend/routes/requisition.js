@@ -6,6 +6,12 @@ const saltRounds = 10;
 
 
 router.get('/', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const query = 'SELECT * FROM requisition';
     
@@ -20,6 +26,12 @@ router.get('/', (req, res) => {
   });
 
   router.get('/:reqId', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { reqId } = req.params;
     const query = 'SELECT * FROM requisition WHERE id = $1';
@@ -35,6 +47,12 @@ router.get('/', (req, res) => {
   });
 
   router.put('/approve', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
       console.log(req.body);
       client.query (
@@ -51,6 +69,12 @@ router.get('/', (req, res) => {
   });
 
   router.put('/reject', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
       console.log(req.body);
       client.query (

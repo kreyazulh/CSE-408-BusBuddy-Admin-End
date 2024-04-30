@@ -137,7 +137,7 @@ async function handleDeleteConfirm() {
   
   if (rowIndex !== -1) {
     try {
-      const response = await fetch("http://localhost:3000/api/route/allocation/delete", {
+      const response = await fetch("/api/route/allocation/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +205,7 @@ async function handleDeleteConfirm() {
 
         try {
           const response = await fetch(
-            "http://localhost:3000/api/route/allocation/edit",
+            "/api/route/allocation/edit",
             {
               method: "POST", // or 'PUT' if updating an existing allocation
               headers: {
@@ -239,7 +239,7 @@ async function handleDeleteConfirm() {
   const notificationMessage = `You have been assigned a trip with bus ${rowData.busNumber}, shift ${rowData.shift} on ${selectedDate}. Staffs ${rowData.driverName} and ${rowData.staffName}.`;
   // Assuming you have an endpoint or method to send a notification
   try {
-    const notificationResponse = await fetch('http://localhost:3000/api/proxyPersonalNotification', {
+    const notificationResponse = await fetch('/api/proxyPersonalNotification', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -261,7 +261,7 @@ async function handleDeleteConfirm() {
   }
 
   try {
-    const notificationResponse = await fetch('http://localhost:3000/api/proxyPersonalNotification', {
+    const notificationResponse = await fetch('/api/proxyPersonalNotification', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -285,7 +285,7 @@ async function handleDeleteConfirm() {
 
 async function fetchRoutes() {
   try {
-    const response = await fetch('http://localhost:3000/api/route/');
+    const response = await fetch('/api/route/');
     routes = await response.json();
     console.log(routes);
   } catch (error) {
@@ -295,7 +295,7 @@ async function fetchRoutes() {
 
 async function fetchHelper(time) {
   try {
-    const response = await fetch(`http://localhost:3000/api/staff/collector_with_time?time=${encodeURIComponent(time)}`);
+    const response = await fetch(`/api/staff/collector_with_time?time=${encodeURIComponent(time)}`);
   const data = await response.json();
     staffNames = data.map(item => item.id);
   } catch (error) {
@@ -305,7 +305,7 @@ async function fetchHelper(time) {
 
 async function fetchDriver(time) {
   try {
-    const response = await fetch(`http://localhost:3000/api/staff/driver_with_time?time=${encodeURIComponent(time)}`);
+    const response = await fetch(`/api/staff/driver_with_time?time=${encodeURIComponent(time)}`);
   const data = await response.json();
     console.log(data);
     driverNames = data.map(item => item.id);
@@ -317,7 +317,7 @@ async function fetchDriver(time) {
 
 async function fetchBus() {
   try {
-    const response = await fetch('http://localhost:3000/api/bus/');
+    const response = await fetch('/api/bus/');
     let data = await response.json();
     console.log(data);
     busNumbers = data.map(item => item.reg_id);
@@ -349,7 +349,7 @@ function getNextSevenDays() {
 async function fetchRows(selectedDate) {
   warningMessages = [];
   try {
-    const url = "http://localhost:3000/api/route/allocation";
+    const url = "/api/route/allocation";
     const requestOptions = {
       method: 'POST',
       headers: {

@@ -20,7 +20,7 @@
 
   async function fetchRouteDetails(routeId) {
     try {
-      const response = await fetch(`http://localhost:3000/api/route/routeDetails/${routeId}`, {
+      const response = await fetch(`/api/route/routeDetails/${routeId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

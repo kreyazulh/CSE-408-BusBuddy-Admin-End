@@ -5,6 +5,12 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 router.get('/student', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const query = 'SELECT * FROM student';
     
@@ -19,6 +25,12 @@ router.get('/student', (req, res) => {
   });
 
   router.get('/teacher', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const query = 'SELECT * FROM buet_staff';
     
@@ -33,6 +45,12 @@ router.get('/student', (req, res) => {
   });
 
 router.post('/student/add', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     console.log(req.body);
 

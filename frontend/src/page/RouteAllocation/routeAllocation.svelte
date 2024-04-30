@@ -321,7 +321,7 @@
         handleClick("save");
 
         try {
-            const response = await fetch('http://localhost:3000/api/assignment/save/', {
+            const response = await fetch('/api/assignment/save/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -357,7 +357,7 @@
     async function getAllocations() {
         //backend theke data ante hobe
         
-        const response2 = await fetch('http://localhost:3000/api/assignment/');
+        const response2 = await fetch('/api/assignment/');
         const data2 = await response2.json();
         allocations = data2.map((row) => {
             return {
@@ -393,14 +393,14 @@
 
     async function getBusList() {
       //unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedBuses');
+      const response2 = await fetch('/api/assignment/unallocatedBuses');
       const data2 = await response2.json();
       bus = data2.map((row) => row.reg_id);
       console.log(bus);
     }
     async function getRouteList() {
 
-        const response = await fetch('http://localhost:3000/api/route/');
+        const response = await fetch('/api/route/');
       const data = await response.json();
       allRoute = data.map((row) => {
         return {
@@ -411,7 +411,7 @@
     }
     async function getDriverList() {
 
-        const response = await fetch('http://localhost:3000/api/staff/driver/');
+        const response = await fetch('/api/staff/driver/');
       const data = await response.json();
       allDriver = data.map((row) => {
         return {
@@ -420,12 +420,12 @@
         };
       });
       // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
+      const response2 = await fetch('/api/assignment/unallocatedDrivers');
       const data2 = await response2.json();
       driver = data2.map((row) => row.id);
     }
     async function getHelperList() {
-        const response = await fetch('http://localhost:3000/api/staff/collector');
+        const response = await fetch('/api/staff/collector');
       const data = await response.json();
       allStaff = data.map((row) => {
         return {
@@ -434,7 +434,7 @@
         };
       });
       // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
+      const response2 = await fetch('/api/assignment/unallocatedHelpers');
       const data2 = await response2.json();
       staff = data2.map((row) => row.id);
       console.log(staff);

@@ -112,7 +112,7 @@ async function handleDeleteConfirm() {
   
   if (rowIndex !== -1) {
     try {
-      const response = await fetch("http://localhost:3000/api/trip/delete", {
+      const response = await fetch("/api/trip/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -158,7 +158,7 @@ async function handleDeleteConfirm() {
 
 async function fetchRoutes() {
   try {
-    const response = await fetch('http://localhost:3000/api/route/');
+    const response = await fetch('/api/route/');
     routes = await response.json();
     console.log(routes);
   } catch (error) {
@@ -168,7 +168,7 @@ async function fetchRoutes() {
 
 async function fetchRows() {
   try {
-    const response = await fetch("http://localhost:3000/api/trip");
+    const response = await fetch("/api/trip");
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

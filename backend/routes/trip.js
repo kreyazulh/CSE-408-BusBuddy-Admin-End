@@ -12,6 +12,12 @@ function getTomorrowsDate() {
 
   
   router.post('/create', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     try {
       const { terminal_point, names } = req.body;
@@ -43,6 +49,12 @@ function getTomorrowsDate() {
 
   // Route to delete a bus route
 router.delete('/delete/:routeId', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const { routeId } = req.params;
     const deleteQuery = 'DELETE FROM route WHERE id = $1';
@@ -61,6 +73,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
   router.get('/time', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     try {
       const tomorrowsDateTime = getTomorrowsDate();
       res.json({ time: tomorrowsDateTime });
@@ -72,6 +90,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : pastTrips
   router.get('/', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = 'SELECT * FROM trip';
 
@@ -88,6 +112,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : pastTrips
   router.post('/delete', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const { id } = req.body; // assuming the ID is sent in the request body
     const client = req.client;
   
@@ -115,6 +145,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : map
   router.get('/tracking', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { tripId } = req.query;  // Assuming you're passing a tripId as a query parameter
     console.log(tripId);
@@ -138,6 +174,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
   router.get('/validTripId', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = 'SELECT * FROM trip WHERE path IS NOT NULL';
 
@@ -154,6 +196,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
   router.get('/validTripId/:tripId', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { tripId } = req.params;
     let query = 'SELECT * FROM trip WHERE id = $1 AND path IS NOT NULL';
@@ -170,6 +218,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
   router.get('/liveTrips', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = 'SELECT * FROM trip WHERE is_live=\'true\'';
 
@@ -183,5 +237,57 @@ router.delete('/delete/:routeId', async (req, res) => {
       }
     });
   });
+
+  router.get('/remind', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
+    try {
+      const client = req.client;
+  
+      // Query to get live trip IDs
+      const liveTripsQuery = 'SELECT id FROM trip WHERE is_live = true';
+      const liveTripsResult = await client.query(liveTripsQuery);
+      const liveTripIDs = liveTripsResult.rows.map(row => row.id);
+  
+      // Ensure the IDs are passed as an array
+      if (liveTripIDs.length === 0) {
+        liveTripIDs.push(0); // Ensuring the array is never empty to avoid SQL errors
+      }
+  
+      // Query to find overdue, non-live trips
+      const overdueQuery = `
+        SELECT id, start_timestamp, route, time_type, bus, driver, helper,
+          EXTRACT(EPOCH FROM (NOW() - start_timestamp)) AS overdue_seconds
+        FROM allocation
+        WHERE start_timestamp < NOW() AND id != ALL($1)
+      `;
+      const values = [liveTripIDs]; // Pass array directly
+  
+      const overdueResults = await client.query(overdueQuery, values);
+  
+      // Respond with overdue trip details
+      res.json(overdueResults.rows.map(row => ({
+        id: row.id,
+        start_timestamp: row.start_timestamp,
+        route: row.route,
+        time_type: row.time_type,
+        bus: row.bus,
+        driver: row.driver,
+        helper: row.helper,
+        overdue_seconds: row.overdue_seconds
+      })));
+      console.log(overdueResults.rows);
+    } catch (error) {
+      console.error('Error fetching reminder data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+
+
 
   module.exports = router;

@@ -32,7 +32,7 @@
       date: new Date(bulkDate).toLocaleDateString('en-US'), // Ensure the date format matches your backend expectations
     };
     try {
-      const response = await fetch('http://localhost:3000/api/route/allocation/bulk', {
+      const response = await fetch('/api/route/allocation/bulk', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -78,7 +78,7 @@
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/route/allocation/add', {
+      const response = await fetch('/api/route/allocation/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -108,7 +108,7 @@
   }
 
   async function getRouteList() {
-    const response = await fetch('http://localhost:3000/api/route/');
+    const response = await fetch('/api/route/');
     const data = await response.json();
     routeList = data.map((row) => {
       return {
@@ -118,7 +118,7 @@
     });
   }
   async function getBusList() {
-      const response = await fetch('http://localhost:3000/api/assignment/allocatedBuses');
+      const response = await fetch('/api/assignment/allocatedBuses');
       const data = await response.json();
       allocatedBuses = data.map((row) => {
         return {
@@ -128,7 +128,7 @@
         };
       });
       //unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedBuses');
+      const response2 = await fetch('/api/assignment/unallocatedBuses');
       const data2 = await response2.json();
       unallocatedBuses = data2.map((row) => {
         return {
@@ -139,7 +139,7 @@
       });
     }
     async function getDriverList() {
-      const response = await fetch('http://localhost:3000/api/assignment/allocatedDrivers');
+      const response = await fetch('/api/assignment/allocatedDrivers');
       const data = await response.json();
       allocatedDrivers = data.map((row) => {
         return {
@@ -148,7 +148,7 @@
         };
       });
       // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedDrivers');
+      const response2 = await fetch('/api/assignment/unallocatedDrivers');
       const data2 = await response2.json();
       unallocatedDrivers = data2.map((row) => {
         return {
@@ -158,7 +158,7 @@
       });
     }
     async function getHelperList() {
-        const response = await fetch('http://localhost:3000/api/assignment/allocatedHelpers');
+        const response = await fetch('/api/assignment/allocatedHelpers');
       const data = await response.json();
       allocatedHelpers = data.map((row) => {
         return {
@@ -167,7 +167,7 @@
         };
       });
       // unallocated kemne anbo jani na
-      const response2 = await fetch('http://localhost:3000/api/assignment/unallocatedHelpers');
+      const response2 = await fetch('/api/assignment/unallocatedHelpers');
       const data2 = await response2.json();
       unallocatedHelpers = data2.map((row) => {
         return {

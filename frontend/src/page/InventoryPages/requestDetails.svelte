@@ -20,7 +20,7 @@
     let tempSelectedItems = [];
     
 async function fetchRequestDetails() {
-  const response = await fetch(`http://localhost:3000/api/billing/requests/${request_id}`);
+  const response = await fetch(`/api/billing/requests/${request_id}`);
   if(response.ok) {
     const data = await response.json();
     // No need to map, as data is likely an object, not an array
@@ -69,7 +69,7 @@ function removeSelectedItem(itemId) {
 
 
 async function getInventory() {
-      const response = await fetch('http://localhost:3000/api/billing/inventory/');
+      const response = await fetch('/api/billing/inventory/');
       const data = await response.json();
       inventory = data.map((row) => {
         return {
@@ -101,7 +101,7 @@ let showRejectSection = false;
 
 
   async function approveReq() {
-    const response = await fetch(`http://localhost:3000/api/billing/requests/${request_id}`, {
+    const response = await fetch(`/api/billing/requests/${request_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

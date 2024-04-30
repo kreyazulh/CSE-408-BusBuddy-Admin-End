@@ -48,7 +48,7 @@
     let regID;
 
     async function fetchBusDetails() {
-      const response = await fetch(`http://localhost:3000/api/bus/${regID}`);
+      const response = await fetch(`/api/bus/${regID}`);
       const data = await response.json();
       console.log('data:', data);
 

@@ -146,7 +146,7 @@
     }
   
     async function getReqList() {
-      const response1 = await fetch('http://localhost:3000/api/requisition');
+      const response1 = await fetch('/api/requisition');
       const data1 = await response1.json();
       requisitions = data1.map((row) => {
         return {

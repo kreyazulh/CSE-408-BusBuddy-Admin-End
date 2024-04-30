@@ -29,7 +29,7 @@
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/proxyBroadcastNotification', {
+      const response = await fetch('/api/proxyBroadcastNotification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

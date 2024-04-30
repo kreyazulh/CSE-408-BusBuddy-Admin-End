@@ -40,7 +40,7 @@
       };
   
       try {
-        const response = await fetch("http://localhost:3000/api/staff/add", {
+        const response = await fetch("/api/staff/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

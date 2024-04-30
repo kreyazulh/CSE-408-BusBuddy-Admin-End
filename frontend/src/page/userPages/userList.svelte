@@ -133,7 +133,7 @@
 
   // if (rowIndex !== -1) {
   //   try {
-  //     const response = await fetch("http://localhost:3000/api/bus/delete", {
+  //     const response = await fetch("/api/bus/delete", {
   //       method: "DELETE",
   //       headers: {
   //         "Content-Type": "application/json",
@@ -190,7 +190,7 @@
   }
 
   async function getUserList() {
-    const response1 = await fetch('http://localhost:3000/api/user/student');
+    const response1 = await fetch('/api/user/student');
     const data1 = await response1.json();
     students = data1.map((row) => {
       return {
@@ -204,7 +204,7 @@
     searchStudentRows = students;
 
 
-    const response2 = await fetch('http://localhost:3000/api/user/teacher');
+    const response2 = await fetch('/api/user/teacher');
     const data2 = await response2.json();
     teachers = data2.map((row) => {
       return {

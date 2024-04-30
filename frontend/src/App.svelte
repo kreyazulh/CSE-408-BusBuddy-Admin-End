@@ -35,6 +35,7 @@
   import BillingList from './page/BillingPages/billingList.svelte';
   import RepairRequestList from './page/InventoryPages/repairRequestList.svelte';
   import RequestDetails from './page/InventoryPages/requestDetails.svelte';
+  import Remind from './page/LiveTracking/remind.svelte';
 
 
 
@@ -98,6 +99,7 @@
     <Route path="/inventory" component={InventoryList} />
     <Route path="/repairRequestList" component={RepairRequestList} />
     <Route path="/requestDetails" component={RequestDetails} />
+    <Route path="/livetrips/remind" component={Remind} />
 
   </Router>
 

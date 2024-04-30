@@ -5,6 +5,7 @@ const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 (async () => {
   const module = await import('node-fetch');
@@ -33,10 +34,6 @@ const client = new Client({
 
 client.connect();
 
-app.listen(3000, ()=>{
-    console.log("Server running on port 3000");
-});
-
 // Express middleware to parse JSON
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
@@ -46,11 +43,11 @@ app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   sameSite: 'none',
   cookie: {
       maxAge: 30*60*1000,
-      httpOnly: true
+      httpOnly: false
   }
 }));
 
@@ -113,7 +110,7 @@ app.post('/api/proxyGetTripData', async (req, res) => {
 
   try {
     // Call the other API
-    const apiResponse = await fetch('http://3.141.62.8:6969/api/getTripData', {
+    const apiResponse = await fetch('http://localhost:6969/api/getTripData', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -149,7 +146,7 @@ app.post('/api/proxyBroadcastNotification', async (req, res) => {
     }
 
     // Call the external API to broadcast the notification
-    const apiResponse = await fetch('http://3.141.62.8:6969/api/broadcastNotification', {
+    const apiResponse = await fetch('http://localhost:6969/api/broadcastNotification', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -188,7 +185,7 @@ app.post('/api/proxyPersonalNotification', async (req, res) => {
     // }
 
     // Call the external API to send the personal notification
-    const apiResponse = await fetch('http://3.141.62.8:6969/api/personalNotification', {
+    const apiResponse = await fetch('http://localhost:6969/api/personalNotification', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -219,6 +216,15 @@ app.post('/api/proxyPersonalNotification', async (req, res) => {
 });
 
 
+app.use(Express.static(path.resolve(__dirname, '../frontend/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
+});
+
+app.listen(3000, ()=>{
+  console.log("Server running on port 3000");
+});
 
 
 module.exports = app;

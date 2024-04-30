@@ -8,7 +8,7 @@
 // Logout function
 const logout = async () => {
  // Make API request to your backend for logout
-        const response = await fetch('http://localhost:3000/api/auth/logout', {
+        const response = await fetch('/api/auth/logout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

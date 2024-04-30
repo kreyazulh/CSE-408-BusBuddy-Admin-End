@@ -1,10 +1,16 @@
 var express = require('express');
 var router = express.Router();
-const sharedConfig = require('.././sharedId');
+const sharedConfig = require('../sharedId');
 
 
 // Route to get admin data
 router.get('/', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const query = 'SELECT * FROM admin';
   
@@ -21,6 +27,12 @@ router.get('/', (req, res) => {
 
 // usage : adminProfile
 router.get('/profile', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   var id = sharedConfig.userId;
   console.log(id);
@@ -43,6 +55,12 @@ router.get('/profile', async (req, res) => {
 });
 
 router.get('/trips/last7days', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   try {
     const result = await client.query(`
@@ -69,6 +87,12 @@ router.get('/trips/last7days', async (req, res) => {
 });
 
 router.get('/trips/topYesterday', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   try {
     const result = await client.query(`
@@ -99,6 +123,12 @@ router.get('/trips/topYesterday', async (req, res) => {
 });
 
 router.get('/counts', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
 
   try {
@@ -130,6 +160,12 @@ router.get('/counts', async (req, res) => {
 });
 
 router.get('/tickets', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
 
   try {
@@ -148,6 +184,12 @@ router.get('/tickets', async (req, res) => {
 });
 
 router.get('/trips/stats', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
 
   try {
@@ -179,5 +221,47 @@ router.get('/trips/stats', async (req, res) => {
     res.status(500).send({ success: false, message: "Error processing request." });
   }
 });
+
+
+router.get('/upcomingTripsTime', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
+  try {
+    const client = req.client;
+
+    // SQL query to fetch trips starting today with terminal points, adjusted for GMT+6
+    const query = `
+      SELECT a.id, a.start_timestamp, r.terminal_point, a.route, a.bus, a.driver, a.helper, a.travel_direction,
+        EXTRACT(EPOCH FROM (a.start_timestamp - (NOW() + INTERVAL '6 hours'))) AS seconds_until_start
+      FROM allocation a
+      JOIN route r ON a.route = r.id
+      WHERE a.start_timestamp::date = (NOW() + INTERVAL '6 hours')::date
+        AND a.start_timestamp > (NOW() + INTERVAL '6 hours')
+      ORDER BY a.start_timestamp ASC;
+    `;
+
+    const result = await client.query(query);
+
+    res.json(result.rows.map(trip => ({
+      id: trip.id,
+      start_timestamp: trip.start_timestamp,
+      terminal_point: trip.terminal_point, // Include terminal point in the response
+      route: trip.route,
+      bus: trip.bus,
+      driver: trip.driver,
+      helper: trip.helper,
+      travel_direction: trip.travel_direction,
+      seconds_until_start: Math.max(0, trip.seconds_until_start) // Ensure it's never negative
+    })));
+  } catch (error) {
+    console.error('Error fetching upcoming trips:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router;

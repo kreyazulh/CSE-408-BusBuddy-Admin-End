@@ -90,7 +90,7 @@
   
     // if (rowIndex !== -1) {
     //   try {
-    //     const response = await fetch("http://localhost:3000/api/bus/delete", {
+    //     const response = await fetch("/api/bus/delete", {
     //       method: "DELETE",
     //       headers: {
     //         "Content-Type": "application/json",
@@ -143,7 +143,7 @@
 
     async function fetchRoutes() {
       try {
-        const response = await fetch('http://localhost:3000/api/route/');
+        const response = await fetch('/api/route/');
         routes = await response.json();
         console.log(routes);
       } catch (error) {
@@ -169,7 +169,7 @@ async function getFeedbackList() {
   };
 
   // Adjust the URL based on selectedRole
-  const url = selectedRole === 'student' ? 'http://localhost:3000/api/feedback/student' : 'http://localhost:3000/api/feedback/teacher';
+  const url = selectedRole === 'student' ? '/api/feedback/student' : '/api/feedback/teacher';
 
   const response = await fetch(url, fetchOptions);
   const data = await response.json();

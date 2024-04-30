@@ -12,6 +12,12 @@ function getTomorrowsDate() {
 
 // usage : createRoute, routeList, upcomingTrips 
 router.get('/', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const query = 'SELECT id, terminal_point, points, valid, predefined_path,ARRAY(SELECT s.name FROM unnest(points) WITH ORDINALITY AS u(sid, ord) JOIN station s ON s.id = u.sid ORDER BY u.ord) AS name FROM route;';
     
@@ -28,6 +34,12 @@ router.get('/', async (req, res) => {
 
   // usage : createRoute,
   router.post('/create', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     try {
       const { terminal_point, names } = req.body;
@@ -60,6 +72,12 @@ router.get('/', async (req, res) => {
   // Route to delete a bus route
   // usage : createRoute, routeList
 router.delete('/delete/:routeId', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const { routeId } = req.params;
     const deleteQuery = 'DELETE FROM route WHERE id = $1';
@@ -80,6 +98,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : upcomingTrips
   router.get('/time', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     try {
       const tomorrowsDateTime = getTomorrowsDate();
       res.json({ time: tomorrowsDateTime });
@@ -90,6 +114,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
   router.post('/allocation', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const date = req.body.date || getTomorrowsDate(); // Adjust to use body parser middleware
     console.log(date);
@@ -111,6 +141,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : scheduleTrip
   router.post('/allocation/add', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const { date, route, shift, bus_id, driver, collector } = req.body;
     const client = req.client;
   
@@ -139,6 +175,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : scheduleTrip
   router.post('/allocation/bulk', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const { date } = req.body;
     const client = req.client;
   
@@ -159,6 +201,12 @@ router.delete('/delete/:routeId', async (req, res) => {
   });
 
   router.post('/allocation/edit', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const { id, currentRoute, busNumber, driverName, staffName, shift } = req.body;
     const client = req.client;
   
@@ -184,6 +232,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
   // usage : upcomingTrips
   router.post('/allocation/delete', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const { id } = req.body; // assuming the ID is sent in the request body
     const client = req.client;
 
@@ -213,6 +267,12 @@ router.delete('/delete/:routeId', async (req, res) => {
 
 
   router.post('/routeDetails/:routeId', async (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { routeId } = req.params; // Extracting routeId from URL parameters
 

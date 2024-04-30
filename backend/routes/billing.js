@@ -3,6 +3,12 @@ var router = express.Router();
 
 // GET endpoint to fetch buet_staff data
 router.get('/buet_staff', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     try {
         const client = req.client;
       const result = await client.query('SELECT * FROM buet_staff');
@@ -15,6 +21,12 @@ router.get('/buet_staff', async (req, res) => {
 
 
 router.get('/inventory', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   try {
       const client = req.client;
     const result = await client.query('SELECT * FROM inventory');
@@ -27,6 +39,12 @@ router.get('/inventory', async (req, res) => {
   
   // Add to your server-side code
 router.post('/startNewMonth', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     try {
         const client = req.client; // Ensure you have a client from your db connection pool
         const updateResult = await client.query(
@@ -41,6 +59,12 @@ router.post('/startNewMonth', async (req, res) => {
 
 
 router.get('/repairRequestsCount', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     try {
         const client = req.client;
         const result = await client.query('SELECT COUNT(*) FROM repair WHERE is_repaired = FALSE');
@@ -53,6 +77,12 @@ router.get('/repairRequestsCount', async (req, res) => {
 
 
 router.get('/repairRequests', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     try {
         const client = req.client;
         const result = await client.query('SELECT * FROM repair');
@@ -65,6 +95,12 @@ router.get('/repairRequests', async (req, res) => {
 
 // In your server-side route handlers
 router.get('/requests/:request_id', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     try {
       const { request_id } = req.params;
       const client = req.client;
@@ -84,6 +120,12 @@ router.get('/requests/:request_id', async (req, res) => {
 );
 
 router.post('/requests/:request_id', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const { request_id } = req.params; // Get request_id from URL
     const { is_repaired, parts } = req.body; // Extract is_repaired status and parts array from request body
     const client = req.client; // Assuming req.client is your PostgreSQL client

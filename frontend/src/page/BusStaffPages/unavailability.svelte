@@ -19,7 +19,7 @@
 
 async function fetchUnavailableStaff() {
   try {
-    const response = await fetch("http://localhost:3000/api/staff/unavailableStaff"); // Adjust the endpoint as necessary
+    const response = await fetch("/api/staff/unavailableStaff"); // Adjust the endpoint as necessary
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -36,7 +36,7 @@ async function fetchUnavailableStaff() {
 }
 
     async function getBusStaffList() {
-    const response = await fetch("http://localhost:3000/api/staff/");
+    const response = await fetch("/api/staff/");
     const data = await response.json();
     bus_staffs = data.map((row) => {
       return {
@@ -63,7 +63,7 @@ async function fetchUnavailableStaff() {
       };
   
       try {
-        const response = await fetch("http://localhost:3000/api/staff/unavailability", {
+        const response = await fetch("/api/staff/unavailability", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

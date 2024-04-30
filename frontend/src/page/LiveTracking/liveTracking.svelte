@@ -12,13 +12,36 @@
     let route = [];
     let locations = [];
     let routes = [];
+    let markers = [];
 
     let tripId = "";
     let intervalId;
 
+    let distanceToBUET = "";
+
+    // Constants for BUET's latitude and longitude
+    const BUET_LAT = 23.72772109504178;
+    const BUET_LNG = 90.39169264466838;
+
+    // Haversine distance function
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+        function toRad(x) {
+            return x * Math.PI / 180;
+        }
+
+        const R = 6371; // Earth's radius in km
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in km
+    }
+
     async function fetchRoutes() {
     try {
-    const response = await fetch('http://localhost:3000/api/route/');
+    const response = await fetch('/api/route/');
     routes = await response.json();
     console.log(routes);
     } catch (error) {
@@ -35,19 +58,35 @@
     L.polyline(route, { color: 'red', opacity: 0.5, weight: 7 }).addTo(map);
     }
 
+    function clearMarkers() {
+        // Remove all markers from the map
+        markers.forEach(marker => marker.remove());
+        markers = []; // Reset the markers array
+    }
+
     function addLocationToMap() {
-       L.polyline(locations, { color: 'maroon', opacity: 1, weight: 5 }).addTo(map);
-       if (locations.length >= 2) {
-           L.marker(locations[0]).addTo(map);
-           L.marker(locations[locations.length - 1]).addTo(map);
-       }
-    //    map.fitBounds(locations);
+        clearMarkers(); // Clear existing markers
+        L.polyline(locations, { color: 'maroon', opacity: 1, weight: 5 }).addTo(map);
+
+        // Add markers only at the start and end of locations
+        if (locations.length >= 2) {
+            const startMarker = L.marker(locations[0]).addTo(map);
+            const endMarker = L.circleMarker(locations[locations.length - 1], {
+            radius: 8,
+            fillColor: "#ff7800",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        }).addTo(map);
+            markers.push(startMarker, endMarker);
+        }
     }
 
     async function getcord(tripId) {
         // Request for trip id
         const response = await fetch(
-            `http://localhost:3000/api/proxyGetTripData`,
+            `/api/proxyGetTripData`,
             {
                 method: "POST",
                 headers: {
@@ -70,6 +109,10 @@
                     item.latitude,
                     item.longitude,
                 ]);
+
+                // Calculate distance to BUET from the last location
+                const lastLocation = locations[locations.length - 1];
+                distanceToBUET = haversineDistance(BUET_LAT, BUET_LNG, lastLocation[0], lastLocation[1]).toFixed(2) + " km";
 
                 // Add markers and polyline after fetching data
                 addLocationToMap();
@@ -184,6 +227,9 @@
                         </p>
                         <p class="text-gray-300 text-normal font-normal px-5">Phone No : 
                             <span class="text-white-900"></span>
+                        </p>
+                        <p class="text-gray-300 text-lg font-semibold px-5 pt-10 pb-2">Distance to BUET : 
+                            <span class="text-white-900">{distanceToBUET}</span>
                         </p>
                     {/if}
                 </div>

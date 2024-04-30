@@ -11,7 +11,7 @@
     let totalPages = 0;
   
     async function fetchRepairRequests() {
-      const response = await fetch('http://localhost:3000/api/billing/repairRequests');
+      const response = await fetch('/api/billing/repairRequests');
       if (response.ok) {
         const data = await response.json();
         repairRequests = data.map(request => ({

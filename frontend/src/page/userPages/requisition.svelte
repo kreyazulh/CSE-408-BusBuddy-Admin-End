@@ -51,7 +51,7 @@
 
 
   async function fetchReqDetails() {
-      const response = await fetch(`http://localhost:3000/api/requisition/${id}`);
+      const response = await fetch(`/api/requisition/${id}`);
       const data = await response.json();
       
       const wow =  data.map((row) => {
@@ -87,7 +87,7 @@
     }
 
     async function getBusList() {
-    const response = await fetch('http://localhost:3000/api/bus/');
+    const response = await fetch('/api/bus/');
     const data = await response.json();
     busNumbers = data.map((row) => {
       return {
@@ -98,7 +98,7 @@
     });
   }
   // async function getDriverList() {
-  //   const response = await fetch('http://localhost:3000/api/staff/driver');
+  //   const response = await fetch('/api/staff/driver');
   //   const data = await response.json();
   //   driverNames = data.map((row) => {
   //     return {
@@ -108,7 +108,7 @@
   //   });
   // }
   // async function getStaffList() {
-  //   const response = await fetch('http://localhost:3000/api/staff/collector');
+  //   const response = await fetch('/api/staff/collector');
   //   const data = await response.json();
   //   staffNames = data.map((row) => {
   //     return {
@@ -120,7 +120,7 @@
 
   // Frontend modification to include time in the request
 async function getDriverList(time) {
-  const response = await fetch(`http://localhost:3000/api/staff/driver_with_time?time=${encodeURIComponent(time)}`);
+  const response = await fetch(`/api/staff/driver_with_time?time=${encodeURIComponent(time)}`);
   const data = await response.json();
   driverNames = data.map((row) => {
     return {
@@ -131,7 +131,7 @@ async function getDriverList(time) {
 }
 
 async function getStaffList(time) {
-  const response = await fetch(`http://localhost:3000/api/staff/collector_with_time?time=${encodeURIComponent(time)}`);
+  const response = await fetch(`/api/staff/collector_with_time?time=${encodeURIComponent(time)}`);
   const data = await response.json();
   staffNames = data.map((row) => {
     return {
@@ -171,7 +171,7 @@ function toggleRejectSection() {
     console.log(respData);
 
     try {
-      const response = await fetch('http://localhost:3000/api/requisition/approve', {
+      const response = await fetch('/api/requisition/approve', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -203,7 +203,7 @@ function toggleRejectSection() {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/requisition/reject', {
+      const response = await fetch('/api/requisition/reject', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

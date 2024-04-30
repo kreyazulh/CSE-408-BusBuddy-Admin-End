@@ -4,6 +4,12 @@ var router = express.Router();
 // Route to get bus staff data
 // usage : busStaffList
 router.get('/', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     const query = 'SELECT * FROM bus_staff';
     
@@ -18,6 +24,12 @@ router.get('/', (req, res) => {
   });
 
   router.get('/unavailableStaff', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     console.log("here");
     
@@ -39,6 +51,12 @@ router.get('/', (req, res) => {
 
 // usage : scheduleTrip
   router.get('/driver', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const query = 'SELECT * FROM bus_staff WHERE role=$1';
     
@@ -54,6 +72,12 @@ router.get('/', (req, res) => {
 
   // usage : scheduleTrip
   router.get('/collector', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const query = 'SELECT * FROM bus_staff WHERE role=$1';
     
@@ -71,6 +95,12 @@ router.get('/', (req, res) => {
 
   // Backend modification for drivers
 router.get('/driver_with_time', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const { time } = req.query; // Assuming 'time' is passed as a query parameter in the GET request
   console.log(time);
@@ -93,6 +123,12 @@ router.get('/driver_with_time', (req, res) => {
 
 // Backend modification for collectors
 router.get('/collector_with_time', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const { time } = req.query; // Assuming 'time' is passed as a query parameter in the GET request
   const query = `
@@ -115,6 +151,12 @@ router.get('/collector_with_time', (req, res) => {
 
 // usage : staffProfile
   router.get('/:staffId', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const { staffId } = req.params;
     const query = 'SELECT * FROM bus_staff WHERE id = $1';
@@ -131,6 +173,12 @@ router.get('/collector_with_time', (req, res) => {
 
   // usage : addStaff
 router.post('/add', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     console.log(req.body);
     client.query (
@@ -148,6 +196,12 @@ router.post('/add', (req, res) => {
 
 // usage : busStaffList
 router.delete('/delete', async (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const { id } = req.body;
   const client = req.client;
 
@@ -162,6 +216,12 @@ router.delete('/delete', async (req, res) => {
 });
 
 router.post('/unavailability', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   const client = req.client;
   const { staffId, startDate, endDate } = req.body;
 

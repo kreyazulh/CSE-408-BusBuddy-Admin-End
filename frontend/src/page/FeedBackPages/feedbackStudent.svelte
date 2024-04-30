@@ -42,7 +42,7 @@
 
   async function fetchRoutes() {
   try {
-    const response = await fetch('http://localhost:3000/api/route/');
+    const response = await fetch('/api/route/');
     routes = await response.json();
     console.log(routes);
   } catch (error) {
@@ -52,7 +52,7 @@
 
   async function fetchFeedBackDetails() {
     await fetchRoutes();
-      const response = await fetch(`http://localhost:3000/api/feedback/student/${id}`);
+      const response = await fetch(`/api/feedback/student/${id}`);
       const data = await response.json();
 
       
@@ -90,7 +90,7 @@
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/feedback/student/respond', {
+      const response = await fetch('/api/feedback/student/respond', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

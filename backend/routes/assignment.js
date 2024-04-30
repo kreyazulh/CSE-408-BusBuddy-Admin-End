@@ -4,6 +4,12 @@ var router = express.Router();
 // Route to get station names
 // usage : createRoute
 router.get('/', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
     const client = req.client;
     let query = 'SELECT * FROM schedule';
 
@@ -19,6 +25,12 @@ router.get('/', (req, res) => {
   });
 
   router.post('/update', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
       console.log(req.body);
       client.query (
@@ -35,6 +47,12 @@ router.get('/', (req, res) => {
   });
 
   router.post('/save', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     const allocations = req.body.allocations;
     let updatePromises = [];
@@ -65,6 +83,13 @@ router.get('/', (req, res) => {
   
 
   router.get('/allocatedBuses', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
+
     const client = req.client;
     let query = 'SELECT * FROM bus WHERE reg_id IN (SELECT default_bus FROM schedule  WHERE default_bus IS NOT NULL);';
 
@@ -95,6 +120,12 @@ router.get('/', (req, res) => {
   });
 
   router.get('/allocatedDrivers', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = `SELECT * FROM bus_staff WHERE id IN (SELECT default_driver FROM schedule WHERE default_driver IS NOT NULL) AND role = 'driver'`;
 
@@ -110,6 +141,12 @@ router.get('/', (req, res) => {
   });
 
   router.get('/unallocatedDrivers', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = `SELECT * FROM bus_staff WHERE id NOT IN (SELECT default_driver FROM schedule WHERE default_driver IS NOT NULL) AND role = 'driver'`;
 
@@ -125,6 +162,12 @@ router.get('/', (req, res) => {
   });
 
   router.get('/allocatedHelpers', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = `SELECT * FROM bus_staff WHERE id IN (SELECT default_helper FROM schedule WHERE default_helper IS NOT NULL) AND role = 'collector'`;
 
@@ -140,6 +183,12 @@ router.get('/', (req, res) => {
   });
 
   router.get('/unallocatedHelpers', (req, res) => {
+    if (req.session.userId === null || req.session.userId === undefined) {
+      res.send({
+        auth: false,
+      });
+      return;
+    };
     const client = req.client;
     let query = `SELECT * FROM bus_staff WHERE id NOT IN (SELECT default_helper FROM schedule WHERE default_helper IS NOT NULL) AND role = 'collector'`;
 

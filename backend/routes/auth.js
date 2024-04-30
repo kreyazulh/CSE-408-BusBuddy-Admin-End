@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-const sharedConfig = require('.././sharedId');
+const sharedConfig = require('../sharedId');
 const bcrypt = require('bcrypt');
 
 
 router.get('/check-session', (req, res) => {
-    console.log(req.session);
+    //console.log(req.session);
     console.log(req.session.userId);
     res.json({ isAuthenticated: !!req.session.userId });
   });
@@ -40,6 +40,7 @@ router.get('/check-session', (req, res) => {
             // Passwords match, login successful
             req.session.userId = id;
             sharedConfig.userId = id;
+            console.log(req.session);
             res.send({ status: "success", message: "Login successful." });
             // Proceed to create session/token or any post-login process
         } else {
@@ -55,6 +56,12 @@ router.get('/check-session', (req, res) => {
 
 // usage : navbar
 router.post('/logout', (req, res) => {
+  if (req.session.userId === null || req.session.userId === undefined) {
+    res.send({
+      auth: false,
+    });
+    return;
+  };
   req.session.userId = null;
   sharedConfig.userId = null;
   console.log("logout");

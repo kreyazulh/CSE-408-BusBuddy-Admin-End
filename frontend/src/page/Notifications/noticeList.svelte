@@ -16,7 +16,7 @@
   let editText = "";
 
   async function getNoticeList() {
-    const response = await fetch("http://localhost:3000/api/notice/");
+    const response = await fetch("/api/notice/");
     const data = await response.json();
     notices = data;
     for (let i = 0; i < notices.length; i++) {
@@ -36,7 +36,7 @@
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/notice/add", {
+      const response = await fetch("/api/notice/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@
   const updatedText = editText; // Retrieve the updated text from the bound variable
 
   try {
-    const response = await fetch(`http://localhost:3000/api/notice/update/${noticeId}`, {
+    const response = await fetch(`/api/notice/update/${noticeId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@
   const noticeId = notices[idx].id; // Assuming each notice has a unique 'id'
   console.log(noticeId);
   try {
-    const response = await fetch(`http://localhost:3000/api/notice/delete/${noticeId}`, {
+    const response = await fetch(`/api/notice/delete/${noticeId}`, {
       method: 'POST',
     });
     if (response.ok) {

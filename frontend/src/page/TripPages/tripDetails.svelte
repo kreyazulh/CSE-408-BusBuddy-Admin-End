@@ -38,7 +38,7 @@
   
     async function getcord() {
       // Request for trip id
-      const response = await fetch(`http://localhost:3000/api/trip/tracking?tripId=${tripId}`);
+      const response = await fetch(`/api/trip/tracking?tripId=${tripId}`);
       const data = await response.json();
       console.log('data:', data);
       if (Array.isArray(data) && data.length > 0) {
@@ -57,7 +57,7 @@
     let validTripIds = [];
   
     async function fetchTripDetails(tripId) {
-      const response = await fetch(`http://localhost:3000/api/trip/validTripId/${tripId}`);
+      const response = await fetch(`/api/trip/validTripId/${tripId}`);
       validTripIds = await response.json();
       console.log('validTripIds:', validTripIds);
       if (tripId) {

@@ -58,7 +58,7 @@
 
 async function fetchRepairRequestsCount() {
   handleClick("repairRequestsCount");
-    const response = await fetch('http://localhost:3000/api/billing/repairRequestsCount');
+    const response = await fetch('/api/billing/repairRequestsCount');
     if (response.ok) {
         const data = await response.json();
         repairRequestsCount = data;
@@ -68,7 +68,7 @@ async function fetchRepairRequestsCount() {
 }
 
     async function getInventory() {
-      const response = await fetch('http://localhost:3000/api/billing/inventory/');
+      const response = await fetch('/api/billing/inventory/');
       const data = await response.json();
       inventory = data;
       for(let i=0; i<inventory.length; i++){

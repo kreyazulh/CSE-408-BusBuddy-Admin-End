@@ -52,7 +52,7 @@
       };
   
       try {
-        const response = await fetch("http://localhost:3000/api/user/student/add", {
+        const response = await fetch("/api/user/student/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -81,7 +81,7 @@
   
   async function fetchRoutes() {
     try {
-      const response = await fetch('http://localhost:3000/api/route/');
+      const response = await fetch('/api/route/');
       const data= await response.json();
       allRoutes = data.map((route)=> {
         return {
@@ -98,7 +98,7 @@
   async function fetchStations() {
     try {
       // fetch allocated & unallocated buses in seperate arrays
-      const response = await fetch('http://localhost:3000/api/station/');
+      const response = await fetch('/api/station/');
       const data = await response.json();
       // console.log(data);
       allStations = data.map((station)=>{

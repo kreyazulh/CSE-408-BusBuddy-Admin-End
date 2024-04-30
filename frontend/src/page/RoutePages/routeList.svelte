@@ -10,7 +10,7 @@
   // Function to fetch routes from the API
   async function fetchRoutes() {
     try {
-      const response = await fetch('http://localhost:3000/api/route/');
+      const response = await fetch('/api/route/');
       if (response.ok) {
         routes = await response.json();
         console.log('routes:', routes);
@@ -32,7 +32,7 @@
   // Function to delete a route
   const deleteRoute = async (routeId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/route/delete/${routeId}`, {
+      const response = await fetch(`/api/route/delete/${routeId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
